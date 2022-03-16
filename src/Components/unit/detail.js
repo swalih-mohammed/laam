@@ -3,7 +3,13 @@ import axios from "axios";
 import { connect } from "react-redux";
 
 // import { View, TouchableOpacity, Text } from "react-native";
-import { StatusBar, View, Text, ScrollView } from "react-native";
+import {
+  StatusBar,
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { COLORS, SIZES } from "../../Helpers/constants";
 import { handleStart } from "../../store/actions/quiz";
 import { reSetCourseDetails } from "../../store/actions/course";
@@ -14,7 +20,7 @@ import {
   ProgressBar,
   Title,
   Paragraph,
-  Caption
+  Caption,
 } from "react-native-paper";
 import { localhost } from "../../Helpers/urls";
 // import UnitTestList from "../unitTest/list";
@@ -27,9 +33,9 @@ import LessonItem from "../lessons/item";
 import QuizItem from "../quiz/item";
 import ConversationItem from "../conversations/item";
 
-const LeftContent = props => <Avatar.Icon {...props} icon="school" />;
+const LeftContent = (props) => <Avatar.Icon {...props} icon="school" />;
 
-const UnitDetail = props => {
+const UnitDetail = (props) => {
   const navigation = useNavigation();
   const [quizzes, setQuizzes] = useState(null);
   const [unit, setUnit] = useState(null);
@@ -101,10 +107,10 @@ const UnitDetail = props => {
       const quiz_len = unit.quizzes.length;
 
       const lesson_comp = unit.lessons.filter(
-        lesson => lesson.lessonCompleted === true
+        (lesson) => lesson.lessonCompleted === true
       );
       const quiz_comp = unit.quizzes.filter(
-        quiz => quiz.quizCompleted === true
+        (quiz) => quiz.quizCompleted === true
       );
 
       const total_len = lesson_len + quiz_len;
@@ -124,10 +130,20 @@ const UnitDetail = props => {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       {loading ? (
-        <>
-          <Text>Unit detail loading</Text>
-          <Loader />
-        </>
+        // <>
+        //   <Text>Unit detail loading</Text>
+        //   <Loader />
+        // </>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Paragraph>Loading...</Paragraph>
+          <ActivityIndicator
+            size="large"
+            animating={true}
+            color={COLORS.primary}
+          />
+        </View>
       ) : (
         <>
           <ScrollView>
@@ -140,7 +156,7 @@ const UnitDetail = props => {
                     justifyContent: "center",
                     alignItems: "center",
                     paddingVertical: 8,
-                    paddingHorizontal: 15
+                    paddingHorizontal: 15,
                   }}
                 >
                   <Text
@@ -149,7 +165,7 @@ const UnitDetail = props => {
                       opacity: 0.9,
                       paddingBottom: 2,
                       fontWeight: "700",
-                      color: COLORS.enactive
+                      color: COLORS.enactive,
                     }}
                   >
                     UNIT {unit.order}
@@ -158,7 +174,7 @@ const UnitDetail = props => {
                     style={{
                       fontSize: 18,
                       fontWeight: "700",
-                      paddingBottom: 5
+                      paddingBottom: 5,
                     }}
                   >
                     {unit.title}
@@ -170,7 +186,7 @@ const UnitDetail = props => {
                   style={{
                     justifyContent: "flex-start",
                     flexDirection: "row",
-                    marginLeft: 25
+                    marginLeft: 25,
                   }}
                 >
                   <Text style={{ paddingRight: 10 }}>Grammar :</Text>
@@ -179,7 +195,7 @@ const UnitDetail = props => {
                       fontSize: 16,
                       opacity: 0.9,
                       color: COLORS.primary,
-                      paddingBottom: 2
+                      paddingBottom: 2,
                       // color: COLORS.enactive
                     }}
                   >
@@ -191,7 +207,7 @@ const UnitDetail = props => {
                     justifyContent: "flex-start",
                     flexDirection: "row",
                     marginLeft: 25,
-                    paddingBottom: 10
+                    paddingBottom: 10,
                   }}
                 >
                   <Text style={{ paddingRight: 10 }}>Vocabulary :</Text>
@@ -200,7 +216,7 @@ const UnitDetail = props => {
                       fontSize: 16,
                       opacity: 0.9,
                       color: COLORS.primary,
-                      paddingBottom: 2
+                      paddingBottom: 2,
                     }}
                   >
                     {unit.vocab_count} new words
@@ -255,21 +271,18 @@ const UnitDetail = props => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     token: state.auth.token,
-    username: state.auth.username
+    username: state.auth.username,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleStart: data => dispatch(handleStart(data)),
-    reSetCourseDetails: data => dispatch(reSetCourseDetails(data))
+    handleStart: (data) => dispatch(handleStart(data)),
+    reSetCourseDetails: (data) => dispatch(reSetCourseDetails(data)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UnitDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(UnitDetail);

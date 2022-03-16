@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import {
   DefaultTheme,
   configureFonts,
-  Provider as PaperProvider
+  Provider as PaperProvider,
 } from "react-native-paper";
 import { Provider as StoreProvider } from "react-redux";
 import { COLORS, SIZES } from "./src/Helpers/constants";
@@ -86,8 +86,8 @@ const MyTheme = {
     white: "#FFFFFF",
     black: "#171717",
     offWhite: "#F8F0E3",
-    gray: "#343a40"
-  }
+    gray: "#343a40",
+  },
 };
 
 export const TabScreens = () => (
@@ -102,7 +102,7 @@ export const TabScreens = () => (
       options={{
         // tabBarColor: "#aacc00",
         tabBarIcon: "home",
-        headerShown: false
+        headerShown: false,
       }}
       component={HomeScreen}
     />
@@ -110,7 +110,7 @@ export const TabScreens = () => (
       name="Account"
       options={{
         headerShown: false,
-        tabBarIcon: "account"
+        tabBarIcon: "account",
       }}
       // screenOptions={{ headerShown: false }}
       component={Account}
@@ -126,17 +126,16 @@ export default function App() {
           <SafeAreaProvider>
             <NavigationContainer>
               <Stack.Navigator>
-               
                 <Stack.Screen
                   name="Courses"
                   component={TabScreens}
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                 />
-                 <Stack.Screen
+                <Stack.Screen
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   name="Get Started"
                   component={GetStartedScreen}
@@ -144,13 +143,13 @@ export default function App() {
                 <Stack.Screen
                   name="Course Details"
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   component={CourseDetail}
                 />
                 <Stack.Screen
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   name="Section Details"
                   component={SectionDetail}
@@ -158,14 +157,14 @@ export default function App() {
                 <Stack.Screen
                   name="Unit Details"
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   component={UnitDetail}
                 />
                 <Stack.Screen
                   name="Lesson Details"
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   component={LessonDetail}
                 />
@@ -175,14 +174,14 @@ export default function App() {
                 />
                 <Stack.Screen
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   name="Quiz Detail"
                   component={TestDetail}
                 />
                 <Stack.Screen
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   name="Conversation Details"
                   component={ConversationDetails}
@@ -190,14 +189,14 @@ export default function App() {
 
                 <Stack.Screen
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   name="SignUp"
                   component={SignUp}
                 />
                 <Stack.Screen
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   name="Login"
                   component={LoginScreen}
@@ -205,7 +204,7 @@ export default function App() {
 
                 <Stack.Screen
                   options={{
-                    headerShown: false
+                    headerShown: false,
                   }}
                   name="Certificate"
                   component={CertificateScreen}

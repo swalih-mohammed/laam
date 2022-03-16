@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
-
-import { ActivityIndicator } from "react-native";
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import { localhost } from "../../Helpers/urls";
 import Questions from "./Questions";
 import Loader from "../Utils/Loader";
+import { Paragraph } from "react-native-paper";
+import { COLORS, SIZES } from "../../Helpers/constants";
+
 // import { QuizProvider } from "./QuizContext";
 import { handleStart } from "../../store/actions/quiz";
 // import { handleStart } from "../../store/actions/quiz";
 // import Questions from "../../Components/pacticeTest/Qustions";
 
-const QuizList = props => {
+const QuizList = (props) => {
   const [quiz, setQuiz] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
@@ -25,11 +26,11 @@ const QuizList = props => {
         const response = await axios.get(
           `${localhost}/quizzes/${QuizId}/${props.username}`,
           {
-            cancelToken: source.token
+            cancelToken: source.token,
           }
         );
         setQuiz(response.data);
-        // console.log(response.data);
+        console.log(response.data);
         setLoading(false);
       } catch (err) {
         if (axios.isCancel(error)) {
@@ -52,7 +53,17 @@ const QuizList = props => {
   return (
     <>
       {loading ? (
-        <Loader />
+        // <Loader />
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Paragraph>Loading...</Paragraph>
+          <ActivityIndicator
+            size="large"
+            animating={true}
+            color={COLORS.primary}
+          />
+        </View>
       ) : (
         <>
           {quiz ? (
@@ -72,18 +83,15 @@ const QuizList = props => {
   );
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleStart: data => dispatch(handleStart(data))
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    username: state.auth.username
+    username: state.auth.username,
     // token: state.auth.token
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(QuizList);
+export default connect(mapStateToProps, mapDispatchToProps)(QuizList);

@@ -6,7 +6,7 @@ import {
   Image,
   Dimensions,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { useKeepAwake } from "expo-keep-awake";
 import PhotoAndTitle from "./LessonPhoto";
@@ -35,7 +35,7 @@ function lessonItem(props) {
     QuizId,
     unitId,
     sectionId,
-    language
+    language,
   } = props;
 
   const navigation = useNavigation();
@@ -92,7 +92,7 @@ function lessonItem(props) {
     }
   };
 
-  const HandleSliderMove = async value => {
+  const HandleSliderMove = async (value) => {
     // console.log(value);
     try {
       const result = await sound.current.getStatusAsync();
@@ -100,7 +100,7 @@ function lessonItem(props) {
         console.log("handling seek");
         sound.current.setStatusAsync({
           shouldPlay: true,
-          positionMillis: value * durationMillis
+          positionMillis: value * durationMillis,
         });
       }
     } catch (error) {
@@ -123,7 +123,7 @@ function lessonItem(props) {
     return minutes + ":" + seconds;
   }
 
-  const onPlaybackStatusUpdate = audio => {
+  const onPlaybackStatusUpdate = (audio) => {
     if (isMounted.current) {
       if (audio.isLoaded) {
         setDidJustFinish(false);
@@ -193,7 +193,7 @@ function lessonItem(props) {
     if (index === 0) {
       if (sectionId != null) {
         navigation.navigate("Section Details", {
-          id: sectionId
+          id: sectionId,
         });
       } else {
         navigation.navigate("Unit Details", { id: unitId });
@@ -209,7 +209,7 @@ function lessonItem(props) {
       QuizId: QuizId,
       lessonId: lessonId,
       unitId: unitId,
-      sectionId: sectionId
+      sectionId: sectionId,
     });
   };
 
@@ -219,7 +219,7 @@ function lessonItem(props) {
       score: 0,
       showAnswer: false,
       answerList: [],
-      showScoreModal: false
+      showScoreModal: false,
     };
     props.handleStart(data);
     navigateToQuiz();
@@ -267,19 +267,19 @@ function lessonItem(props) {
               maximumTrackTintColor={COLORS.primary}
               thumbTintColor={COLORS.primary}
               value={isNaN(parseFloat(sliderValue)) ? 0 : sliderValue}
-              onValueChange={value => setCurrentPosition(value)}
+              onValueChange={(value) => setCurrentPosition(value)}
               onSlidingStart={async () => {
                 if (!sound.current.isLoaded) return;
                 PauseAudio();
               }}
-              onSlidingComplete={value => HandleSliderMove(value)}
+              onSlidingComplete={(value) => HandleSliderMove(value)}
             />
 
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                marginHorizontal: 15
+                marginHorizontal: 15,
               }}
             >
               <Paragraph style={{ alignSelf: "flex-start" }}>
@@ -299,7 +299,7 @@ function lessonItem(props) {
           flex: 1,
           justifyContent: "center",
           flexDirection: "row",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <Button
@@ -322,7 +322,7 @@ function lessonItem(props) {
             borderWidth: 1,
             borderColor: COLORS.primary,
             marginLeft: 20,
-            marginRight: 20
+            marginRight: 20,
           }}
           onPress={isPlaying ? () => PauseAudio() : () => PlayAudio()}
         />
@@ -347,53 +347,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   TopContainer: {
     flex: 5,
-    backgroundColor: "black"
+    backgroundColor: "black",
   },
   MiddleContainer: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "center",
-    backgroundColor: "green"
+    backgroundColor: "green",
   },
   BottomContainer: {
     // flex: 1,
     flexDirection: "row",
     justifyContent: "center",
-    backgroundColor: "green"
+    backgroundColor: "green",
   },
   ImgWrapper: {
     height: height * 0.9,
     marginTop: 8,
     marginLeft: 5,
-    marginRight: 5
+    marginRight: 5,
   },
   photo: {
     width: "95%",
     height: "85%",
     margin: 5,
-    borderRadius: 10
+    borderRadius: 10,
   },
   title: {
     fontSize: 20,
-    fontWeight: "700"
+    fontWeight: "700",
   },
   Controls: {
     flexDirection: "row",
-    marginTop: 20
-  }
+    marginTop: 20,
+  },
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleStart: data => dispatch(handleStart(data))
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(lessonItem);
+export default connect(null, mapDispatchToProps)(lessonItem);

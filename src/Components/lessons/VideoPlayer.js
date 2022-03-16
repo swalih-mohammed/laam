@@ -7,7 +7,7 @@ import {
   Title,
   Paragraph,
   Button,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native-paper";
 import { COLORS, SIZES } from "../../Helpers/constants";
 import LottieView from "lottie-react-native";
@@ -16,27 +16,30 @@ import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import Audio from "../../Helpers/PlayerWithoutControl";
 import { useNavigation } from "@react-navigation/native";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { localhost } from "../../Helpers/urls";
 
-const LessonItem = props => {
-  const { videoLink, unit } = props;
+const LessonItem = (props) => {
+  const { videoLink, unit, lesson } = props;
   const video = React.useRef(null);
   const navigation = useNavigation();
-
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [playbackInstanceInfo, setPlaybackInstanceInfo] = useState({
     position: 0,
     duration: 0,
-    state: "Buffering"
+    state: "Buffering",
   });
 
   useEffect(() => {
     changeScreenOrientation();
     PlayVideo();
+    console.log("lesson", props.lessonId);
 
     return () => {
       changeScreenOrientationBack();
       if (video.current) {
         video.current.setStatusAsync({
-          shouldPlay: false
+          shouldPlay: false,
         });
         video.current.unloadAsync();
       }
@@ -65,7 +68,7 @@ const LessonItem = props => {
     }
   };
 
-  const updatePlaybackCallback = status => {
+  const updatePlaybackCallback = (status) => {
     // console.log(status, "status");
     if (status.isLoaded) {
       setPlaybackInstanceInfo({
@@ -76,11 +79,12 @@ const LessonItem = props => {
           ? "Buffering"
           : status.shouldPlay
           ? "Playing"
-          : "Paused"
+          : "Paused",
       });
     }
     if (status.didJustFinish) {
-      console.log("finished");
+      // console.log("finished");
+      handleSubmitMarkLessonComplete();
     } else {
       if (status.isLoaded === false && status.error) {
         const errorMsg = `Encountered a fatal error during playback: ${status.error}`;
@@ -96,9 +100,33 @@ const LessonItem = props => {
   const watchAgain = () => {
     setPlaybackInstanceInfo({
       ...playbackInstanceInfo,
-      state: "Buffering"
+      state: "Buffering",
     });
     PlayVideo();
+  };
+
+  const handleSubmitMarkLessonComplete = () => {
+    console.log("marking lesson as complete");
+    const data = {
+      username: props.username,
+      lessonId: props.lessonId,
+    };
+    console.log("data", data);
+    axios.defaults.headers = {
+      "Content-Type": "application/json",
+      Authorization: `Token ${props.token}`,
+    };
+    axios
+      .post(`${localhost}/lessons/lesson-completed-create/`, data)
+      .then((res) => {
+        console.log("lesson completed");
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err);
+        console.log("error in posting complet lesson", err);
+      });
+    // navigate("Unit Details", { id: props.unit });
   };
 
   return (
@@ -107,7 +135,7 @@ const LessonItem = props => {
       style={{
         // backgroundColor: "green",
         flex: 1,
-        marginHorizontal: 5
+        marginHorizontal: 5,
       }}
     >
       <StatusBar hidden />
@@ -126,7 +154,7 @@ const LessonItem = props => {
               style={{
                 flex: 2,
                 justifyContent: "flex-end",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <Title
@@ -146,7 +174,6 @@ const LessonItem = props => {
                 source={require("../../../assets/lotties/successGreenRight.json")}
                 autoPlay={true}
                 loop={false}
-                autoPlay
               />
               <Audio correct={true} />
             </View>
@@ -157,7 +184,7 @@ const LessonItem = props => {
                   borderRadius: 8,
                   marginBottom: 20,
                   borderColor: COLORS.primary,
-                  paddingVertical: 5
+                  paddingVertical: 5,
                 }}
                 mode="outlined"
               >
@@ -167,7 +194,7 @@ const LessonItem = props => {
                 onPress={redirectToUnit}
                 style={{
                   borderRadius: 8,
-                  paddingVertical: 5
+                  paddingVertical: 5,
                 }}
                 mode="contained"
               >
@@ -182,15 +209,14 @@ const LessonItem = props => {
             ref={video}
             style={{
               width: SIZES.width,
-              height: SIZES.height / 3
+              height: SIZES.height / 3,
             }}
             source={{
-              uri: videoLink.video
+              uri: videoLink.video,
             }}
             useNativeControls
             resizeMode="contain"
             shouldPlay
-            useNativeControls
             onPlaybackStatusUpdate={updatePlaybackCallback}
           />
         </View>
@@ -205,39 +231,35 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
   },
 
   LeftContainer: {
     flex: 1,
     justifyContent: "center",
-    marginHorizontal: 10
+    marginHorizontal: 10,
     // backgroundColor: "red"
   },
   MiddleContainer: {
     flex: 6,
     justifyContent: "center",
-    marginLeft: 5
+    marginLeft: 5,
   },
   RightContainer: {
     flex: 1,
     justifyContent: "center",
-    marginRight: 10
+    marginRight: 10,
   },
   photo: {
     width: 180,
-    height: 150
-  }
+    height: 150,
+  },
 });
-// export default LessonItem;
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = (state) => {
   return {
-    // setCourseDetails: data => dispatch(setCourseDetails(data)),
-    // handleStart: data => dispatch(handleStart(data))
+    username: state.auth.username,
+    token: state.auth.token,
   };
 };
-export default connect(
-  null,
-  mapDispatchToProps
-)(LessonItem);
+export default connect(mapStateToProps, null)(LessonItem);

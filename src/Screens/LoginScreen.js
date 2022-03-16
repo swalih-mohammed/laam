@@ -6,7 +6,7 @@ import {
   Text,
   View,
   StatusBar,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 // import Logo from "../Components/Utils/Logo";
 import Header from "../Components/Utils/Header";
@@ -21,12 +21,12 @@ import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import {
   emailValidator,
   passwordValidator,
-  usernameValidator
+  usernameValidator,
 } from "../Components/Utils/Utilities";
 
 import * as actions from "../store/actions/auth";
 
-const LoginScreen = props => {
+const LoginScreen = (props) => {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -35,13 +35,7 @@ const LoginScreen = props => {
       navigation.navigate("Home");
     }
     // setTimeout(pushToHome, 500);
-  }, []);
-
-  function pushToHome() {
-    if (props.token) {
-      navigation.navigate("Home");
-    }
-  }
+  }, [props.token]);
 
   // console.log(props.token);
 
@@ -77,20 +71,19 @@ const LoginScreen = props => {
       // console.log(loading);
       login(username.value, password.value);
       // console.log(loading);
-
-    
     }
   };
 
   const login = async (username, pass) => {
     setLoading(true);
-    console.log("loggin in", loading)
+    console.log("loggin in", loading);
     try {
       await props.onAuth(username, pass);
-      if(props.token){
+      if (props.token) {
         setLoading(false);
         navigation.navigate("Home");
-      } if (props.error) {
+      }
+      if (props.error) {
         console.log("error in login", error);
         setError(true);
         setLoading(false);
@@ -108,11 +101,20 @@ const LoginScreen = props => {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       {props.loading || loading ? (
-        <View style={{justifyContent: "center",
-        alignItems: "center"}}>
-          <Text>loading...</Text>
-          <ActivityIndicator animating={true} color={COLORS.primary} />
-          {/* <Loader /> */}
+        <View
+          style={{
+            zIndex: -1,
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Paragraph>Loading...</Paragraph>
+          <ActivityIndicator
+            size="large"
+            animating={true}
+            color={COLORS.primary}
+          />
         </View>
       ) : (
         <Animated.View entering={LightSpeedInRight} style={styles.container}>
@@ -128,7 +130,7 @@ const LoginScreen = props => {
                 style={{
                   justifyContent: "center",
                   alignItems: "center",
-                  flex: 1
+                  flex: 1,
                 }}
               >
                 <Text style={{ alignSelf: "center", color: COLORS.error }}>
@@ -142,7 +144,7 @@ const LoginScreen = props => {
               width: SIZES.width * 0.9,
               height: SIZES.height * 0.6,
               paddingHorizontal: 25,
-              paddingHorizontal: 15
+              paddingHorizontal: 15,
             }}
           >
             {/* <BackButton goBack={() => navigation.navigate("Home")} /> */}
@@ -164,7 +166,7 @@ const LoginScreen = props => {
               label="User Name"
               returnKeyType="next"
               value={username.value}
-              onChangeText={text => setUsername({ value: text, error: "" })}
+              onChangeText={(text) => setUsername({ value: text, error: "" })}
               error={!!username.error}
               errorText={username.error}
               autoCapitalize="none"
@@ -176,7 +178,7 @@ const LoginScreen = props => {
               label="Password"
               returnKeyType="done"
               value={password.value}
-              onChangeText={text => setPassword({ value: text, error: "" })}
+              onChangeText={(text) => setPassword({ value: text, error: "" })}
               error={!!password.error}
               errorText={password.error}
               secureTextEntry
@@ -215,7 +217,7 @@ const LoginScreen = props => {
                 backgroundColor: COLORS.primary,
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 20
+                marginBottom: 20,
               }}
               onPress={_onLoginPressed}
             >
@@ -233,7 +235,7 @@ const LoginScreen = props => {
                 justifyContent: "center",
                 alignItems: "center",
                 borderColor: COLORS.primary,
-                borderWidth: 0.5
+                borderWidth: 0.5,
               }}
               onPress={() => navigation.navigate("SignUp")}
             >
@@ -252,11 +254,11 @@ const styles = StyleSheet.create({
   forgotPassword: {
     width: "100%",
     alignItems: "flex-end",
-    marginBottom: 24
+    marginBottom: 24,
   },
   row: {
     flexDirection: "row",
-    marginTop: 4
+    marginTop: 4,
   },
   container: {
     flex: 1,
@@ -265,8 +267,8 @@ const styles = StyleSheet.create({
     maxWidth: 340,
     alignSelf: "center",
     alignItems: "center",
-    justifyContent: "center"
-  }
+    justifyContent: "center",
+  },
   // label: {
   //   color: colors.secondary
   // },
@@ -278,23 +280,20 @@ const styles = StyleSheet.create({
 
 // export default memo(LoginScreen);
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     token: state.auth.token,
     loading: state.auth.loading,
-    error: state.auth.error
+    error: state.auth.error,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onAuth: (username, password) =>
       dispatch(actions.authLogin(username, password)),
-    logOut: () => dispatch(actions.logout())
+    logOut: () => dispatch(actions.logout()),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

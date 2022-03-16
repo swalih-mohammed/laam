@@ -8,7 +8,7 @@ import {
   Dimensions,
   SafeAreaView,
   Image,
-  Text
+  Text,
 } from "react-native";
 // import { Button } from "react-native-paper";
 // import Slider from "@react-native-community/slider";
@@ -39,11 +39,11 @@ function LessonDetail(props) {
         const response = await axios.get(
           `${localhost}/lessons/${id}/${props.username}`,
           {
-            cancelToken: source.token
+            cancelToken: source.token,
           }
         );
         setLesson(response.data);
-        // console.log(lesson);
+        // console.log(response.data);
         // console.log("items", lesson.Lesson_items[0].video);
         setLoading(false);
       } catch (err) {
@@ -64,10 +64,11 @@ function LessonDetail(props) {
 
   return (
     <>
-      {lesson && lesson.Lesson_items[0].video ? (
+      {lesson && lesson.video ? (
         <VideoPlayer
-          videoLink={lesson.Lesson_items[0].video}
+          videoLink={lesson.video}
           unit={lesson.unit}
+          lessonId={lesson.id}
         />
       ) : lesson && lesson.Lesson_items ? (
         <LessonItem
@@ -83,13 +84,10 @@ function LessonDetail(props) {
   );
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    username: state.auth.username
+    username: state.auth.username,
     // token: state.auth.token
   };
 };
-export default connect(
-  mapStateToProps,
-  null
-)(LessonDetail);
+export default connect(mapStateToProps, null)(LessonDetail);
