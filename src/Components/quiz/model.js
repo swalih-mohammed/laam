@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Text,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 import { COLORS, SIZES } from "../../Helpers/constants";
 import { handleStart } from "../../store/actions/quiz";
@@ -16,7 +16,7 @@ import LottieView from "lottie-react-native";
 import Loader from "../Utils/Loader";
 import AudioPlayerWithoutControl from "../../Helpers/PlayerWithoutControl";
 
-const ScoreModal = props => {
+const ScoreModal = (props) => {
   const { qlength } = props;
 
   const animation = useRef(null);
@@ -30,8 +30,10 @@ const ScoreModal = props => {
     props.handleStart();
   };
 
+  const score = Math.round((props.score / qlength) * 100);
+
   const icon =
-    (props.score / qlength) * 100 > 79
+    score > 79
       ? require("../../../assets/goodjob.jpg")
       : require("../../../assets/sad_cat.jpg");
 
@@ -52,47 +54,40 @@ const ScoreModal = props => {
             style={{
               flex: 1.5,
               justifyContent: "space-evenly",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <Title
               style={{
-                color:
-                  (props.score / qlength) * 100 > 79 ? COLORS.white : "#001219",
+                color: score > 79 ? COLORS.white : "#001219",
                 fontSize: 30,
-                fontWeight: "900"
+                fontWeight: "900",
               }}
             >
-              {(props.score / qlength) * 100 > 79
-                ? "Congratulations!"
-                : "Oops!"}
+              {score > 79 ? "Congratulations!" : "Oops!"}
 
               {/* Lesson Completed! */}
             </Title>
             <Title
               style={{
-                color:
-                  (props.score / qlength) * 100 > 79
-                    ? COLORS.primary
-                    : COLORS.error,
+                color: score > 79 ? COLORS.primary : COLORS.error,
                 fontSize: 30,
                 fontWeight: "900",
-                marginTop: 10
+                marginTop: 10,
               }}
             >
-              {(props.score / qlength) * 100 + " %"}
+              {score + " %"}
             </Title>
           </View>
           <View
             style={{ flex: 2, justifyContent: "center", alignItems: "center" }}
           >
-            {(props.score / qlength) * 100 > 79 ? (
+            {score > 79 ? (
               <LottieView
                 // ref={animation}
                 source={require("../../../assets/lotties/successGreenRight.json")}
                 autoPlay={true}
                 loop={false}
-                autoPlay
               />
             ) : (
               <LottieView
@@ -100,13 +95,12 @@ const ScoreModal = props => {
                 source={require("../../../assets/lotties/unapproved-cross.json")}
                 autoPlay={true}
                 loop={false}
-                autoPlay
               />
             )}
 
             <AudioPlayerWithoutControl
-              success={(props.score / qlength) * 100 > 79 ? true : false}
-              failure={(props.score / qlength) * 100 > 79 ? false : true}
+              success={score > 79 ? true : false}
+              failure={score > 79 ? false : true}
             />
           </View>
           <View style={{ flex: 1, marginHorizontal: 20 }}>
@@ -116,21 +110,19 @@ const ScoreModal = props => {
                 borderRadius: 8,
                 marginBottom: 20,
                 borderColor: COLORS.primary,
-                paddingVertical: 5
+                paddingVertical: 5,
               }}
-              mode={
-                (props.score / qlength) * 100 < 79 ? "contained" : "outlined"
-              }
+              mode={score < 79 ? "contained" : "outlined"}
             >
-              {(props.score / qlength) * 100 > 79 ? "Do it agian" : "Try again"}
+              {score > 79 ? "Do it agian" : "Try again"}
             </Button>
-            {(props.score / qlength) * 100 > 79 && (
+            {score > 79 && (
               <Button
                 onPress={() => props.handleSubmitTest()}
-                disabled={(props.score / qlength) * 100 < 79}
+                disabled={score < 79}
                 style={{
                   borderRadius: 8,
-                  paddingVertical: 5
+                  paddingVertical: 5,
                 }}
                 mode="contained"
               >
@@ -143,21 +135,18 @@ const ScoreModal = props => {
     </Modal>
   );
 };
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     index: state.quiz.index,
     score: state.quiz.score,
     showScoreModal: state.quiz.showScoreModal,
-    unit: state.course.unit
+    unit: state.course.unit,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleNext: data => dispatch(handleNext(data)),
-    handleStart: data => dispatch(handleStart(data))
+    handleNext: (data) => dispatch(handleNext(data)),
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ScoreModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ScoreModal);

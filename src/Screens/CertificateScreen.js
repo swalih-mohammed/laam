@@ -5,7 +5,7 @@ import {
   View,
   Text,
   Image,
-  Dimensions
+  Dimensions,
 } from "react-native";
 // import RNHTMLtoPDF from "react-native-html-to-pdf";
 import { Button, Paragraph, Card, ProgressBar } from "react-native-paper";
@@ -13,18 +13,12 @@ const { width, height } = Dimensions.get("window");
 import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "../Helpers/constants";
 
-const CertificateScreen = props => {
+const CertificateScreen = (props) => {
   const navigation = useNavigation();
   // console.log("route", props.route);
-  const {
-    student,
-    name,
-    progress,
-    date,
-    skill,
-    certificate
-  } = props.route.params;
-
+  const { student, name, progress, date, skill, certificate } =
+    props.route.params;
+  const prgressPercentage = Math.round(progress * 100);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Card
@@ -34,7 +28,7 @@ const CertificateScreen = props => {
           marginVertical: 100,
           // paddingBottom: 10,
           margin: 25,
-          elavation: 20
+          elavation: 20,
         }}
       >
         <View
@@ -42,7 +36,7 @@ const CertificateScreen = props => {
             flex: 1,
             // backgroundColor: "red",
             justifyContent: "center",
-            paddingTop: 15
+            paddingTop: 15,
             // paddingHorizontal: 20,
             // paddingVertical: 20
             // marginVertical: "center"
@@ -60,7 +54,7 @@ const CertificateScreen = props => {
             flex: 2,
             // backgroundColor: "green",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <Paragraph style={{ fontSize: 14, fontWeight: "600" }}>
@@ -71,7 +65,7 @@ const CertificateScreen = props => {
           >
             {student}
           </Paragraph>
-
+          <Paragraph>{progress}</Paragraph>
           {/* <View
           style={{
             flex: 0.5,
@@ -89,7 +83,7 @@ const CertificateScreen = props => {
               fontSize: 12,
               lineHeight: 18,
               paddingHorizontal: 20,
-              paddingVertical: 2
+              paddingVertical: 2,
             }}
           >
             has succesfully completed all rquirements of this course, which
@@ -101,7 +95,7 @@ const CertificateScreen = props => {
           style={{
             flex: 1.8,
             // backgroundColor: "green",
-            justifyContent: "center"
+            justifyContent: "center",
           }}
         >
           <View>
@@ -109,7 +103,7 @@ const CertificateScreen = props => {
               style={{ height: 100, width: "35%", alignSelf: "center" }}
               // source={require("../../assets/english_A1_2.png")}
               source={{
-                uri: certificate
+                uri: certificate,
               }}
             />
           </View>
@@ -119,7 +113,7 @@ const CertificateScreen = props => {
             flex: 0.5,
             // backgroundColor: "red",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <Paragraph style={{ fontWeight: "700", fontSize: 15 }}>
@@ -131,7 +125,7 @@ const CertificateScreen = props => {
             style={{
               flex: 0.5,
               // backgroundColor: "green",
-              justifyContent: "space-around"
+              justifyContent: "space-around",
               // alignItems: "center"
               // flexDirection: "row"
             }}
@@ -141,17 +135,26 @@ const CertificateScreen = props => {
             {/* {progress} */}
             {/* </Paragraph> */}
             {/* <Paragraph style={{ fontSize: 12 }}>Signature</Paragraph> */}
-
-            <ProgressBar
+            <View
               style={{
-                height: 7,
-                borderRadius: 20,
-                marginHorizontal: 25,
-                paddingVertical: 5
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                marginHorizontal: 10,
               }}
-              progress={progress}
-              color={COLORS.primary}
-            />
+            >
+              <View
+                style={{
+                  flex: 5,
+                  borderRadius: 20,
+                  marginHorizontal: 25,
+                  paddingVertical: 5,
+                }}
+              >
+                <ProgressBar progress={0.9} color={COLORS.primary} />
+              </View>
+              <Paragraph>{prgressPercentage + " %"}</Paragraph>
+            </View>
           </View>
         )}
         <View
@@ -163,7 +166,7 @@ const CertificateScreen = props => {
               // backgroundColor: "#b7b7a4",
               justifyContent: "center",
               alignItems: "flex-start",
-              paddingLeft: 10
+              paddingLeft: 10,
               // paddingBottom: 10
 
               // flexDirection: "row"
@@ -175,7 +178,7 @@ const CertificateScreen = props => {
                 fontWeight: "700",
                 lineHeight: 15,
                 paddingTop: 5,
-                color: "#f5f3f4"
+                color: "#f5f3f4",
               }}
             >
               Language Skills:
@@ -185,7 +188,7 @@ const CertificateScreen = props => {
                 fontSize: 10,
                 lineHeight: 15,
                 fontWeight: "600",
-                color: "#ffffff"
+                color: "#ffffff",
               }}
             >
               Student can understand and use familiar everyday expressions, can
@@ -199,7 +202,7 @@ const CertificateScreen = props => {
               // flex: 0.3,
               justifyContent: "center",
               alignItems: "center",
-              marginBottom: 5
+              marginBottom: 5,
               // paddingBottom: 10
               // paddingLeft: 10
             }}
@@ -209,7 +212,7 @@ const CertificateScreen = props => {
                 fontSize: 10,
                 fontWeight: "600",
                 // paddingBottom: 15,
-                color: COLORS.primary
+                color: COLORS.primary,
               }}
             >
               www.lakaters.com
@@ -241,37 +244,37 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "center",
-    backgroundColor: "#FFFFFF"
+    backgroundColor: "#FFFFFF",
   },
   TopContainer: {
     flex: 2,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   BottomContainer: {
-    flex: 1
+    flex: 1,
   },
   ImgWrapper: {
     width: width * 0.8,
     height: height * 0.4,
     // marginTop: 20
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   photo: {
     width: "70%",
     height: "55%",
-    borderRadius: 10
+    borderRadius: 10,
   },
   title: {
     fontWeight: "bold",
-    fontSize: 30
+    fontSize: 30,
   },
   Buttons: {
     margin: 20,
     padding: 10,
-    justifyContent: "space-around"
-  }
+    justifyContent: "space-around",
+  },
 });
 
 export default CertificateScreen;

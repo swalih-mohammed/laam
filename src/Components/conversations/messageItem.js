@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Text
+  Text,
 } from "react-native";
 import {
   List,
@@ -16,7 +16,7 @@ import {
   Avatar,
   Title,
   Paragraph,
-  Caption
+  Caption,
 } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { COLORS, SIZES } from "../../Helpers/constants";
@@ -33,10 +33,10 @@ import LottieView from "lottie-react-native";
 // import { View as MotiView } from "moti";
 import Animated, {
   LightSpeedInRight,
-  LightSpeedInLeft
+  LightSpeedInLeft,
 } from "react-native-reanimated";
 
-const ConversationItem = props => {
+const ConversationItem = (props) => {
   const animation = React.useRef(null);
   const { item, is_speaking, is_playing, did_finish } = props;
   // console.log(item);
@@ -60,7 +60,7 @@ const ConversationItem = props => {
       <View
         style={{
           // backgroundColor: "red"
-          justifyContent: "flex-start"
+          justifyContent: "flex-start",
           // alignItems: "flex-end"
         }}
       >
@@ -73,7 +73,7 @@ const ConversationItem = props => {
             elevation: 10,
             borderRadius: 16,
             maxWidth: 250,
-            minHeight: 100
+            minHeight: 100,
             //   flexGrow: 0
             //   height: "auto"
           }}
@@ -86,7 +86,7 @@ const ConversationItem = props => {
                     flex: 3,
                     justifyContent: "center",
                     alignItems: "center",
-                    marginLeft: 5
+                    marginLeft: 5,
                     // backgroundColor: "red"
                   }}
                 >
@@ -103,7 +103,7 @@ const ConversationItem = props => {
                       padding: 10,
                       alignSelf: "flex-start",
                       fontWeight: "700",
-                      color: "#001219"
+                      color: "#001219",
                     }}
                   >
                     {item.content}
@@ -115,7 +115,7 @@ const ConversationItem = props => {
                 <View
                   style={{
                     flex: 6,
-                    justifyContent: "center"
+                    justifyContent: "center",
                     // backgroundColor: "red"
                   }}
                 >
@@ -124,7 +124,7 @@ const ConversationItem = props => {
                       padding: 10,
                       alignSelf: "flex-start",
                       fontWeight: "700",
-                      color: "#001219"
+                      color: "#001219",
                     }}
                   >
                     {item.content}
@@ -136,7 +136,7 @@ const ConversationItem = props => {
                   style={{
                     flex: 3,
                     justifyContent: "center",
-                    marginRight: 5
+                    marginRight: 5,
                   }}
                 >
                   <LottieView
@@ -161,39 +161,36 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
   },
 
   LeftContainer: {
     flex: 1,
     justifyContent: "center",
-    marginHorizontal: 10
+    marginHorizontal: 10,
     // backgroundColor: "red"
   },
   MiddleContainer: {
     flex: 6,
     justifyContent: "center",
-    marginLeft: 5
+    marginLeft: 5,
   },
   RightContainer: {
     flex: 1,
     justifyContent: "center",
-    marginRight: 10
+    marginRight: 10,
   },
   photo: {
     width: 180,
-    height: 150
-  }
+    height: 150,
+  },
 });
 // export default LessonItem;
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     // setCourseDetails: data => dispatch(setCourseDetails(data)),
-    handleStart: data => dispatch(handleStart(data))
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
-export default connect(
-  null,
-  mapDispatchToProps
-)(ConversationItem);
+export default connect(null, mapDispatchToProps)(ConversationItem);

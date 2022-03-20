@@ -178,11 +178,13 @@ const CourseList = (props) => {
             alignItems: "center",
           }}
         >
-          <Paragraph>Loading...</Paragraph>
+          <Paragraph style={{ color: loading ? COLORS.primary : COLORS.white }}>
+            Loading...
+          </Paragraph>
           <ActivityIndicator
             size="large"
             animating={true}
-            color={COLORS.primary}
+            color={loading ? COLORS.primary : COLORS.white}
           />
         </View>
       )}
@@ -200,6 +202,7 @@ const CourseList = (props) => {
           <FlatList
             data={courses}
             keyExtractor={(item) => item.id.toString()}
+            showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => {
               return <CourseItem item={item} loading={loading} />;
             }}

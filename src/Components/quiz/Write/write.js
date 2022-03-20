@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { connect } from "react-redux";
 import { handleNext, handleValidate } from "../../../store/actions/quiz";
@@ -16,7 +16,7 @@ import {
   Paragraph,
   Button,
   Caption,
-  TextInput
+  TextInput,
 } from "react-native-paper";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import { COLORS, SIZES } from "../../../Helpers/constants";
@@ -51,7 +51,7 @@ export function Speak(props) {
           animation.current.play(0, 100);
         }
         const data = {
-          score: props.score + 1
+          score: props.score + 1,
         };
         props.handleValidate(data);
       } else {
@@ -68,7 +68,7 @@ export function Speak(props) {
     const data = {
       index:
         props.index !== props.numberOfQuestions ? props.index + 1 : props.index,
-      showScoreModal: props.index === props.numberOfQuestions ? true : false
+      showScoreModal: props.index === props.numberOfQuestions ? true : false,
     };
     // console.log(data);
     props.handleNext(data);
@@ -85,7 +85,7 @@ export function Speak(props) {
           justifyContent: "center",
           alignItems: "center",
           marginHorizontal: 20,
-          marginVertical: 20
+          marginVertical: 20,
         }}
       >
         <Card
@@ -94,7 +94,7 @@ export function Speak(props) {
             height: height - 400,
             justifyContent: "center",
             alignItems: "center",
-            elevation: 5
+            elevation: 5,
           }}
           mode="elevated"
         >
@@ -103,7 +103,7 @@ export function Speak(props) {
               width: width - 120,
               justifyContent: "center",
               //   alignItems: "center",
-              flex: 1
+              flex: 1,
             }}
           >
             <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -133,7 +133,7 @@ export function Speak(props) {
               style={{
                 flex: 1,
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <Icon name="sound" size={30} color={COLORS.primary} />
@@ -144,7 +144,7 @@ export function Speak(props) {
                 mode="flat"
                 label="Type here..."
                 value={text}
-                onChangeText={text => setText(text)}
+                onChangeText={(text) => setText(text)}
               />
             </View>
           </Card.Content>
@@ -161,7 +161,7 @@ export function Speak(props) {
             bottom: 0,
             right: 0,
             left: 0,
-            flex: 1
+            flex: 1,
           }}
         >
           {scored ? "Next" : "Check Answer"}
@@ -176,25 +176,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#ecf0f1",
-    padding: 8
-  }
+    padding: 8,
+  },
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     index: state.quiz.index,
     score: state.quiz.score,
     showAnswer: state.quiz.showAnswer,
-    showScoreModal: state.quiz.showScoreModal
+    showScoreModal: state.quiz.showScoreModal,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleNext: data => dispatch(handleNext(data)),
-    handleValidate: data => dispatch(handleValidate(data))
+    handleNext: (data) => dispatch(handleNext(data)),
+    handleValidate: (data) => dispatch(handleValidate(data)),
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Speak);
+export default connect(mapStateToProps, mapDispatchToProps)(Speak);

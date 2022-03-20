@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Text
+  Text,
 } from "react-native";
 import {
   List,
@@ -16,7 +16,7 @@ import {
   Avatar,
   Title,
   Paragraph,
-  Caption
+  Caption,
 } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -34,7 +34,7 @@ import { handleStart } from "../../store/actions/quiz";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import item from "../section/item";
 
-const LessonItem = props => {
+const LessonItem = (props) => {
   const { LessonItem, is_quiz } = props;
   const { colors } = useTheme();
   const navigation = useNavigation();
@@ -51,7 +51,7 @@ const LessonItem = props => {
       score: 0,
       showAnswer: false,
       answerList: [],
-      showScoreModal: false
+      showScoreModal: false,
     };
     props.handleStart(data);
   };
@@ -66,14 +66,14 @@ const LessonItem = props => {
           : COLORS.enactive,
         justifyContent: "center",
         alignItems: "center",
-        marginRight: 10
+        marginRight: 10,
       }}
     >
       <MaterialCommunityIcons
         name="check"
         style={{
           color: COLORS.white,
-          fontSize: 10
+          fontSize: 10,
         }}
       />
     </View>
@@ -86,7 +86,7 @@ const LessonItem = props => {
         // backgroundColor: "green",
         marginHorizontal: 20,
         marginVertical: 10,
-        borderRadius: 15
+        borderRadius: 15,
       }}
     >
       <TouchableOpacity
@@ -99,7 +99,7 @@ const LessonItem = props => {
             elevation: 10,
             borderRadius: 10,
             height: 80,
-            width: 320
+            width: 320,
           }}
         >
           <View style={styles.container}>
@@ -111,7 +111,7 @@ const LessonItem = props => {
                   borderRadius: 20 / 2,
                   // backgroundColor: colors.primary,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "center",
                 }}
               >
                 {LessonItem.subtitle === "FILM" ? (
@@ -119,15 +119,22 @@ const LessonItem = props => {
                     name="video-collection"
                     style={{
                       color: colors.primary,
-                      fontSize: 35
+                      fontSize: 35,
                     }}
                   />
                 ) : (
-                  <MaterialCommunityIcons
-                    name="google-classroom"
+                  // <MaterialCommunityIcons
+                  //   name="google-classroom"
+                  //   style={{
+                  //     color: colors.primary,
+                  //     fontSize: 35
+                  //   }}
+                  // />
+                  <MaterialIcons
+                    name="video-collection"
                     style={{
                       color: colors.primary,
-                      fontSize: 35
+                      fontSize: 35,
                     }}
                   />
                 )}
@@ -139,8 +146,8 @@ const LessonItem = props => {
                   fontSize: 14,
                   fontWeight: "500",
                   color: COLORS.primary,
-                  opacity: 0.9
-                  // paddingBottom:
+                  opacity: 0.9,
+                  // paddingBottom:d
                 }}
               >
                 {LessonItem.subtitle}
@@ -168,39 +175,36 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
   },
 
   LeftContainer: {
     flex: 1,
     justifyContent: "center",
-    marginHorizontal: 10
+    marginHorizontal: 10,
     // backgroundColor: "red"
   },
   MiddleContainer: {
     flex: 6,
     justifyContent: "center",
-    marginLeft: 5
+    marginLeft: 5,
   },
   RightContainer: {
     flex: 1,
     justifyContent: "center",
-    marginRight: 10
+    marginRight: 10,
   },
   photo: {
     width: 180,
-    height: 150
-  }
+    height: 150,
+  },
 });
 // export default LessonItem;
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     // setCourseDetails: data => dispatch(setCourseDetails(data)),
-    handleStart: data => dispatch(handleStart(data))
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
-export default connect(
-  null,
-  mapDispatchToProps
-)(LessonItem);
+export default connect(null, mapDispatchToProps)(LessonItem);

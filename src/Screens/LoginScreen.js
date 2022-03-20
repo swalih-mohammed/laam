@@ -149,7 +149,7 @@ const LoginScreen = (props) => {
           >
             {/* <BackButton goBack={() => navigation.navigate("Home")} /> */}
             {/* <Logo /> */}
-            <Header>Welcome back.</Header>
+            <Header>Welcome back</Header>
             {/* <TextInput
             label="Email"
             returnKeyType="next"
@@ -185,7 +185,7 @@ const LoginScreen = (props) => {
             />
             <View style={styles.forgotPassword}>
               <TouchableOpacity
-                onPress={() => navigation.navigate("ForgotPasswordScreen")}
+              // onPress={() => navigation.navigate("ForgotPasswordScreen")}
               >
                 <Text style={{ color: COLORS.primary }}>
                   Forgot your password?
@@ -212,7 +212,7 @@ const LoginScreen = (props) => {
               disabled={loading}
               style={{
                 width: "100%",
-                height: 40,
+                height: 42,
                 borderRadius: 10,
                 backgroundColor: COLORS.primary,
                 justifyContent: "center",
@@ -229,7 +229,7 @@ const LoginScreen = (props) => {
               disabled={loading}
               style={{
                 width: "100%",
-                height: 40,
+                height: 42,
                 borderRadius: 10,
                 backgroundColor: COLORS.white,
                 justifyContent: "center",

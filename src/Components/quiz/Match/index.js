@@ -7,7 +7,7 @@ import {
   Dimensions,
   Image,
   Text,
-  View
+  View,
 } from "react-native";
 // import { View as MotiView, SafeAreaView } from "moti";
 
@@ -19,9 +19,11 @@ import Icon from "react-native-vector-icons/AntDesign";
 import { handleNext, handleValidate } from "../../../store/actions/quiz";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import LottieView from "lottie-react-native";
-import * as Haptics from "expo-haptics";
+import Audio from "../../../Helpers/PlayerWithoutControl";
 
-const renderOptions = props => {
+// import * as Haptics from "expo-haptics";
+
+const renderOptions = (props) => {
   const animation = React.useRef(null);
 
   const { title, question, answer, numberOfQuestions } = props;
@@ -36,7 +38,7 @@ const renderOptions = props => {
   const [aDisabled, setADisabled] = useState(false);
   const [bDisabled, setBDisabled] = useState(false);
 
-  const handleCompletedA = id => {
+  const handleCompletedA = (id) => {
     setADisabled(true);
     setBDisabled(false);
     setSelectedA(id);
@@ -45,8 +47,8 @@ const renderOptions = props => {
     // checkIfInBucketA(id);
     // console.log(completedA);
   };
-  const handleCompletedB = id => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  const handleCompletedB = (id) => {
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     if (id === selectedA) {
       setScore(score + 1);
@@ -60,15 +62,15 @@ const renderOptions = props => {
     setCompletedB(updatedArr);
   };
 
-  const checkIfInBucketA = id => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  const checkIfInBucketA = (id) => {
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (completedA.length > 0 && completedA.includes(id)) {
       return true;
     } else {
       return false;
     }
   };
-  const checkIfInBucketB = id => {
+  const checkIfInBucketB = (id) => {
     if (completedB.includes(id)) {
       return true;
     } else {
@@ -76,7 +78,7 @@ const renderOptions = props => {
     }
   };
 
-  const checkIfInScoredIds = id => {
+  const checkIfInScoredIds = (id) => {
     if (scoredIds.includes(id)) {
       return true;
     } else {
@@ -85,11 +87,18 @@ const renderOptions = props => {
   };
 
   const handleNextQuiz = () => {
+    setADisabled(false);
+    setBDisabled(false);
+    setSelectedA(null);
+    setCompletedA([]);
+    setCompletedB([]);
+    setShowAnswer(false);
+
     const data = {
       index: props.index !== numberOfQuestions ? props.index + 1 : props.index,
       showAnswer: false,
       answerList: null,
-      showScoreModal: props.index === numberOfQuestions ? true : false
+      showScoreModal: props.index === numberOfQuestions ? true : false,
     };
     // console.log(data);
     props.handleNext(data);
@@ -97,11 +106,12 @@ const renderOptions = props => {
 
   const handleValidateQuiz = () => {
     setShowAnswer(true);
+    setSelectedA(null);
     // setShowNextButton(true);
     const userScore = score / completedA.length;
     setScored(userScore > 0.8 ? true : false);
     const data = {
-      score: userScore > 0.8 ? props.score + 1 : props.score
+      score: userScore > 0.8 ? props.score + 1 : props.score,
     };
     setShowMessage(true);
     if (showMessage) {
@@ -111,7 +121,7 @@ const renderOptions = props => {
     setTimeout(() => setShowMessage(false), 1000);
   };
 
-  const isBlurred = id => {
+  const isBlurred = (id) => {
     const isInA = checkIfInBucketA(id);
     if (selectedA === id) {
       return 1;
@@ -135,22 +145,28 @@ const renderOptions = props => {
         style={{
           flex: 1.5,
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
           // backgroundColor: "red"
         }}
       >
         <Title style={{ fontSize: 18, color: "black" }}>{title}</Title>
         {showMessage ? (
-          <LottieView
-            ref={animation}
-            source={
-              scored
-                ? require("../../../../assets/lotties/correct.json")
-                : require("../../../../assets/lotties/incorrect.json")
-            }
-            autoPlay={true}
-            loop={false}
-          />
+          <>
+            <LottieView
+              ref={animation}
+              source={
+                scored
+                  ? require("../../../../assets/lotties/correct.json")
+                  : require("../../../../assets/lotties/incorrect.json")
+              }
+              autoPlay={true}
+              loop={false}
+            />
+            <Audio
+              correct={scored ? true : false}
+              incorrect={scored ? false : true}
+            />
+          </>
         ) : null}
       </View>
 
@@ -161,24 +177,24 @@ const renderOptions = props => {
           // backgroundColor: "green",
           justifyContent: "center",
           marginHorizontal: 5,
-          marginVertical: 5
+          marginVertical: 5,
         }}
       >
         <View
           style={{
             width: width / 2 - 20,
             // backgroundColor: "red",
-            marginHorizontal: 5
+            marginHorizontal: 5,
           }}
         >
           {props.BucketA &&
-            props.BucketA.map(item => (
+            props.BucketA.map((item) => (
               <TouchableOpacity
                 onPress={() => handleCompletedA(item.key)}
                 disabled={checkIfInBucketA(item.key) || aDisabled}
                 key={item.key}
                 style={{
-                  borderWidth: 1,
+                  borderWidth: showAnswer ? 3 : 1,
                   backgroundColor: COLORS.primary,
                   borderColor:
                     showAnswer && checkIfInScoredIds(item.key)
@@ -187,7 +203,7 @@ const renderOptions = props => {
                       ? COLORS.error
                       : COLORS.primary,
 
-                  height: 40,
+                  height: 50,
                   borderRadius: 14,
                   flexDirection: "row",
                   alignItems: "center",
@@ -199,7 +215,7 @@ const renderOptions = props => {
                     ? 1
                     : checkIfInBucketA(item.key) || aDisabled
                     ? 0.5
-                    : 1
+                    : 1,
                 }}
               >
                 <Paragraph style={{ fontSize: 14, color: "black" }}>
@@ -212,43 +228,84 @@ const renderOptions = props => {
         <View
           style={{
             width: width / 2 - 20,
-            marginHorizontal: 5
+            marginHorizontal: 5,
 
             // backgroundColor: "green"
           }}
         >
           {/* <Text>Bucket B</Text> */}
-          {props.BucketB &&
-            props.BucketB.map(item => (
-              <TouchableOpacity
-                onPress={() => handleCompletedB(item.key)}
-                disabled={checkIfInBucketB(item.key) || bDisabled}
-                key={item.key}
-                style={{
-                  borderWidth: 1,
-                  backgroundColor: COLORS.primary,
-                  borderColor:
-                    showAnswer && checkIfInScoredIds(item.key)
-                      ? COLORS.success
-                      : showAnswer && !checkIfInScoredIds(item.key)
-                      ? COLORS.error
-                      : COLORS.primary,
 
-                  height: 40,
-                  borderRadius: 14,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  paddingHorizontal: 15,
-                  marginVertical: 5,
-                  opacity: checkIfInBucketB(item.key) || bDisabled ? 0.4 : 1
-                }}
-              >
-                <Paragraph style={{ fontSize: 14, color: "black" }}>
-                  {item.word}
-                </Paragraph>
-              </TouchableOpacity>
-            ))}
+          {showAnswer ? (
+            <>
+              {props.BucketBOriginal &&
+                props.BucketBOriginal.map((item) => (
+                  <TouchableOpacity
+                    onPress={() => handleCompletedB(item.key)}
+                    disabled={checkIfInBucketB(item.key) || bDisabled}
+                    key={item.key}
+                    style={{
+                      borderWidth: showAnswer ? 3 : 1,
+                      backgroundColor: COLORS.primary,
+                      borderColor:
+                        showAnswer && checkIfInScoredIds(item.key)
+                          ? COLORS.success
+                          : showAnswer && !checkIfInScoredIds(item.key)
+                          ? COLORS.error
+                          : COLORS.primary,
+
+                      height: 50,
+                      borderRadius: 14,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      paddingHorizontal: 15,
+                      marginVertical: 5,
+                      opacity:
+                        checkIfInBucketB(item.key) || bDisabled ? 0.4 : 1,
+                    }}
+                  >
+                    <Paragraph style={{ fontSize: 14, color: "black" }}>
+                      {item.word}
+                    </Paragraph>
+                  </TouchableOpacity>
+                ))}
+            </>
+          ) : (
+            <>
+              {props.BucketB &&
+                props.BucketB.map((item) => (
+                  <TouchableOpacity
+                    onPress={() => handleCompletedB(item.key)}
+                    disabled={checkIfInBucketB(item.key) || bDisabled}
+                    key={item.key}
+                    style={{
+                      borderWidth: showAnswer ? 3 : 1,
+                      backgroundColor: COLORS.primary,
+                      borderColor:
+                        showAnswer && checkIfInScoredIds(item.key)
+                          ? COLORS.success
+                          : showAnswer && !checkIfInScoredIds(item.key)
+                          ? COLORS.error
+                          : COLORS.primary,
+
+                      height: 50,
+                      borderRadius: 14,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      paddingHorizontal: 15,
+                      marginVertical: 5,
+                      opacity:
+                        checkIfInBucketB(item.key) || bDisabled ? 0.4 : 1,
+                    }}
+                  >
+                    <Paragraph style={{ fontSize: 14, color: "black" }}>
+                      {item.word}
+                    </Paragraph>
+                  </TouchableOpacity>
+                ))}
+            </>
+          )}
         </View>
       </View>
 
@@ -259,7 +316,7 @@ const renderOptions = props => {
           right: 0,
           left: 0,
           // backgroundColor: "red",
-          flex: 1
+          flex: 1,
         }}
       >
         <Button
@@ -285,25 +342,22 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: 5,
     margin: 5,
-    borderColor: "red"
-  }
+    borderColor: "red",
+  },
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     index: state.quiz.index,
     score: state.quiz.score,
     showAnswer: state.quiz.showAnswer,
-    showScoreModal: state.quiz.showAnswer
+    showScoreModal: state.quiz.showAnswer,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleNext: data => dispatch(handleNext(data)),
-    handleValidate: data => dispatch(handleValidate(data))
+    handleNext: (data) => dispatch(handleNext(data)),
+    handleValidate: (data) => dispatch(handleValidate(data)),
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(renderOptions);
+export default connect(mapStateToProps, mapDispatchToProps)(renderOptions);

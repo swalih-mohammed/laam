@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { connect } from "react-redux";
 import { handleNext, handleValidate } from "../../../store/actions/quiz";
@@ -33,7 +33,8 @@ export function Speak(props) {
   const [listened, setListened] = useState(false);
   const [recorded, setRecorded] = useState(false);
   const [compared, setCompared] = useState(false);
-
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [soundLoading, setSoundLoading] = useState(false);
   // Initial Load to get the audio permission
   useEffect(() => {
     GetPermission();
@@ -49,7 +50,13 @@ export function Speak(props) {
     AudioPlayer.current.unloadAsync();
   };
 
-  const PlayOriginalAudio = () => {
+  const PlayOriginalAudio = (comparing) => {
+    if (comparing) {
+      console.log("comparing");
+      setCompared(true);
+      props.PlayAudio();
+      setListened(true);
+    }
     props.PlayAudio();
     setListened(true);
   };
@@ -63,7 +70,7 @@ export function Speak(props) {
   // Function to start recording
   const StartRecording = async () => {
     console.log("starting to record");
-    setTimeout(() => StopRecording(), 15000);
+    setTimeout(() => StopRecording(), 5000);
 
     try {
       // Check if user has given the permission to record
@@ -109,6 +116,7 @@ export function Speak(props) {
     console.log("playing");
     try {
       // Load the Recorded URI
+      setSoundLoading(true);
       const status = await AudioPlayer.current.getStatusAsync();
       if (!status.isLoaded) {
         await AudioPlayer.current.loadAsync({ uri: RecordedURI }, {}, true);
@@ -118,14 +126,27 @@ export function Speak(props) {
 
       // Play if song is loaded successfully
       if (playerStatus.isLoaded) {
+        setSoundLoading(false);
+        AudioPlayer.current.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
         if (playerStatus.isPlaying === false) {
           AudioPlayer.current.replayAsync();
           SetIsPLaying(true);
-          setCompared(true);
         }
       }
     } catch (error) {}
     console.log("error in catch while playing ");
+  };
+
+  const onPlaybackStatusUpdate = (audio) => {
+    try {
+      if (audio.didJustFinish) {
+        console.log("original audio finished");
+        PlayOriginalAudio(true);
+        SetIsPLaying(false);
+      }
+    } catch (error) {
+      console.log("error in catch on playback status update", error);
+    }
   };
 
   // Function to stop the playing audio
@@ -152,11 +173,11 @@ export function Speak(props) {
     const data = {
       index:
         props.index !== props.numberOfQuestions ? props.index + 1 : props.index,
-      showScoreModal: props.index === props.numberOfQuestions ? true : false
+      showScoreModal: props.index === props.numberOfQuestions ? true : false,
     };
     props.handleNext(data);
     const data1 = {
-      score: props.score + 1
+      score: props.score + 1,
     };
     props.handleValidate(data1);
   };
@@ -167,6 +188,7 @@ export function Speak(props) {
     >
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Paragraph>{props.title}</Paragraph>
+        {/* <Paragraph>{IsPLaying ? "playing" : "not playing"}</Paragraph> */}
       </View>
       <View
         style={{
@@ -174,17 +196,17 @@ export function Speak(props) {
           justifyContent: "center",
           alignItems: "center",
           marginHorizontal: 20,
-          marginVertical: 20
+          marginVertical: 20,
           //   backgroundColor: "red"
         }}
       >
         <Card
           style={{
-            width: width - 100,
-            height: height - 400,
+            width: width - 120,
+            height: height - 450,
             justifyContent: "center",
             alignItems: "center",
-            elevation: 10
+            elevation: 10,
           }}
           mode="elevated"
         >
@@ -193,6 +215,35 @@ export function Speak(props) {
           >
             <Title>{props.question}</Title>
           </Card.Content>
+
+          <View
+            style={{
+              width: 100,
+              height: 50,
+              justifyContent: "center",
+              alignItems: "center",
+              left: 0,
+              right: 0,
+            }}
+          >
+            {props.isPlaying && (
+              <LottieView
+                ref={animation}
+                source={require("../../../../assets/lotties/audioPlaying.json")}
+                autoPlay={true}
+                loop={true}
+              />
+            )}
+
+            {IsPLaying && (
+              <LottieView
+                ref={animation}
+                source={require("../../../../assets/lotties/audioPlaying.json")}
+                autoPlay={true}
+                loop={true}
+              />
+            )}
+          </View>
         </Card>
       </View>
       {/* main container  */}
@@ -201,7 +252,7 @@ export function Speak(props) {
           flex: 2,
           flexDirection: "row",
           //   backgroundColor: "green",
-          justifyContent: "center"
+          justifyContent: "center",
           //   alignItems: "center"
         }}
       >
@@ -210,12 +261,12 @@ export function Speak(props) {
           style={{
             flex: 1,
             justifyContent: "space-around",
-            alignItems: "center"
+            alignItems: "center",
             // backgroundColor: "green"
           }}
         >
           <TouchableOpacity
-            onPress={PlayOriginalAudio}
+            onPress={() => PlayOriginalAudio(false)}
             style={styles.iconContainer}
           >
             <Icon name="sound" size={30} color={COLORS.primary} />
@@ -227,19 +278,19 @@ export function Speak(props) {
               borderRadius: 20 / 2,
               backgroundColor: listened ? COLORS.primary : COLORS.enactive,
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <MaterialCommunityIcons
               name="check"
               style={{
                 color: COLORS.white,
-                fontSize: 10
+                fontSize: 10,
               }}
             />
           </View>
 
-          <Caption>Listen</Caption>
+          <Caption>{listened ? "Listened" : "Listen"}</Caption>
         </View>
         {/* second clom */}
 
@@ -247,7 +298,7 @@ export function Speak(props) {
           style={{
             flex: 1,
             justifyContent: "space-around",
-            alignItems: "center"
+            alignItems: "center",
             // backgroundColor: "red"
           }}
         >
@@ -273,7 +324,7 @@ export function Speak(props) {
                 name="record"
                 style={{
                   color: COLORS.error,
-                  fontSize: 30
+                  fontSize: 30,
                 }}
               />
             </TouchableOpacity>
@@ -286,29 +337,32 @@ export function Speak(props) {
               borderRadius: 20 / 2,
               backgroundColor: recorded ? COLORS.primary : COLORS.enactive,
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <MaterialCommunityIcons
               name="check"
               style={{
                 color: COLORS.white,
-                fontSize: 10
+                fontSize: 10,
               }}
             />
           </View>
-          <Caption>{IsRecording ? "Stop" : "Record"}</Caption>
+          <Caption>
+            {IsRecording ? "Stop" : recorded ? "Recorded" : "Record"}
+          </Caption>
         </View>
 
         <View
           style={{
             flex: 1,
             justifyContent: "space-around",
-            alignItems: "center"
+            alignItems: "center",
             // backgroundColor: "green"
           }}
         >
           <TouchableOpacity
+            // onPress={PlayRecordedAudio}
             onPress={
               IsPLaying ? () => StopPlaying() : () => PlayRecordedAudio()
             }
@@ -318,7 +372,7 @@ export function Speak(props) {
               name="account-voice"
               style={{
                 color: COLORS.primary,
-                fontSize: 30
+                fontSize: 30,
               }}
             />
           </TouchableOpacity>
@@ -329,18 +383,18 @@ export function Speak(props) {
               borderRadius: 20 / 2,
               backgroundColor: compared ? COLORS.primary : COLORS.enactive,
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <MaterialCommunityIcons
               name="check"
               style={{
                 color: COLORS.white,
-                fontSize: 10
+                fontSize: 10,
               }}
             />
           </View>
-          <Caption>{IsRecording ? "Stop" : "Record"}</Caption>
+          <Caption>{compared ? "Compared" : "Compare"}</Caption>
         </View>
       </View>
 
@@ -348,7 +402,7 @@ export function Speak(props) {
         <Button
           onPress={handleNextQuiz}
           mode={listened && recorded && compared ? "contained" : "outlined"}
-          disabled={!listened && !recorded && !compared}
+          disabled={!listened || !recorded || !compared}
           style={{
             paddingBottom: 10,
             paddingTop: 10,
@@ -356,7 +410,7 @@ export function Speak(props) {
             bottom: 0,
             right: 0,
             left: 0,
-            flex: 1
+            flex: 1,
           }}
         >
           Next
@@ -371,7 +425,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#ecf0f1",
-    padding: 8
+    padding: 8,
   },
   iconContainer: {
     shadowColor: "rgba(0,0,0, .4)", // IOS
@@ -385,25 +439,22 @@ const styles = StyleSheet.create({
     borderRadius: 60 / 2,
     justifyContent: "center",
     alignItems: "center",
-    flexDirection: "row"
-  }
+    flexDirection: "row",
+  },
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     index: state.quiz.index,
     score: state.quiz.score,
     showAnswer: state.quiz.showAnswer,
-    showScoreModal: state.quiz.showScoreModal
+    showScoreModal: state.quiz.showScoreModal,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleNext: data => dispatch(handleNext(data)),
-    handleValidate: data => dispatch(handleValidate(data))
+    handleNext: (data) => dispatch(handleNext(data)),
+    handleValidate: (data) => dispatch(handleValidate(data)),
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Speak);
+export default connect(mapStateToProps, mapDispatchToProps)(Speak);

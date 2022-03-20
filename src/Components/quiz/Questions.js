@@ -23,13 +23,13 @@ import {
   StatusBar,
   Dimensions,
   Text,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 import { COLORS, SIZES } from "../../Helpers/constants";
 import ScoreModal from "./model";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Questions = props => {
+const Questions = (props) => {
   const navigation = useNavigation();
   const sound = React.useRef(new Audio.Sound());
   const isMounted = React.useRef(null);
@@ -46,7 +46,7 @@ const Questions = props => {
     lessonId,
     unitId,
     sectionId,
-    is_completed
+    is_completed,
   } = props;
 
   const allQuestions = questions;
@@ -114,7 +114,7 @@ const Questions = props => {
     }
   };
 
-  const onPlaybackStatusUpdate = audio => {
+  const onPlaybackStatusUpdate = (audio) => {
     if (isMounted.current) {
       if (audio.isLoaded) {
         setDidJustFinish(false);
@@ -136,19 +136,19 @@ const Questions = props => {
           console.log("lesson exist");
           const data = {
             username: props.username,
-            lessonId: props.lesson
+            lessonId: props.lesson,
           };
           axios.defaults.headers = {
             "Content-Type": "application/json",
-            Authorization: `Token ${props.token}`
+            Authorization: `Token ${props.token}`,
           };
           axios
             .post(`${localhost}/lessons/lesson-completed-create/`, data)
-            .then(res => {
+            .then((res) => {
               console.log("lesson completed");
               setLoading(false);
             })
-            .catch(err => {
+            .catch((err) => {
               setError(err);
               console.log("error in posting complet lesson", error);
             });
@@ -157,19 +157,19 @@ const Questions = props => {
           setLoading(true);
           const data = {
             username: props.username,
-            quizId: props.quiz
+            quizId: props.quiz,
           };
           axios.defaults.headers = {
             "Content-Type": "application/json",
-            Authorization: `Token ${props.token}`
+            Authorization: `Token ${props.token}`,
           };
           axios
             .post(`${localhost}/quizzes/quiz-completed-create/`, data)
-            .then(res => {
+            .then((res) => {
               console.log("lesson completed");
               setLoading(false);
             })
-            .catch(err => {
+            .catch((err) => {
               // setError(err);
               console.log("error in posting complet lesson", err);
             });
@@ -177,18 +177,27 @@ const Questions = props => {
           console.log("lesson and unit not null ");
         }
         if (!loading) {
-          navigation.navigate("Unit Details", { id: props.unit });
+          navigation.navigate("Unit Details", {
+            id: props.unit,
+            quiz_completed: true,
+          });
         }
       } catch (error) {
         console.log("error in catch while complet lesson/ quiz", error);
-        navigation.navigate("Unit Details", { id: props.unit });
+        navigation.navigate("Unit Details", {
+          id: props.unit,
+          quiz_completed: true,
+        });
       }
     } else {
-      navigation.navigate("Unit Details", { id: props.unit });
+      navigation.navigate("Unit Details", {
+        id: props.unit,
+        quiz_completed: true,
+      });
     }
   };
 
-  const Tokenize = text => {
+  const Tokenize = (text) => {
     let doc = nlp(text);
     let doc1 = doc.json();
     let terms = doc1[0].terms;
@@ -214,7 +223,7 @@ const Questions = props => {
       // And swap it with the current element.
       [words2[currentIndex], words2[randomIndex]] = [
         words2[randomIndex],
-        words2[currentIndex]
+        words2[currentIndex],
       ];
     }
     // console.log(Bucket);
@@ -243,7 +252,7 @@ const Questions = props => {
         // And swap it with the current element.
         [Bucket[currentIndex], Bucket[randomIndex]] = [
           Bucket[randomIndex],
-          Bucket[currentIndex]
+          Bucket[currentIndex],
         ];
       }
       // console.log(Bucket);
@@ -251,11 +260,11 @@ const Questions = props => {
     }
     return Bucket;
   };
-  useKeepAwake();
+  // useKeepAwake();
   return (
     <SafeAreaView
       style={{
-        flex: 1
+        flex: 1,
         // flexDirection: "row"
         // backgroundColor: "red"
       }}
@@ -270,10 +279,11 @@ const Questions = props => {
         {allQuestions[props.index].category === "TEXT_OPTIONS" && (
           <TextChoices
             numberOfQuestions={allQuestions.length - 1}
+            title={allQuestions[props.index].title}
             question={allQuestions[props.index].question}
             audio={allQuestions[props.index].audio}
             correct_option={allQuestions[props.index].correct_option}
-            correct_option={allQuestions[props.index].correct_option}
+            // correct_option={allQuestions[props.index].correct_option}
             text_option_1={allQuestions[props.index].text_option_1}
             text_option_2={allQuestions[props.index].text_option_2}
             text_option_3={allQuestions[props.index].text_option_3}
@@ -319,6 +329,10 @@ const Questions = props => {
             qustion={allQuestions[props.index].question}
             BucketA={processMatch(allQuestions[props.index].question, false)}
             BucketB={processMatch(allQuestions[props.index].answer, true)}
+            BucketBOriginal={processMatch(
+              allQuestions[props.index].answer,
+              false
+            )}
             answer={processMatch(allQuestions[props.index].answer, false)}
           />
         )}
@@ -330,6 +344,7 @@ const Questions = props => {
             answer={allQuestions[props.index].answer}
             PlayAudio={PlayAudio}
             UnloadSound={UnloadSound}
+            isPlaying={isPlaying}
           />
         )}
         {allQuestions[props.index].category === "WRITE" && (
@@ -430,23 +445,20 @@ const Questions = props => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     token: state.auth.token,
     username: state.auth.username,
     index: state.quiz.index,
     score: state.quiz.score,
-    showScoreModal: state.quiz.showScoreModal
+    showScoreModal: state.quiz.showScoreModal,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     createASNT: (token, asnt) => dispatch(createASNT(token, asnt)),
-    handleNext: data => dispatch(handleNext(data)),
-    handleStart: data => dispatch(handleStart(data))
+    handleNext: (data) => dispatch(handleNext(data)),
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Questions);
+export default connect(mapStateToProps, mapDispatchToProps)(Questions);

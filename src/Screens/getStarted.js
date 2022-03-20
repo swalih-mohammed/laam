@@ -7,7 +7,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -17,7 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "../Helpers/constants";
 import LottieView from "lottie-react-native";
 
-const GetStarted = props => {
+const GetStarted = (props) => {
   const animation = React.useRef(null);
 
   const navigation = useNavigation();
@@ -42,8 +42,9 @@ const GetStarted = props => {
       <View style={styles.TopContainer}>
         <Image
           style={styles.photo}
-          source={require("../../assets/logo_gettingstarted1-removebg-preview.png")}
+          source={require("../../assets/logo_nobg.png")}
         />
+        <Paragraph>Language Learning Made Easy</Paragraph>
       </View>
       <View style={styles.MiddleContainer}>
         <LottieView
@@ -64,7 +65,7 @@ const GetStarted = props => {
             borderRadius: 10,
             backgroundColor: "#212529",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
           onPress={() => navigation.navigate("SignUp")}
         >
@@ -79,7 +80,7 @@ const GetStarted = props => {
             borderRadius: 10,
             backgroundColor: COLORS.white,
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
           onPress={() => navigation.navigate("Login")}
         >
@@ -97,19 +98,19 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "center",
-    backgroundColor: "#FFFFFF"
+    backgroundColor: "#FFFFFF",
   },
   TopContainer: {
     flex: 1.2,
     // paddingTop: 20,
     justifyContent: "flex-end",
-    alignItems: "center"
+    alignItems: "center",
     // backgroundColor: "red"
   },
   MiddleContainer: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
     // backgroundColor: "red"
   },
 
@@ -120,39 +121,36 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     borderTopLeftRadius: 30,
-    borderTopRightRadius: 30
+    borderTopRightRadius: 30,
   },
   ImgWrapper: {
     width: width * 0.8,
     height: height * 0.4,
     // marginTop: 20
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   photo: {
-    width: "55%",
+    width: "50%",
     height: "50%",
-    resizeMode: "cover"
+    resizeMode: "cover",
   },
   title: {
     fontWeight: "bold",
-    fontSize: 30
+    fontSize: 30,
   },
   Buttons: {
     margin: 20,
     padding: 10,
-    justifyContent: "space-around"
-  }
+    justifyContent: "space-around",
+  },
 });
 
 // export default GetStarted;
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    token: state.auth.token
+    token: state.auth.token,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(GetStarted);
+export default connect(mapStateToProps, null)(GetStarted);

@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   Text,
-  View
+  View,
 } from "react-native";
 import { Button, Title, Paragraph } from "react-native-paper";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
@@ -21,7 +21,7 @@ import * as Haptics from "expo-haptics";
 
 // import console = require("console");
 
-const renderOptions = props => {
+const renderOptions = (props) => {
   // console.log(props);
   const animation = React.useRef(null);
 
@@ -33,7 +33,7 @@ const renderOptions = props => {
 
   const { Choices, title, question, numberOfQuestions } = props;
 
-  const validate = option => {
+  const validate = (option) => {
     setShowMessage(true);
     setShowNextButton(true);
     if (option) {
@@ -47,7 +47,7 @@ const renderOptions = props => {
           animation.current.play(0, 100);
         }
         const data = {
-          score: props.score + 1
+          score: props.score + 1,
         };
         props.handleValidate(data);
       } else {
@@ -64,7 +64,7 @@ const renderOptions = props => {
     const data = {
       index:
         props.index !== props.numberOfQuestions ? props.index + 1 : props.index,
-      showScoreModal: props.index === props.numberOfQuestions ? true : false
+      showScoreModal: props.index === props.numberOfQuestions ? true : false,
     };
     // console.log(data);
     props.handleNext(data);
@@ -74,7 +74,7 @@ const renderOptions = props => {
     <Animated.View
       style={{
         flex: 1,
-        justifyContent: "center"
+        justifyContent: "center",
       }}
       entering={LightSpeedInRight.duration(1000)}
     >
@@ -82,11 +82,11 @@ const renderOptions = props => {
         style={{
           flex: 2,
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
           // backgroundColor: "red"
         }}
       >
-        <Paragraph>Select What You Hear</Paragraph>
+        <Paragraph>{props.title}</Paragraph>
         {showMessage ? (
           <>
             <LottieView
@@ -110,7 +110,7 @@ const renderOptions = props => {
         style={{
           flex: 4,
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
           // backgroundColor: "green"
         }}
       >
@@ -120,7 +120,8 @@ const renderOptions = props => {
           // key={option.id}
           style={{
             width: width - 100,
-            borderWidth: 1,
+            // borderWidth: 1,
+            borderWidth: showNextButton ? 3 : 1,
             // backgroundColor: COLORS.primary,
             opacity: showNextButton ? 0.8 : 1,
             borderColor:
@@ -136,7 +137,7 @@ const renderOptions = props => {
             justifyContent: "center",
             marginVertical: 15,
             paddingHorizontal: 10,
-            paddingVertical: 10
+            paddingVertical: 10,
           }}
         >
           <Paragraph style={{ fontSize: 14, color: "black" }}>
@@ -149,8 +150,9 @@ const renderOptions = props => {
           // key={option.id}
           style={{
             width: width - 100,
-            borderWidth: 1,
+            // borderWidth: 1,
             // backgroundColor: COLORS.primary,
+            borderWidth: showNextButton ? 3 : 1,
             opacity: showNextButton ? 0.8 : 1,
             borderColor:
               showNextButton && selectedOption === "2"
@@ -165,7 +167,7 @@ const renderOptions = props => {
             justifyContent: "center",
             marginVertical: 15,
             paddingHorizontal: 10,
-            paddingVertical: 10
+            paddingVertical: 10,
           }}
         >
           <Paragraph style={{ fontSize: 14, color: "black" }}>
@@ -177,8 +179,9 @@ const renderOptions = props => {
           disabled={showNextButton}
           style={{
             width: width - 100,
-            borderWidth: 1,
+            // borderWidth: 1,
             // backgroundColor: COLORS.primary,
+            borderWidth: showNextButton ? 3 : 1,
             opacity: showNextButton ? 0.8 : 1,
             borderColor:
               showNextButton && selectedOption === "3"
@@ -193,7 +196,7 @@ const renderOptions = props => {
             justifyContent: "center",
             marginVertical: 15,
             paddingHorizontal: 10,
-            paddingVertical: 10
+            paddingVertical: 10,
           }}
         >
           <Paragraph style={{ fontSize: 14 }}>{props.text_option_3}</Paragraph>
@@ -204,7 +207,7 @@ const renderOptions = props => {
           flex: 1,
           // backgroundColor: "red",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         {props.audio ? (
@@ -218,7 +221,7 @@ const renderOptions = props => {
               style={{
                 // color: "black",
                 alignSelf: "center",
-                fontSize: 30
+                fontSize: 30,
               }}
             />
           </TouchableOpacity>
@@ -227,7 +230,7 @@ const renderOptions = props => {
 
       <View
         style={{
-          flex: 1
+          flex: 1,
           // backgroundColor: "red"
         }}
       >
@@ -242,7 +245,7 @@ const renderOptions = props => {
             bottom: 0,
             right: 0,
             left: 0,
-            flex: 1
+            flex: 1,
           }}
         >
           {showNextButton ? "NEXT" : "SELECT"}
@@ -258,25 +261,22 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: 5,
     margin: 5,
-    borderColor: "red"
-  }
+    borderColor: "red",
+  },
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     index: state.quiz.index,
     score: state.quiz.score,
     showAnswer: state.quiz.showAnswer,
-    showScoreModal: state.quiz.showAnswer
+    showScoreModal: state.quiz.showAnswer,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleNext: data => dispatch(handleNext(data)),
-    handleValidate: data => dispatch(handleValidate(data))
+    handleNext: (data) => dispatch(handleNext(data)),
+    handleValidate: (data) => dispatch(handleValidate(data)),
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(renderOptions);
+export default connect(mapStateToProps, mapDispatchToProps)(renderOptions);

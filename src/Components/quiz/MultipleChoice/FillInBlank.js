@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { connect } from "react-redux";
 import { handleNext, handleValidate } from "../../../store/actions/quiz";
@@ -16,7 +16,7 @@ import {
   Paragraph,
   Button,
   Caption,
-  TextInput
+  TextInput,
 } from "react-native-paper";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import { COLORS, SIZES } from "../../../Helpers/constants";
@@ -37,7 +37,7 @@ export function Speak(props) {
   const [showNextButton, setShowNextButton] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
 
-  const validate = option => {
+  const validate = (option) => {
     setShowMessage(true);
     setShowNextButton(true);
     if (option) {
@@ -51,7 +51,7 @@ export function Speak(props) {
           animation.current.play(0, 100);
         }
         const data = {
-          score: props.score + 1
+          score: props.score + 1,
         };
         props.handleValidate(data);
       } else {
@@ -69,7 +69,7 @@ export function Speak(props) {
     const data = {
       index:
         props.index !== props.numberOfQuestions ? props.index + 1 : props.index,
-      showScoreModal: props.index === props.numberOfQuestions ? true : false
+      showScoreModal: props.index === props.numberOfQuestions ? true : false,
     };
     // console.log(data);
     props.handleNext(data);
@@ -80,32 +80,33 @@ export function Speak(props) {
       style={{ flex: 1 }}
       entering={LightSpeedInRight.duration(1000)}
     >
-      <View
+      {/* <View
         style={{
           felx: 1,
-          //   backgroundColor: "red",
+          backgroundColor: "red",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
-        {/* <Paragraph>{props.title}</Paragraph> */}
-      </View>
+        <Paragraph>{props.title}</Paragraph>
+      </View> */}
       <View
         style={{
-          flex: 6,
+          flex: 3,
           justifyContent: "center",
-          alignItems: "center"
-
-          //   backgroundColor: "green"
+          alignItems: "center",
+          // backgroundColor: "green",
         }}
       >
+        <Paragraph style={{ paddingBottom: 15 }}>{props.title}</Paragraph>
+
         <Card
           style={{
             width: width - 80,
-            height: height - 450,
+            height: height - 500,
             justifyContent: "center",
             alignItems: "center",
-            elevation: 5
+            elevation: 5,
           }}
           mode="elevated"
         >
@@ -114,7 +115,7 @@ export function Speak(props) {
               flex: 1,
               width: width - 120,
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             {showMessage ? (
@@ -140,14 +141,21 @@ export function Speak(props) {
           </Card.Content>
         </Card>
       </View>
-      <View style={{ flex: 4, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          flex: 3,
+          justifyContent: "center",
+          alignItems: "center",
+          // backgroundColor: "green",
+        }}
+      >
         <TouchableOpacity
           onPress={() => validate(1)}
           disabled={showNextButton}
           // key={option.id}
           style={{
-            width: width - 100,
-            borderWidth: 1,
+            width: width - 80,
+            borderWidth: showNextButton ? 3 : 1,
             backgroundColor: COLORS.primary,
             opacity: showNextButton ? 0.8 : 1,
             borderColor:
@@ -157,11 +165,11 @@ export function Speak(props) {
                 ? COLORS.error
                 : COLORS.primary,
 
-            height: 45,
+            height: 50,
             borderRadius: 14,
             alignItems: "center",
             justifyContent: "center",
-            marginVertical: 5
+            marginVertical: 5,
           }}
         >
           <Paragraph style={{ fontSize: 14, color: "black" }}>
@@ -173,8 +181,8 @@ export function Speak(props) {
           disabled={showNextButton}
           // key={option.id}
           style={{
-            width: width - 100,
-            borderWidth: 1,
+            width: width - 80,
+            borderWidth: showNextButton ? 3 : 1,
             backgroundColor: COLORS.primary,
             opacity: showNextButton ? 0.8 : 1,
             borderColor:
@@ -184,11 +192,11 @@ export function Speak(props) {
                 ? COLORS.error
                 : COLORS.primary,
 
-            height: 45,
+            height: 50,
             borderRadius: 14,
             alignItems: "center",
             justifyContent: "center",
-            marginVertical: 5
+            marginVertical: 5,
           }}
         >
           <Paragraph style={{ fontSize: 14, color: "black" }}>
@@ -199,8 +207,8 @@ export function Speak(props) {
           onPress={() => validate(3)}
           disabled={showNextButton}
           style={{
-            width: width - 100,
-            borderWidth: 1,
+            width: width - 80,
+            borderWidth: showNextButton ? 3 : 1,
             backgroundColor: COLORS.primary,
             opacity: showNextButton ? 0.8 : 1,
             borderColor:
@@ -210,11 +218,11 @@ export function Speak(props) {
                 ? COLORS.error
                 : COLORS.primary,
 
-            height: 45,
+            height: 50,
             borderRadius: 14,
             alignItems: "center",
             justifyContent: "center",
-            marginVertical: 5
+            marginVertical: 5,
           }}
         >
           <Paragraph style={{ fontSize: 14, color: "black" }}>
@@ -235,7 +243,7 @@ export function Speak(props) {
             bottom: 0,
             right: 0,
             left: 0,
-            flex: 1
+            flex: 1,
           }}
         >
           Next
@@ -250,25 +258,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#ecf0f1",
-    padding: 8
-  }
+    padding: 8,
+  },
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     index: state.quiz.index,
     score: state.quiz.score,
     showAnswer: state.quiz.showAnswer,
-    showScoreModal: state.quiz.showScoreModal
+    showScoreModal: state.quiz.showScoreModal,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleNext: data => dispatch(handleNext(data)),
-    handleValidate: data => dispatch(handleValidate(data))
+    handleNext: (data) => dispatch(handleNext(data)),
+    handleValidate: (data) => dispatch(handleValidate(data)),
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Speak);
+export default connect(mapStateToProps, mapDispatchToProps)(Speak);

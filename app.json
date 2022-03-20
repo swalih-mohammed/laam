@@ -3,11 +3,11 @@
     "name": "Lakaters",
     "slug": "Lakaters",
     "description": "A Platform Interactive Language Learning",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/Android_splash_2.png",
+      "image": "./assets/Android_splash_3.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
@@ -22,7 +22,7 @@
     },
     "android": {
       "package": "com.lakaters.lakaters",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
