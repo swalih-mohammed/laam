@@ -22,7 +22,7 @@ import * as Haptics from "expo-haptics";
 // import console = require("console");
 
 const renderOptions = (props) => {
-  // console.log(props);
+  // console.log(props.isPlaying);
   const animation = React.useRef(null);
 
   const [showAnswer, setShowAnswer] = useState(false);
@@ -83,10 +83,28 @@ const renderOptions = (props) => {
           flex: 2,
           justifyContent: "center",
           alignItems: "center",
-          // backgroundColor: "red"
+          // backgroundColor: "red",
         }}
       >
-        <Paragraph>{props.title}</Paragraph>
+        <View
+          style={{ flex: 2, justifyContent: "center", alignItems: "center" }}
+        >
+          <Paragraph>{props.title}</Paragraph>
+        </View>
+        <View style={{ flex: 1, width: 100, height: 20 }}>
+          {props.isPlaying && (
+            <LottieView
+              ref={animation}
+              source={require("../../../../assets/lotties/audioPlaying.json")}
+              autoPlay={true}
+              loop={true}
+            />
+          )}
+        </View>
+
+        {/* <View style={{ widht: 100, height: 50, backgroundColor: "red" }}> */}
+
+        {/* </View> */}
         {showMessage ? (
           <>
             <LottieView

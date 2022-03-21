@@ -354,6 +354,7 @@ const Questions = (props) => {
             qustion={allQuestions[props.index].question}
             answer={allQuestions[props.index].answer}
             PlayAudio={PlayAudio}
+            isPlaying={isPlaying}
             UnloadSound={UnloadSound}
           />
         )}

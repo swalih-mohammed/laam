@@ -49,6 +49,28 @@ const CertificateScreen = (props) => {
           />
           {/* </View> */}
         </View>
+
+        <View
+          style={{
+            // flex: 0.3,
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 5,
+            // paddingBottom: 10
+            // paddingLeft: 10
+          }}
+        >
+          <Paragraph
+            style={{
+              fontSize: 10,
+              fontWeight: "600",
+              // paddingBottom: 15,
+              color: COLORS.primary,
+            }}
+          >
+            www.lakaters.com
+          </Paragraph>
+        </View>
         <View
           style={{
             flex: 2,
@@ -65,7 +87,7 @@ const CertificateScreen = (props) => {
           >
             {student}
           </Paragraph>
-          <Paragraph>{progress}</Paragraph>
+          {/* <Paragraph>{progress}</Paragraph> */}
           {/* <View
           style={{
             flex: 0.5,
@@ -194,28 +216,6 @@ const CertificateScreen = (props) => {
               Student can understand and use familiar everyday expressions, can
               introduce him/herself and others, can interact in a simple way
               provided the other person talks slowly and clearly.
-            </Paragraph>
-          </View>
-
-          <View
-            style={{
-              // flex: 0.3,
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: 5,
-              // paddingBottom: 10
-              // paddingLeft: 10
-            }}
-          >
-            <Paragraph
-              style={{
-                fontSize: 10,
-                fontWeight: "600",
-                // paddingBottom: 15,
-                color: COLORS.primary,
-              }}
-            >
-              www.lakaters.com
             </Paragraph>
           </View>
         </View>

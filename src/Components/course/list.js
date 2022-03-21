@@ -57,18 +57,18 @@ const CourseList = (props) => {
     };
   }, []);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      console.log("focusing course list ");
-      const source = axios.CancelToken.source();
-      getCourses(source);
-      return () => {
-        console.log("un focusing course list ");
-        // console.log("course list page unmounting");
-        source.cancel();
-      };
-    }, [])
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     console.log("focusing course list ");
+  //     const source = axios.CancelToken.source();
+  //     getCourses(source);
+  //     return () => {
+  //       console.log("un focusing course list ");
+  //       // console.log("course list page unmounting");
+  //       source.cancel();
+  //     };
+  //   }, [])
+  // );
 
   const getCourses = async (source) => {
     try {

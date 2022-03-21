@@ -29,6 +29,7 @@ import * as Haptics from "expo-haptics";
 export function Speak(props) {
   const animation = React.useRef(null);
 
+  // console.log(props.isPlaying);
   const [text, setText] = useState("");
   const [scored, setScored] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
@@ -81,11 +82,23 @@ export function Speak(props) {
     >
       <View
         style={{
+          justifyContent: "center",
+          alignItems: "center",
+          // paddingBottom: 20,
+          flex: 1,
+          // backgroundColor: "green",
+        }}
+      >
+        <Paragraph>{props.title}</Paragraph>
+      </View>
+      <View
+        style={{
           flex: 3.5,
           justifyContent: "center",
           alignItems: "center",
           marginHorizontal: 20,
           marginVertical: 20,
+          // backgroundColor: "red",
         }}
       >
         <Card
@@ -106,9 +119,6 @@ export function Speak(props) {
               flex: 1,
             }}
           >
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Paragraph>Write What You Hear</Paragraph>
-            </View>
             {showMessage ? (
               <>
                 <LottieView
@@ -128,6 +138,22 @@ export function Speak(props) {
                 />
               </>
             ) : null}
+
+            <View
+              style={{
+                flex: 1,
+                // backgroundColor: "red",
+                justifyContent: "center",
+              }}
+            >
+              <TextInput
+                underlineColor={COLORS.primary}
+                mode="flat"
+                label="Type here..."
+                value={text}
+                onChangeText={(text) => setText(text)}
+              />
+            </View>
             <TouchableOpacity
               onPress={props.PlayAudio}
               style={{
@@ -138,14 +164,15 @@ export function Speak(props) {
             >
               <Icon name="sound" size={30} color={COLORS.primary} />
             </TouchableOpacity>
-            <View style={{ flex: 1 }}>
-              <TextInput
-                underlineColor={COLORS.primary}
-                mode="flat"
-                label="Type here..."
-                value={text}
-                onChangeText={(text) => setText(text)}
-              />
+            <View style={{ widht: 100, height: 50 }}>
+              {props.isPlaying && (
+                <LottieView
+                  ref={animation}
+                  source={require("../../../../assets/lotties/audioPlaying.json")}
+                  autoPlay={true}
+                  loop={true}
+                />
+              )}
             </View>
           </Card.Content>
         </Card>
