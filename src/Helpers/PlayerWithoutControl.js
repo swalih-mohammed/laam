@@ -3,7 +3,13 @@ import { View, Text } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Audio } from "expo-av";
 
-export default function AudioPLayer({ correct, incorrect, success, failure }) {
+export default function AudioPLayer({
+  correct,
+  incorrect,
+  success,
+  failure,
+  keyPress,
+}) {
   const [Loaded, SetLoaded] = React.useState(false);
   const [Loading, SetLoading] = React.useState(false);
   const [isPlaying, SetIsPlaying] = React.useState(false);
@@ -62,6 +68,7 @@ export default function AudioPLayer({ correct, incorrect, success, failure }) {
             { shouldPlay: true }
           );
         } else {
+          console.log("else");
         }
       } catch (error) {
         console.log(error);

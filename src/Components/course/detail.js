@@ -129,7 +129,9 @@ const CourseDetail = (props) => {
 
   const CalculateReminingUnits = () => {
     if (course) {
-      return course.total_units - course.completed_units + " more units to go";
+      return (
+        course.total_units - course.completed_units + " more unit(s) to go"
+      );
     } else {
       return "";
     }
@@ -139,7 +141,7 @@ const CourseDetail = (props) => {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       <Animated.View entering={LightSpeedInRight} style={{ flex: 1 }}>
-        {loading && (
+        {loading ? (
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
@@ -150,137 +152,141 @@ const CourseDetail = (props) => {
               color={COLORS.primary}
             />
           </View>
-        )}
-        {course && (
-          <>
-            <Card
-              style={{
-                marginHorizontal: 10,
-                marginTop: 10,
-                marginBottom: 10,
-                marginHorizontal: 10,
-                height: 150,
-                borderRadius: 10,
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <View style={{ flex: 3 }}>
-                  <View style={{ flex: 1, flexDirection: "row" }}>
-                    <View
-                      style={{
-                        flex: 2,
-                        // backgroundColor: "red",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <TouchableOpacity
-                        // style={{width: 80, height: 60,}}
-                        onPress={() =>
-                          navigation.navigate("Certificate", {
-                            student: props.username,
-                            name: course.title,
-                            certificate: course.certificate,
-                            progress:
-                              course.completed_units / course.total_units,
-                          })
-                        }
-                      >
-                        <Image
-                          style={{
-                            width: 80,
-                            height: 60,
-                            resizeMode: "contain",
-                          }}
-                          // source={{
-                          //   uri: course.certificate
-                          // }}
-                          source={require("../../../assets/certificate_ribbon.jpg")}
-                        />
-                        <Caption>CERTIFICATE</Caption>
-                      </TouchableOpacity>
-                    </View>
-                    <View
-                      style={{
-                        flex: 4,
-                        // backgroundColor: "green",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Card.Title
-                        title={course.title}
-                        subtitle={course.subtitle}
-                      />
-                    </View>
-                  </View>
-                </View>
-
-                {course.is_enrolled ? (
-                  <>
-                    <View style={{ flex: 1 }}>
+        ) : (
+          course && (
+            <>
+              <Card
+                style={{
+                  marginHorizontal: 10,
+                  marginTop: 10,
+                  marginBottom: 10,
+                  marginHorizontal: 10,
+                  height: 150,
+                  borderRadius: 10,
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <View style={{ flex: 3 }}>
+                    <View style={{ flex: 1, flexDirection: "row" }}>
                       <View
                         style={{
-                          flex: 1,
-                          flexDirection: "row",
-                          marginHorizontal: 10,
+                          flex: 2,
+                          // backgroundColor: "red",
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        <View
-                          style={{
-                            flex: 5,
-                            // backgroundColor: "green",
-                            justifyContent: "center",
-                          }}
+                        <TouchableOpacity
+                          // style={{width: 80, height: 60,}}
+                          onPress={() =>
+                            navigation.navigate("Certificate", {
+                              student: props.username,
+                              name: course.title,
+                              certificate: course.certificate,
+                              progress:
+                                course.completed_units / course.total_units,
+                            })
+                          }
                         >
-                          <ProgressBar
-                            progress={progressBar()}
-                            color={COLORS.primary}
+                          <Image
+                            style={{
+                              width: 80,
+                              height: 60,
+                              resizeMode: "contain",
+                            }}
+                            // source={{
+                            //   uri: course.certificate
+                            // }}
+                            source={require("../../../assets/certificate_ribbon.jpg")}
                           />
-                        </View>
+                          <Caption>CERTIFICATE</Caption>
+                        </TouchableOpacity>
+                      </View>
+                      <View
+                        style={{
+                          flex: 4,
+                          // backgroundColor: "green",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Card.Title
+                          title={course.title}
+                          subtitle={course.subtitle}
+                        />
+                      </View>
+                    </View>
+                  </View>
+
+                  {course.is_enrolled ? (
+                    <>
+                      <View style={{ flex: 1 }}>
                         <View
                           style={{
                             flex: 1,
-                            // backgroundColor: "red",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            flexDirection: "row",
+                            marginHorizontal: 10,
                           }}
                         >
-                          {course.is_enrolled && (
-                            <Paragraph>{progress()}</Paragraph>
-                          )}
+                          <View
+                            style={{
+                              flex: 5,
+                              // backgroundColor: "green",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <ProgressBar
+                              progress={progressBar()}
+                              color={COLORS.primary}
+                            />
+                          </View>
+                          <View
+                            style={{
+                              flex: 1,
+                              // backgroundColor: "red",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            {course.is_enrolled && (
+                              <Paragraph>{progress()}</Paragraph>
+                            )}
+                          </View>
                         </View>
                       </View>
-                    </View>
-                    <View style={{ flex: 1, paddingLeft: 10 }}>
-                      <Caption>{CalculateReminingUnits()}</Caption>
-                    </View>
-                  </>
-                ) : loading ? (
-                  <ActivityIndicator animating={true} color={COLORS.primary} />
-                ) : (
-                  <Button
-                    disabled={loading}
-                    style={{ marginHorizontal: 25, marginVertical: 10 }}
-                    mode="contained"
-                    onPress={handlePressEnroll}
-                  >
-                    Enroll
-                  </Button>
-                )}
-              </View>
-            </Card>
-            {units && (
-              <FlatList
-                data={units}
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => {
-                  return <UnitItem item={item} />;
-                }}
-              />
-            )}
-          </>
+                      <View style={{ flex: 1, paddingLeft: 10 }}>
+                        <Caption>{CalculateReminingUnits()}</Caption>
+                      </View>
+                    </>
+                  ) : loading ? (
+                    <ActivityIndicator
+                      animating={true}
+                      color={COLORS.primary}
+                    />
+                  ) : (
+                    <Button
+                      disabled={loading}
+                      style={{ marginHorizontal: 25, marginVertical: 10 }}
+                      mode="contained"
+                      onPress={handlePressEnroll}
+                    >
+                      Enroll
+                    </Button>
+                  )}
+                </View>
+              </Card>
+              {units && (
+                <FlatList
+                  data={units}
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={({ item }) => {
+                    return <UnitItem item={item} />;
+                  }}
+                />
+              )}
+            </>
+          )
         )}
       </Animated.View>
     </SafeAreaView>

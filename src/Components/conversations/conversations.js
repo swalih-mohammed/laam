@@ -14,7 +14,7 @@ import {
   ProgressBar,
   Title,
   Paragraph,
-  Button
+  Button,
 } from "react-native-paper";
 import { localhost } from "../../Helpers/urls";
 // import UnitTestList from "../unitTest/list";
@@ -31,7 +31,7 @@ import MessageItem from "./messageItem";
 
 // const LeftContent = props => <Avatar.Icon {...props} icon="school" />;
 
-const ConversationDetail = props => {
+const ConversationDetail = (props) => {
   const sound = React.useRef(new Audio.Sound());
   const animation = useRef(null);
   const scrollViewRef = useRef();
@@ -44,9 +44,8 @@ const ConversationDetail = props => {
   const [isPlaying, setIsplaying] = React.useState(false);
   const [didJustFinish, setDidJustFinish] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
-  const [conversationCompleted, SetConversationCompleted] = React.useState(
-    false
-  );
+  const [conversationCompleted, SetConversationCompleted] =
+    React.useState(false);
   const isMounted = useRef(null);
 
   useEffect(() => {
@@ -137,7 +136,7 @@ const ConversationDetail = props => {
     }
   };
 
-  const onPlaybackStatusUpdate = audio => {
+  const onPlaybackStatusUpdate = (audio) => {
     if (!isMounted.current) return;
     // console.log("play status update");
     if (audio.isLoaded) {
@@ -172,19 +171,19 @@ const ConversationDetail = props => {
       try {
         const data = {
           username: props.username,
-          conversationId: convId
+          conversationId: convId,
         };
         // console.log(data);
         axios.defaults.headers = {
           "Content-Type": "application/json",
-          Authorization: `Token ${props.token}`
+          Authorization: `Token ${props.token}`,
         };
         axios
           .post(
             `${localhost}/conversations/conversation-completed-create/`,
             data
           )
-          .then(res => {
+          .then((res) => {
             console.log("conversation completed");
           });
       } catch (error) {
@@ -203,7 +202,7 @@ const ConversationDetail = props => {
       >
         <View style={{ flex: 6, marginTop: 25, marginBottom: 60 }}>
           {visibleList.length > 0
-            ? visibleList.map(item => (
+            ? visibleList.map((item) => (
                 <MessageItem
                   item={item}
                   key={item.id}
@@ -230,7 +229,7 @@ const ConversationDetail = props => {
           left: 0,
           flex: 1,
           paddingTop: 10,
-          paddingBottom: 10
+          paddingBottom: 10,
         }}
       >
         {conversationCompleted ? "lisen again" : isPaused ? "play" : "Pause"}
@@ -239,14 +238,11 @@ const ConversationDetail = props => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     token: state.auth.token,
-    username: state.auth.username
+    username: state.auth.username,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(ConversationDetail);
+export default connect(mapStateToProps, null)(ConversationDetail);

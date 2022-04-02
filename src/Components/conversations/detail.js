@@ -3,19 +3,11 @@ import axios from "axios";
 import { connect } from "react-redux";
 import Conversations from "./conversations";
 // import { View, TouchableOpacity, Text } from "react-native";
-import { StatusBar, View, Text, ScrollView } from "react-native";
+import { StatusBar, View, Text, ActivityIndicator } from "react-native";
 import { COLORS, SIZES } from "../../Helpers/constants";
 import { handleStart } from "../../store/actions/quiz";
 import { reSetCourseDetails } from "../../store/actions/course";
-import {
-  List,
-  Card,
-  Avatar,
-  ProgressBar,
-  Title,
-  Paragraph,
-  Button
-} from "react-native-paper";
+import { Paragraph } from "react-native-paper";
 import { localhost } from "../../Helpers/urls";
 // import UnitTestList from "../unitTest/list";
 import { useNavigation } from "@react-navigation/native";
@@ -28,10 +20,11 @@ import Loader from "../Utils/Loader";
 import { Audio } from "expo-av";
 import LottieView from "lottie-react-native";
 import MessageItem from "./messageItem";
+import Test from "./test";
 
 // const LeftContent = props => <Avatar.Icon {...props} icon="school" />;
 
-const ConversationDetail = props => {
+const ConversationDetail = (props) => {
   // const navigation = useNavigation();
   // const sound = React.useRef(new Audio.Sound());
   // const animation = useRef(null);
@@ -82,25 +75,29 @@ const ConversationDetail = props => {
 
   const { id } = props.route.params;
 
-  const processedList = () => {
+  const answers = () => {
     if (conversation) {
-      let audioList = [];
+      let answerList = [];
       for (let i = 0; i < 10; i++) {
         const audio_name = `audio_${i}`;
         if (conversation[`${audio_name}`]) {
-          const aOrB = i % 2 ? "B" : "A";
           let obj = {
             id: i,
             audio: conversation[audio_name].audio,
             content: conversation[audio_name].text,
-            speaker: aOrB,
-            is_visible: false
+            type:
+              i === 1 || i === 3 || i === 5 || i === 7 || i === 9
+                ? "answer"
+                : "question",
+            recording: "NA",
+            is_visible: true,
+            speaker:
+              i === 1 || i === 3 || i === 5 || i === 7 || i === 9 ? "B" : "A",
           };
-          audioList.push(obj);
+          answerList.push(obj);
         }
       }
-      return audioList;
-
+      return answerList;
       // console.log(messages);
     }
   };
@@ -110,16 +107,35 @@ const ConversationDetail = props => {
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       {loading ? (
         <>
-          <Loader />
-          <Text>conversation detail loading</Text>
+          {/* <Loader /> */}
+          {/* <Text>conversation detail loading</Text> */}
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <Paragraph style={{ color: COLORS.primary }}>Loading...</Paragraph>
+            <ActivityIndicator
+              size="large"
+              animating={true}
+              color={COLORS.primary}
+            />
+          </View>
         </>
       ) : (
         <>
           {conversation ? (
-            <Conversations
+            // <Conversations
+            //   convId={conversation.id}
+            //   is_completed={conversation.is_completed}
+            //   messages={processedList()}
+            // />
+            <Test
               convId={conversation.id}
               is_completed={conversation.is_completed}
-              messages={processedList()}
+              messages={answers()}
+              unit={conversation.unit}
+              // messages={processedList()}
+              // questions={questions()}
+              // answers={answers()}
             />
           ) : null}
         </>
@@ -128,14 +144,11 @@ const ConversationDetail = props => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     // token: state.auth.token,
-    username: state.auth.username
+    username: state.auth.username,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(ConversationDetail);
+export default connect(mapStateToProps, null)(ConversationDetail);

@@ -2,31 +2,17 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 
 import axios from "axios";
-import {
-  View,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Text,
-} from "react-native";
-import {
-  List,
-  Card,
-  Avatar,
-  Title,
-  Paragraph,
-  Caption,
-} from "react-native-paper";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { COLORS, SIZES } from "../../Helpers/constants";
+import { View, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import { Card, Paragraph } from "react-native-paper";
+// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+// import { COLORS, SIZES } from "../../Helpers/constants";
 // import * as Animatable from "react-native-animatable";
-import { setCourseDetails } from "../../store/actions/course";
-import { localhost } from "../../Helpers/urls";
-import UnitItem from "../unit/item";
-import UnitList from "../unit/list";
-import { useNavigation } from "@react-navigation/native";
-import { useTheme } from "react-native-paper";
+// import { setCourseDetails } from "../../store/actions/course";
+// import { localhost } from "../../Helpers/urls";
+// import UnitItem from "../unit/item";
+// import UnitList from "../unit/list";
+// import { useNavigation } from "@react-navigation/native";
+// import { useTheme } from "react-native-paper";
 import { handleStart } from "../../store/actions/quiz";
 import LottieView from "lottie-react-native";
 
@@ -116,6 +102,7 @@ const ConversationItem = (props) => {
                   style={{
                     flex: 6,
                     justifyContent: "center",
+                    alignItems: "center",
                     // backgroundColor: "red"
                   }}
                 >
@@ -128,7 +115,6 @@ const ConversationItem = (props) => {
                     }}
                   >
                     {item.content}
-                    {/* {is_speaking ? "speaking" : "not speaking"} */}
                   </Paragraph>
                 </View>
 

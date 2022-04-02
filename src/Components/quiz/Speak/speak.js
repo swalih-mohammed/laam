@@ -16,6 +16,7 @@ const { width, height } = Dimensions.get("window");
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/AntDesign";
 import LottieView from "lottie-react-native";
+import * as FileSystem from "expo-file-system";
 import * as Haptics from "expo-haptics";
 
 export function Speak(props) {
@@ -35,9 +36,13 @@ export function Speak(props) {
   const [compared, setCompared] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [soundLoading, setSoundLoading] = useState(false);
+
+  // const recordingsDir = FileSystem.documentDirectory + "lakaters/";
+
   // Initial Load to get the audio permission
   useEffect(() => {
     GetPermission();
+    // makeDir();
     if (animation.current) {
       animation.current.play(0, 100);
     }
@@ -48,6 +53,22 @@ export function Speak(props) {
 
   const UnloadSound = () => {
     AudioPlayer.current.unloadAsync();
+  };
+
+  //Check if the Document Directory was created
+  const makeDir = async () => {
+    const dir = await FileSystem.getInfoAsync(recordingsDir);
+    if (!dir.exists) {
+      console.log("Recordings Folder directory doesn't exist, creating....");
+      await FileSystem.makeDirectoryAsync(recordingsDir, {
+        intermediates: true,
+      });
+    }
+    const dirInfo = await FileSystem.readDirectoryAsync(recordingsDir);
+    console.log("URI of Recording Folder.:");
+    console.log(dir);
+    console.log("Contents of Recording Folder:");
+    console.log(dirInfo);
   };
 
   const PlayOriginalAudio = (comparing) => {
@@ -104,12 +125,33 @@ export function Speak(props) {
       // Get the recorded URI here
       const result = AudioRecorder.current.getURI();
       if (result) SetRecordedURI(result);
+      console.log(result);
+      // saveFile(result);
 
       // Reset the Audio Recorder
       AudioRecorder.current = new Audio.Recording();
       SetIsRecording(false);
     } catch (error) {}
   };
+
+  const saveFile = async (uri) => {
+    try {
+      await FileSystem.moveAsync({
+        from: uri,
+        to: FileSystem.documentDirectory + recordingsDir,
+      });
+    } catch (error) {
+      console.log("error in moving file", error);
+    }
+  };
+  // const MoveRecording = async(uri)=>{
+  //   saveAvatar = async (uri) => {
+  //     await Expo.FileSystem.moveAsync({
+  //     from: uri,
+  //     to: Expo.FileSystem.documentDirectory + 'avatar/profile'
+  //    })
+  //  }
+  // }
 
   // Function to play the recorded audio
   const PlayRecordedAudio = async () => {
@@ -214,36 +256,33 @@ export function Speak(props) {
             style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
           >
             <Title>{props.question}</Title>
+            <View
+              style={{
+                width: 100,
+                height: 50,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {props.isPlaying && (
+                <LottieView
+                  ref={animation}
+                  source={require("../../../../assets/lotties/audioPlaying.json")}
+                  autoPlay={true}
+                  loop={true}
+                />
+              )}
+
+              {IsPLaying && (
+                <LottieView
+                  ref={animation}
+                  source={require("../../../../assets/lotties/audioPlaying.json")}
+                  autoPlay={true}
+                  loop={true}
+                />
+              )}
+            </View>
           </Card.Content>
-
-          <View
-            style={{
-              width: 100,
-              height: 50,
-              justifyContent: "center",
-              alignItems: "center",
-              left: 0,
-              right: 0,
-            }}
-          >
-            {props.isPlaying && (
-              <LottieView
-                ref={animation}
-                source={require("../../../../assets/lotties/audioPlaying.json")}
-                autoPlay={true}
-                loop={true}
-              />
-            )}
-
-            {IsPLaying && (
-              <LottieView
-                ref={animation}
-                source={require("../../../../assets/lotties/audioPlaying.json")}
-                autoPlay={true}
-                loop={true}
-              />
-            )}
-          </View>
         </Card>
       </View>
       {/* main container  */}

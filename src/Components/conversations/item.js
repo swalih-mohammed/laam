@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Text
+  Text,
 } from "react-native";
 import {
   List,
@@ -16,7 +16,7 @@ import {
   Avatar,
   Title,
   Paragraph,
-  Caption
+  Caption,
 } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { COLORS, SIZES } from "../../Helpers/constants";
@@ -32,7 +32,7 @@ import { handleStart } from "../../store/actions/quiz";
 // import { View as MotiView } from "moti";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 
-const ConversationItem = props => {
+const ConversationItem = (props) => {
   const { item } = props;
   const { colors } = useTheme();
   const navigation = useNavigation();
@@ -49,7 +49,7 @@ const ConversationItem = props => {
       score: 0,
       showAnswer: false,
       answerList: [],
-      showScoreModal: false
+      showScoreModal: false,
     };
     props.handleStart(data);
   };
@@ -65,14 +65,14 @@ const ConversationItem = props => {
           : COLORS.enactive,
         justifyContent: "center",
         alignItems: "center",
-        marginRight: 10
+        marginRight: 10,
       }}
     >
       <MaterialCommunityIcons
         name="check"
         style={{
           color: COLORS.white,
-          fontSize: 10
+          fontSize: 10,
         }}
       />
     </View>
@@ -85,7 +85,7 @@ const ConversationItem = props => {
         // backgroundColor: "green",
         marginHorizontal: 20,
         marginVertical: 10,
-        borderRadius: 15
+        borderRadius: 15,
       }}
     >
       <TouchableOpacity
@@ -98,7 +98,7 @@ const ConversationItem = props => {
             elevation: 10,
             borderRadius: 15,
             height: 80,
-            width: 320
+            width: 320,
           }}
         >
           {/* <TouchableOpacity
@@ -117,14 +117,14 @@ const ConversationItem = props => {
                   borderRadius: 20 / 2,
                   // backgroundColor: colors.primary,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "center",
                 }}
               >
                 <MaterialCommunityIcons
                   name="wechat"
                   style={{
                     color: colors.primary,
-                    fontSize: 35
+                    fontSize: 35,
                   }}
                 />
               </View>
@@ -135,7 +135,7 @@ const ConversationItem = props => {
                   fontSize: 14,
                   fontWeight: "500",
                   color: COLORS.primary,
-                  opacity: 0.9
+                  opacity: 0.9,
                   // paddingBottom:
                 }}
               >
@@ -165,39 +165,36 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
   },
 
   LeftContainer: {
     flex: 1,
     justifyContent: "center",
-    marginHorizontal: 10
+    marginHorizontal: 10,
     // backgroundColor: "red"
   },
   MiddleContainer: {
     flex: 6,
     justifyContent: "center",
-    marginLeft: 5
+    marginLeft: 5,
   },
   RightContainer: {
     flex: 1,
     justifyContent: "center",
-    marginRight: 10
+    marginRight: 10,
   },
   photo: {
     width: 180,
-    height: 150
-  }
+    height: 150,
+  },
 });
 // export default LessonItem;
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     // setCourseDetails: data => dispatch(setCourseDetails(data)),
-    handleStart: data => dispatch(handleStart(data))
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
-export default connect(
-  null,
-  mapDispatchToProps
-)(ConversationItem);
+export default connect(null, mapDispatchToProps)(ConversationItem);

@@ -96,7 +96,7 @@ const CourseItem = (props) => {
                 borderRadius: 10,
                 marginTop: 10,
               }}
-              mode="outlined"
+              mode="contained"
             >
               Explore
             </Button>
