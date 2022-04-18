@@ -25,6 +25,8 @@ export function Speak(props) {
   // Refs for the audio
   const AudioRecorder = useRef(new Audio.Recording());
   const AudioPlayer = useRef(new Audio.Sound());
+  const recordedURL = useRef(null);
+  const isMounted = useRef(null);
 
   // States for UI
   const [RecordedURI, SetRecordedURI] = useState("");
@@ -42,14 +44,16 @@ export function Speak(props) {
   // Initial Load to get the audio permission
   useEffect(() => {
     GetPermission();
+    isMounted.current = true;
     // makeDir();
     if (animation.current) {
       animation.current.play(0, 100);
     }
     return () => {
       UnloadSound();
+      isMounted.current = false;
     };
-  }, []);
+  }, [props.title]);
 
   const UnloadSound = () => {
     AudioPlayer.current.unloadAsync();
@@ -90,9 +94,10 @@ export function Speak(props) {
 
   // Function to start recording
   const StartRecording = async () => {
+    if (!isMounted.current) return;
     console.log("starting to record");
+    AudioPlayer.current.unloadAsync();
     setTimeout(() => StopRecording(), 5000);
-
     try {
       // Check if user has given the permission to record
       if (AudioPermission === true) {
@@ -118,41 +123,19 @@ export function Speak(props) {
   // Function to stop recording
   const StopRecording = async () => {
     console.log("stoping audio");
+    if (!isMounted.current) return;
     try {
       // Stop recording
       await AudioRecorder.current.stopAndUnloadAsync();
-
       // Get the recorded URI here
       const result = AudioRecorder.current.getURI();
       if (result) SetRecordedURI(result);
       console.log(result);
-      // saveFile(result);
-
       // Reset the Audio Recorder
       AudioRecorder.current = new Audio.Recording();
       SetIsRecording(false);
     } catch (error) {}
   };
-
-  const saveFile = async (uri) => {
-    try {
-      await FileSystem.moveAsync({
-        from: uri,
-        to: FileSystem.documentDirectory + recordingsDir,
-      });
-    } catch (error) {
-      console.log("error in moving file", error);
-    }
-  };
-  // const MoveRecording = async(uri)=>{
-  //   saveAvatar = async (uri) => {
-  //     await Expo.FileSystem.moveAsync({
-  //     from: uri,
-  //     to: Expo.FileSystem.documentDirectory + 'avatar/profile'
-  //    })
-  //  }
-  // }
-
   // Function to play the recorded audio
   const PlayRecordedAudio = async () => {
     console.log("playing");
@@ -165,7 +148,6 @@ export function Speak(props) {
       }
       // Get Player Status
       const playerStatus = await AudioPlayer.current.getStatusAsync();
-
       // Play if song is loaded successfully
       if (playerStatus.isLoaded) {
         setSoundLoading(false);
@@ -178,8 +160,8 @@ export function Speak(props) {
     } catch (error) {}
     console.log("error in catch while playing ");
   };
-
   const onPlaybackStatusUpdate = (audio) => {
+    if (!isMounted.current) return;
     try {
       if (audio.didJustFinish) {
         console.log("original audio finished");
@@ -193,17 +175,16 @@ export function Speak(props) {
 
   // Function to stop the playing audio
   const StopPlaying = async () => {
+    if (!isMounted.current) return;
     try {
       //Get Player Status
       const playerStatus = await AudioPlayer.current.getStatusAsync();
-
       // If song is playing then stop it
       if (playerStatus.isLoaded === true)
         await AudioPlayer.current.unloadAsync();
       if (playerStatus.isPlaying) {
         await AudioPlayer.current.pauseAsync();
       }
-
       SetIsPLaying(false);
     } catch (error) {}
   };
@@ -228,38 +209,42 @@ export function Speak(props) {
       style={{ flex: 1 }}
       entering={LightSpeedInRight.duration(1000)}
     >
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Paragraph>{props.title}</Paragraph>
-        {/* <Paragraph>{IsPLaying ? "playing" : "not playing"}</Paragraph> */}
-      </View>
       <View
         style={{
-          flex: 3.5,
-          justifyContent: "center",
-          alignItems: "center",
+          flex: 5,
+          // justifyContent: "center",
+          // alignItems: "center",
           marginHorizontal: 20,
           marginVertical: 20,
-          //   backgroundColor: "red"
+          // backgroundColor: "red",
         }}
       >
-        <Card
-          style={{
-            width: width - 120,
-            height: height - 450,
-            justifyContent: "center",
-            alignItems: "center",
-            elevation: 10,
-          }}
-          mode="elevated"
-        >
-          <Card.Content
-            style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
+        <Card style={{ marginHorizontal: 15, marginTop: 10 }}>
+          <Card.Cover source={{ uri: props.photo }} />
+
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              paddingVertical: 8,
+              // paddingHorizontal: 20,
+            }}
           >
-            <Title>{props.question}</Title>
+            <Text
+              style={{
+                fontSize: 15,
+                opacity: 0.9,
+                paddingBottom: 2,
+                fontWeight: "700",
+                color: COLORS.enactive,
+              }}
+            >
+              {props.title}
+            </Text>
             <View
               style={{
                 width: 100,
-                height: 50,
+                height: 30,
                 justifyContent: "center",
                 alignItems: "center",
               }}
@@ -282,6 +267,20 @@ export function Speak(props) {
                 />
               )}
             </View>
+          </View>
+        </Card>
+        <Card
+          style={{
+            marginHorizontal: 15,
+          }}
+        >
+          <Card.Content
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Title>{props.question}</Title>
           </Card.Content>
         </Card>
       </View>
@@ -403,8 +402,10 @@ export function Speak(props) {
           <TouchableOpacity
             // onPress={PlayRecordedAudio}
             onPress={
-              IsPLaying ? () => StopPlaying() : () => PlayRecordedAudio()
+              // IsPLaying ? () => StopPlaying() : () => PlayRecordedAudio()
+              PlayRecordedAudio
             }
+            disabled={IsPLaying}
             style={styles.iconContainer}
           >
             <MaterialCommunityIcons

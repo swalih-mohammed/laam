@@ -16,18 +16,13 @@ import DragAndDrop from "./DaragAndDrop/Dulingo";
 import Speaking from "./Speak/speak";
 import Writing from "./Write/write";
 import FillInBlank from "./MultipleChoice/FillInBlank";
-import { Title, Paragraph, Button } from "react-native-paper";
-import LottieView from "lottie-react-native";
-import {
-  View,
-  StatusBar,
-  Dimensions,
-  Text,
-  ImageBackground,
-} from "react-native";
+import ReadingComprehension from "./Comprehension/reading";
+import ListeningComprehension from "./Comprehension/listening";
+import { View, StatusBar } from "react-native";
 import { COLORS, SIZES } from "../../Helpers/constants";
 import ScoreModal from "./model";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Dialogue from "./Dialogue/index";
 
 const Questions = (props) => {
   const navigation = useNavigation();
@@ -37,24 +32,13 @@ const Questions = (props) => {
   const [didJustFinish, setDidJustFinish] = React.useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
-
-  const {
-    questions,
-    testID,
-    token,
-    username,
-    lessonId,
-    unitId,
-    sectionId,
-    is_completed,
-  } = props;
-
+  const { questions, is_completed } = props;
   const allQuestions = questions;
 
   React.useEffect(() => {
     // console.log("question", allQuestions[props.index]);
     // console.log("question index", props.index);
-    console.log("questions");
+    // console.log("questions");
     isMounted.current = true;
     LoadAudio();
     return () => {
@@ -114,6 +98,21 @@ const Questions = (props) => {
     }
   };
 
+  const StopPlaying = async () => {
+    if (!isMounted.current) return;
+    try {
+      //Get Player Status
+      const playerStatus = await sound.current.getStatusAsync();
+      // If song is playing then stop it
+      if (playerStatus.isLoaded === true)
+        await AudioPlayer.current.unloadAsync();
+      if (playerStatus.isPlaying) {
+        await AudioPlayer.current.pauseAsync();
+      }
+      setIsplaying(false);
+    } catch (error) {}
+  };
+
   const onPlaybackStatusUpdate = (audio) => {
     if (isMounted.current) {
       if (audio.isLoaded) {
@@ -132,11 +131,13 @@ const Questions = (props) => {
     if (!is_completed) {
       try {
         if (props.lesson !== null) {
+          // lesson based
           setLoading(true);
           console.log("lesson exist");
           const data = {
             username: props.username,
             lessonId: props.lesson,
+            score: 5,
           };
           axios.defaults.headers = {
             "Content-Type": "application/json",
@@ -152,12 +153,13 @@ const Questions = (props) => {
               setError(err);
               console.log("error in posting complet lesson", error);
             });
-        } else if (props.unit !== null) {
-          console.log("unit exist");
+        } else {
+          console.log("not lesson based");
           setLoading(true);
           const data = {
             username: props.username,
             quizId: props.quiz,
+            score: props.score,
           };
           axios.defaults.headers = {
             "Content-Type": "application/json",
@@ -173,14 +175,16 @@ const Questions = (props) => {
               // setError(err);
               console.log("error in posting complet lesson", err);
             });
-        } else {
-          console.log("lesson and unit not null ");
         }
         if (!loading) {
-          navigation.navigate("Unit Details", {
-            id: props.unit,
-            quiz_completed: true,
-          });
+          if (props.is_general) {
+            navigation.navigate("general-test-list");
+          } else {
+            navigation.navigate("Unit Details", {
+              id: props.unit,
+              quiz_completed: true,
+            });
+          }
         }
       } catch (error) {
         console.log("error in catch while complet lesson/ quiz", error);
@@ -230,13 +234,18 @@ const Questions = (props) => {
     return words2;
   };
 
-  const processMatch = (text, randomize) => {
-    const sentance_list = text.split(",");
+  const processMatch = (text, randomize, is_sentance) => {
+    var sentance_list = "";
+    if (is_sentance) {
+      var sentance_list = text.split(".");
+    } else {
+      var sentance_list = text.split(",");
+    }
     const Bucket = [];
     for (let i = 0; i < sentance_list.length; i++) {
       let obj = {};
       obj["key"] = i;
-      obj["word"] = sentance_list[i];
+      obj["word"] = sentance_list[i].trim();
       Bucket.push(obj);
     }
 
@@ -261,6 +270,17 @@ const Questions = (props) => {
     return Bucket;
   };
   // useKeepAwake();
+  const FILL_IN_BLANK =
+    allQuestions[props.index].category === "FILL_IN_BLANK" ||
+    allQuestions[props.index].category === "FILL_IN_BLANK_WITH_PHOTO" ||
+    allQuestions[props.index].category === "FILL_IN_BLANK_WITH_PHOTO_CON"
+      ? true
+      : false;
+  const COMPREHENSION =
+    allQuestions[props.index].category === "READING_COMPREHENSION" ||
+    allQuestions[props.index].category === "LISTENING_COMPREHENSION"
+      ? true
+      : false;
   return (
     <SafeAreaView
       style={{
@@ -283,13 +303,14 @@ const Questions = (props) => {
             question={allQuestions[props.index].question}
             audio={allQuestions[props.index].audio}
             correct_option={allQuestions[props.index].correct_option}
-            // correct_option={allQuestions[props.index].correct_option}
             text_option_1={allQuestions[props.index].text_option_1}
             text_option_2={allQuestions[props.index].text_option_2}
             text_option_3={allQuestions[props.index].text_option_3}
             PlayAudio={PlayAudio}
             UnloadSound={UnloadSound}
             isPlaying={isPlaying}
+            photo={allQuestions[props.index].photo}
+            index={current}
           />
         )}
 
@@ -334,6 +355,8 @@ const Questions = (props) => {
               false
             )}
             answer={processMatch(allQuestions[props.index].answer, false)}
+            photo={allQuestions[props.index].photo}
+            quizPhoto={props.quizPhoto}
           />
         )}
         {allQuestions[props.index].category === "SPEAK" && (
@@ -345,8 +368,72 @@ const Questions = (props) => {
             PlayAudio={PlayAudio}
             UnloadSound={UnloadSound}
             isPlaying={isPlaying}
+            photo={allQuestions[props.index].photo}
+            quizPhoto={props.quizPhoto}
           />
         )}
+        {allQuestions[props.index].category === "READING_COMPREHENSION" && (
+          <ReadingComprehension
+            numberOfQuestions={allQuestions.length - 1}
+            title={allQuestions[props.index].title}
+            question={allQuestions[props.index].question}
+            answer={allQuestions[props.index].answer}
+            correct_option={allQuestions[props.index].correct_option}
+            text_option_1={allQuestions[props.index].text_option_1}
+            text_option_2={allQuestions[props.index].text_option_2}
+            text_option_3={allQuestions[props.index].text_option_3}
+            PlayAudio={PlayAudio}
+            UnloadSound={UnloadSound}
+            isPlaying={isPlaying}
+            photo={allQuestions[props.index].photo}
+            quizPhoto={props.quizPhoto}
+            quizText={props.quizText}
+            quizAudio={props.audio}
+          />
+        )}
+        {allQuestions[props.index].category === "LISTENING_COMPREHENSION" && (
+          <ListeningComprehension
+            numberOfQuestions={allQuestions.length - 1}
+            title={allQuestions[props.index].title}
+            question={allQuestions[props.index].question}
+            answer={allQuestions[props.index].answer}
+            correct_option={allQuestions[props.index].correct_option}
+            text_option_1={allQuestions[props.index].text_option_1}
+            text_option_2={allQuestions[props.index].text_option_2}
+            text_option_3={allQuestions[props.index].text_option_3}
+            PlayAudio={PlayAudio}
+            StopAudio={StopPlaying}
+            UnloadSound={UnloadSound}
+            isPlaying={isPlaying}
+            photo={allQuestions[props.index].photo}
+            quizPhoto={props.quizPhoto}
+            quizText={props.quizText}
+            quizAudio={props.quizAudio}
+          />
+        )}
+
+        {allQuestions[props.index].category === "DIALOGUE" && (
+          <Dialogue
+            numberOfQuestions={allQuestions.length - 1}
+            title={allQuestions[props.index].title}
+            question={allQuestions[props.index].question}
+            answer={allQuestions[props.index].answer}
+            correct_option={allQuestions[props.index].correct_option}
+            text_option_1={allQuestions[props.index].text_option_1}
+            text_option_2={allQuestions[props.index].text_option_2}
+            text_option_3={allQuestions[props.index].text_option_3}
+            speaker={allQuestions[props.index].audio?.voice.photo}
+            PlayAudio={PlayAudio}
+            StopAudio={StopPlaying}
+            UnloadSound={UnloadSound}
+            isPlaying={isPlaying}
+            photo={allQuestions[props.index].photo}
+            quizPhoto={props.quizPhoto}
+            quizText={props.quizText}
+            quizAudio={props.quizAudio}
+          />
+        )}
+
         {allQuestions[props.index].category === "WRITE" && (
           <Writing
             numberOfQuestions={allQuestions.length - 1}
@@ -356,15 +443,33 @@ const Questions = (props) => {
             PlayAudio={PlayAudio}
             isPlaying={isPlaying}
             UnloadSound={UnloadSound}
+            photo={allQuestions[props.index].photo}
+            quizPhoto={props.quizPhoto}
           />
         )}
-        {allQuestions[props.index].category === "FILL_IN_BLANK" && (
+        {FILL_IN_BLANK && (
           <FillInBlank
             numberOfQuestions={allQuestions.length - 1}
             title={allQuestions[props.index].title}
             qustion={allQuestions[props.index].question}
             answer={allQuestions[props.index].answer}
             correct_option={allQuestions[props.index].correct_option}
+            photo={allQuestions[props.index].photo}
+            quizPhoto={props.quizPhoto}
+            is_conversation={
+              allQuestions[props.index].category ===
+              "FILL_IN_BLANK_WITH_PHOTO_CON"
+            }
+            has_photo={
+              allQuestions[props.index].category ===
+                "FILL_IN_BLANK_WITH_PHOTO_CON" ||
+              allQuestions[props.index].category === "FILL_IN_BLANK_WITH_PHOTO"
+            }
+            question_split={processMatch(
+              allQuestions[props.index].question,
+              false,
+              true
+            )}
             text_option_1={allQuestions[props.index].text_option_1}
             text_option_2={allQuestions[props.index].text_option_2}
             text_option_3={allQuestions[props.index].text_option_3}

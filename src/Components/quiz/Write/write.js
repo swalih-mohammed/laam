@@ -45,7 +45,7 @@ export function Speak(props) {
       let answer1 = props.answer.toLowerCase();
       let answer2 = answer1.trim();
 
-      if (text2 === answer2) {
+      if (text2 === answer2 || answer2 === "any") {
         // console.log("write correct");
         setScored(true);
         if (showMessage) {
@@ -64,7 +64,6 @@ export function Speak(props) {
 
   const handleNextQuiz = () => {
     props.UnloadSound();
-    setScored(false);
     setText("");
     const data = {
       index:
@@ -73,6 +72,8 @@ export function Speak(props) {
     };
     // console.log(data);
     props.handleNext(data);
+    setShowMessage(false);
+    setScored(false);
   };
 
   return (
@@ -82,102 +83,113 @@ export function Speak(props) {
     >
       <View
         style={{
-          justifyContent: "center",
-          alignItems: "center",
-          // paddingBottom: 20,
-          flex: 1,
-          // backgroundColor: "green",
-        }}
-      >
-        <Paragraph>{props.title}</Paragraph>
-      </View>
-      <View
-        style={{
-          flex: 3.5,
-          justifyContent: "center",
-          alignItems: "center",
+          flex: 3,
+          // justifyContent: "center",
+          // alignItems: "center",
           marginHorizontal: 20,
-          marginVertical: 20,
+          // marginVertical: 20,
           // backgroundColor: "red",
         }}
       >
         <Card
           style={{
-            width: width - 80,
-            height: height - 400,
-            justifyContent: "center",
-            alignItems: "center",
-            elevation: 5,
+            marginHorizontal: 15,
+            marginTop: 10,
+            // maxHeight: SIZES.height / 4,
           }}
-          mode="elevated"
         >
-          <Card.Content
+          <Card.Cover source={{ uri: props.photo }} />
+          {showMessage ? (
+            <>
+              <LottieView
+                ref={animation}
+                source={
+                  scored
+                    ? require("../../../../assets/lotties/correct.json")
+                    : require("../../../../assets/lotties/incorrect.json")
+                }
+                autoPlay={true}
+                loop={false}
+              />
+
+              <Audio
+                correct={scored ? true : false}
+                incorrect={scored ? false : true}
+              />
+            </>
+          ) : null}
+
+          <View
             style={{
-              width: width - 120,
               justifyContent: "center",
-              //   alignItems: "center",
-              flex: 1,
+              alignItems: "center",
+              paddingVertical: 8,
+              // paddingHorizontal: 20,
             }}
           >
-            {showMessage ? (
-              <>
-                <LottieView
-                  ref={animation}
-                  source={
-                    scored
-                      ? require("../../../../assets/lotties/correct.json")
-                      : require("../../../../assets/lotties/incorrect.json")
-                  }
-                  autoPlay={true}
-                  loop={false}
-                />
-
-                <Audio
-                  correct={scored ? true : false}
-                  incorrect={scored ? false : true}
-                />
-              </>
-            ) : null}
-
+            <Text
+              style={{
+                fontSize: 15,
+                opacity: 0.9,
+                paddingBottom: 2,
+                fontWeight: "700",
+                color: COLORS.enactive,
+              }}
+            >
+              {props.title}
+            </Text>
             <View
               style={{
-                flex: 1,
-                // backgroundColor: "red",
-                justifyContent: "center",
-              }}
-            >
-              <TextInput
-                underlineColor={COLORS.primary}
-                mode="flat"
-                label="Type here..."
-                value={text}
-                onChangeText={(text) => setText(text)}
-              />
-            </View>
-            <TouchableOpacity
-              onPress={props.PlayAudio}
-              style={{
-                flex: 1,
+                width: 100,
+                height: 30,
                 justifyContent: "center",
                 alignItems: "center",
+                marginVertical: 15,
+                // backgroundColor: "red",
               }}
             >
-              <Icon name="sound" size={30} color={COLORS.primary} />
-            </TouchableOpacity>
-            <View style={{ widht: 100, height: 50 }}>
-              {props.isPlaying && (
+              {props.isPlaying ? (
                 <LottieView
                   ref={animation}
                   source={require("../../../../assets/lotties/audioPlaying.json")}
                   autoPlay={true}
                   loop={true}
                 />
+              ) : (
+                <TouchableOpacity
+                  onPress={props.PlayAudio}
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon name="sound" size={30} color={COLORS.primary} />
+                </TouchableOpacity>
               )}
             </View>
-          </Card.Content>
+          </View>
         </Card>
+
+        <View
+          style={{
+            width: width - 70,
+            marginHorizontal: 15,
+            flex: 1,
+          }}
+        >
+          <TextInput
+            underlineColor={COLORS.primary}
+            mode="flat"
+            label="Type here..."
+            value={text}
+            onChangeText={(text) => setText(text)}
+          />
+        </View>
+        {/* </Card> */}
       </View>
-      <View style={{ flex: 1 }}>
+
+      <View style={{ flex: 2 }}>
         <Button
           onPress={scored ? () => handleNextQuiz() : () => validate()}
           mode={scored ? "contained" : "outlined"}

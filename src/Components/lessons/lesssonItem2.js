@@ -8,7 +8,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { useKeepAwake } from "expo-keep-awake";
+// import { useKeepAwake } from "expo-keep-awake";
 import PhotoAndTitle from "./LessonPhoto";
 import { connect } from "react-redux";
 import { handleStart } from "../../store/actions/quiz";

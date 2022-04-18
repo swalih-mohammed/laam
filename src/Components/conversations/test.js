@@ -2,20 +2,19 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { StyleSheet, View, ScrollView, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  ImageBackground,
+  BackHandler,
+} from "react-native";
 import { COLORS, SIZES } from "../../Helpers/constants";
 // import { handleStart } from "../../store/actions/quiz";
 // import { reSetCourseDetails } from "../../store/actions/course";
 import { Caption, Button, Divider, Paragraph, Modal } from "react-native-paper";
 import { localhost } from "../../Helpers/urls";
-// import UnitTestList from "../unitTest/list";
-// import { useNavigation, TabRouter } from "@react-navigation/native";
-// import * as Animatable from "react-native-animatable";
-// import { View as MotiView } from "moti";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import Loader from "../Utils/Loader";
-// import LessonItem from "../lessons/item";
-// import QuizItem from "../quiz/item";
 import { Audio } from "expo-av";
 import LottieView from "lottie-react-native";
 import MessageItem from "./messageItem";
@@ -24,18 +23,9 @@ import SessionCompleteModal from "./sessionComplete";
 import CompleteAudio from "../../Helpers/PlayerWithoutControl";
 import Animated, {
   BounceInDown,
-  FadeOutDown,
-  BounceOutDown,
-  SlideInUp,
   SlideInDown,
   SlideOutDown,
 } from "react-native-reanimated";
-
-// import { useNavigation } from "@react-navigation/native";
-
-// import LottieView from "lottie-react-native";
-
-// const LeftContent = props => <Avatar.Icon {...props} icon="school" />;
 
 const ConversationDetail = (props) => {
   // const navigation = useNavigation();
@@ -46,6 +36,7 @@ const ConversationDetail = (props) => {
   const animation = useRef(null);
   const scrollViewRef = useRef();
   const recordedURL = useRef(null);
+  const isMounted = useRef(null);
 
   // const [conversation, setConversation] = useState(null);
   const [error, setError] = useState(null);
@@ -83,7 +74,20 @@ const ConversationDetail = (props) => {
     React.useState(false);
   const [AudioPermission, SetAudioPermission] = useState(false);
 
-  const isMounted = useRef(null);
+  // const backAction = () => {
+  //   console.log(123);
+  //   setModalVisible(false);
+  //   navigation.navigate("Unit Details", {
+  //     id: props.unit,
+  //   });
+  // };
+
+  // function handleBackButtonClick() {
+  //   navigation.goBack();
+  //   console.log("handling backbutton");
+  //   modalVisible(false);
+  //   return true;
+  // }
 
   useEffect(() => {
     GetPermission();
@@ -93,21 +97,17 @@ const ConversationDetail = (props) => {
       animation.current.play(0, 100);
     }
     // LoadAudio();
-
     return () => {
       isMounted.current = false;
-      UnloadSound();
+      sound ? sound.current.unloadAsync() : undefined;
       clearTimeout();
     };
   }, [current]);
 
-  const { messages, convId, is_completed, unit } = props;
-
-  const UnloadSound = () => {
-    sound ? sound.current.unloadAsync() : undefined;
-  };
+  const { messages, convId, is_completed, unit, photo } = props;
 
   const addToDisplay = () => {
+    if (!isMounted.current) return;
     if (listening) {
       if (!visibleListIDs.includes(current)) {
         const updatedId = [...visibleListIDs, current];
@@ -233,7 +233,6 @@ const ConversationDetail = (props) => {
       if (audio.didJustFinish) {
         setDidJustFinish(true);
         setIsplaying(false);
-
         if (listening) {
           // listening
           if (current != messages.length - 1) {
@@ -244,9 +243,13 @@ const ConversationDetail = (props) => {
             setModalVisible(true);
           }
         } else if (recording) {
-          // recording
-          // setIsRecording(true);
-          setRecordingModal(true);
+          if (current != messages.length - 1) {
+            // setCurrent(current + 1);
+            setRecordingModal(true);
+          } else {
+            console.log("last item");
+            setModalVisible(true);
+          }
         } else if (comparing) {
           console.log("audio finished in comparing");
           if (current != messages.length - 1) {
@@ -254,34 +257,15 @@ const ConversationDetail = (props) => {
             LoadAudio();
           } else {
             console.log("last item");
-            SetConversationCompleted(true);
             markConversationComplete();
+            setCompared(true);
+            setModalVisible(true);
           }
         } else {
           console.log("non");
         }
       } // audio finished
     } // audio loded
-  };
-
-  const handleClickRecord = () => {
-    if (listening) {
-      setModalVisible(false);
-      setListened(true);
-      setListening(false);
-      setRecording(true);
-      setCurrent(0);
-    }
-    if (recording) {
-      setModalVisible(false);
-      setRecorded(true);
-      setRecording(false);
-      setComparing(true);
-      setCurrent(0);
-      addToDisplay();
-    } else {
-      console.log("comparing");
-    }
   };
 
   // Function to get the audio permission
@@ -295,6 +279,7 @@ const ConversationDetail = (props) => {
   // }, 1000);
 
   const forceStopRecording = () => {
+    if (!isMounted.current) return;
     if (isRecording) {
       StopRecording();
     }
@@ -302,6 +287,7 @@ const ConversationDetail = (props) => {
 
   // Function to start recording
   const StartRecording = async () => {
+    if (!isMounted.current) return;
     console.log("starting to record");
     setIsRecording(true);
     setTimeout(() => forceStopRecording(), 15000);
@@ -332,6 +318,7 @@ const ConversationDetail = (props) => {
 
   // Function to stop recording
   const StopRecording = async () => {
+    if (!isMounted.current) return;
     console.log("stoping audio");
     setIsRecording(false);
     setRecordingModal(false);
@@ -362,22 +349,72 @@ const ConversationDetail = (props) => {
     }
   };
 
-  const restart = () => {
-    setIsPaused(false);
-    SetConversationCompleted(false);
-    setVisibleList([]);
-    setRecordedVisibleList([]);
-    setComparingVisibleList([]);
-    setListened(false);
-    setRecorded(false);
-    setCompared(false);
-    setListening(true);
-    setRecording(false);
-    setComparing(false);
-    setCurrent(0);
+  const handleClickContinue = () => {
+    if (!isMounted.current) return;
+    if (listening) {
+      setModalVisible(false);
+      setListened(true);
+      setListening(false);
+      setRecording(true);
+      setCurrent(0);
+    } else if (recording) {
+      setModalVisible(false);
+      setRecorded(true);
+      setRecording(false);
+      setComparing(true);
+      setCurrent(0);
+      addToDisplay();
+    } else if (comparing) {
+      setComparing(false);
+      SetConversationCompleted(true);
+    } else {
+      console.log("nothing");
+    }
+  };
+
+  const doAgain = () => {
+    if (!isMounted.current) return;
+    if (listening) {
+      setVisibleListIDs([]);
+      setVisibleList([]);
+      setModalVisible(false);
+      setCurrent(0);
+      addToDisplay();
+    } else if (recording) {
+      setRecordedVisibleList([]);
+      setRecordedVisibleListIDs([]);
+      setModalVisible(false);
+      setCurrent(0);
+      addToDisplay();
+    } else if (comparing) {
+      setComparingVisibleList([]);
+      setComparingVisibleListIDs([]);
+      setModalVisible(false);
+      setCurrent(0);
+      addToDisplay();
+    } else if (conversationCompleted) {
+      console.log("conv complete doing again");
+      setVisibleListIDs([]);
+      setVisibleList([]);
+      setRecordedVisibleList([]);
+      setRecordedVisibleListIDs([]);
+      setComparingVisibleList([]);
+      setComparingVisibleListIDs([]);
+      setListened(false);
+      setRecorded(false);
+      setCompared(false);
+      setListening(true);
+      setRecording(false);
+      setComparing(false);
+      setModalVisible(false);
+      SetConversationCompleted(false);
+      setCurrent(0);
+      addToDisplay();
+    }
   };
 
   const markConversationComplete = () => {
+    if (!isMounted.current) return;
     if (!is_completed) {
       try {
         const data = {
@@ -402,6 +439,14 @@ const ConversationDetail = (props) => {
     }
   };
 
+  const closeModal = () => {
+    if (!isMounted.current) return;
+    if (recordingModal) {
+      setRecordingModal(false);
+    } else {
+      setModalVisible(false);
+    }
+  };
   const FilteredList = listening
     ? visibleList.filter((item) => item.is_visible === true)
     : recording
@@ -414,6 +459,8 @@ const ConversationDetail = (props) => {
     marginHorizontal: 20,
     borderRadius: 15,
   };
+
+  const backGroundImage = { uri: photo };
 
   return (
     <View style={{ flex: 1 }}>
@@ -522,24 +569,30 @@ const ConversationDetail = (props) => {
       </View>
       <Divider />
       <View style={{ flex: 7 }}>
-        <ScrollView
-          ref={scrollViewRef}
-          onContentSizeChange={() =>
-            scrollViewRef.current.scrollToEnd({ animated: true })
-          }
+        <ImageBackground
+          source={backGroundImage}
+          resizeMode="cover"
+          style={{ flex: 1, justifyContent: "center" }}
         >
-          <View style={{ flex: 6, marginTop: 25, marginBottom: 60 }}>
-            {FilteredList.length > 0
-              ? FilteredList.map((item) => (
-                  <MessageItem
-                    item={item}
-                    key={item.id}
-                    is_speaking={item.id === current && isPlaying}
-                  />
-                ))
-              : null}
-          </View>
-        </ScrollView>
+          <ScrollView
+            ref={scrollViewRef}
+            onContentSizeChange={() =>
+              scrollViewRef.current.scrollToEnd({ animated: true })
+            }
+          >
+            <View style={{ flex: 6, marginTop: 25, marginBottom: 60 }}>
+              {FilteredList.length > 0
+                ? FilteredList.map((item) => (
+                    <MessageItem
+                      item={item}
+                      key={item.id}
+                      is_speaking={item.id === current && isPlaying}
+                    />
+                  ))
+                : null}
+            </View>
+          </ScrollView>
+        </ImageBackground>
       </View>
 
       <Modal visible={recordingModal}>
@@ -548,15 +601,43 @@ const ConversationDetail = (props) => {
           exiting={SlideOutDown}
           style={{
             marginTop: SIZES.height - 200,
-            height: "30%",
+            height: "32%",
             backgroundColor: COLORS.white,
             marginBottom: 50,
             marginHorizontal: 20,
             borderRadius: 15,
           }}
         >
+          <TouchableOpacity
+            style={{ alignSelf: "flex-end" }}
+            onPress={closeModal}
+          >
+            <View
+              style={{
+                width: 45,
+                height: 45,
+                borderRadius: 20 / 2,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <MaterialCommunityIcons
+                name="close"
+                style={{
+                  color: COLORS.enactive,
+                  fontSize: 35,
+                }}
+              />
+            </View>
+          </TouchableOpacity>
+
           <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              marginHorizontal: 20,
+            }}
           >
             <Paragraph>{messages[current + 1]?.content} </Paragraph>
           </View>
@@ -569,7 +650,7 @@ const ConversationDetail = (props) => {
               marginBottom: 10,
             }}
           >
-            {isRecording && <CompleteAudio keyPress={true} />}
+            {/* {isRecording && <CompleteAudio keyPress={true} />} */}
             {/* {isRecording && <Paragraph>{recordingtime}</Paragraph>} */}
 
             {isRecording ? (
@@ -615,7 +696,31 @@ const ConversationDetail = (props) => {
             alignItems: "center",
           }}
         >
-          <View style={{ width: 300, height: 300 }}>
+          <View style={{ width: 300, height: 350 }}>
+            <TouchableOpacity
+              style={{ alignSelf: "flex-end" }}
+              onPress={closeModal}
+            >
+              <View
+                style={{
+                  width: 45,
+                  height: 45,
+                  borderRadius: 20 / 2,
+                  // backgroundColor: COLORS.white,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="close"
+                  style={{
+                    color: COLORS.enactive,
+                    fontSize: 35,
+                  }}
+                />
+              </View>
+            </TouchableOpacity>
+
             <View style={styles.centeredView}>
               <Paragraph style={{ fontSize: 20, paddingBottom: 10 }}>
                 Good Job!
@@ -643,17 +748,28 @@ const ConversationDetail = (props) => {
             </View>
             <View style={styles.centeredView}>
               <Button
-                onPress={handleClickRecord}
-                style={{ borderRadius: 15, width: 150 }}
+                onPress={doAgain}
+                style={{ marginBottom: 15, borderRadius: 10, width: 200 }}
+                mode="outlined"
+              >
+                {listening
+                  ? "Lisen again"
+                  : recording
+                  ? "Record again"
+                  : "Compare again"}
+              </Button>
+              <Button
+                onPress={handleClickContinue}
+                style={{ borderRadius: 10, width: 200 }}
                 mode="contained"
               >
-                {listening ? "Record" : "Compare"}
+                {listening ? "Record" : recording ? "Compare " : "Continue"}
               </Button>
             </View>
           </View>
         </Animated.View>
       </Modal>
-      {conversationCompleted && <SessionCompleteModal restart={restart} />}
+      {conversationCompleted && <SessionCompleteModal doAgain={doAgain} />}
       {/* </View> */}
     </View>
   );

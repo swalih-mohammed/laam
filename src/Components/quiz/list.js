@@ -30,7 +30,7 @@ const QuizList = (props) => {
           }
         );
         setQuiz(response.data);
-        console.log(response.data);
+        // console.log(response.data);
         setLoading(false);
       } catch (err) {
         if (axios.isCancel(error)) {
@@ -48,7 +48,8 @@ const QuizList = (props) => {
     };
   }, []);
 
-  const { lessonId, QuizId, unitId, sectionId } = props.route.params;
+  const { is_general, lessonId, QuizId, unitId, sectionId } =
+    props.route.params;
 
   return (
     <>
@@ -66,7 +67,7 @@ const QuizList = (props) => {
         </View>
       ) : (
         <>
-          {quiz ? (
+          {quiz && quiz.questions.length > 0 ? (
             <Questions
               is_completed={quiz.is_completed}
               questions={quiz.questions}
@@ -74,9 +75,22 @@ const QuizList = (props) => {
               lesson={quiz.lesson}
               unit={quiz.unit}
               course={quiz.course}
+              quizPhoto={quiz.photo}
+              quizText={quiz.text}
+              quizAudio={quiz.audio?.audio}
+              is_general={is_general}
             />
-          ) : // <Text>testing</Text>
-          null}
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Paragraph>This quiz is not yet ready</Paragraph>
+            </View>
+          )}
         </>
       )}
     </>

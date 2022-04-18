@@ -79,7 +79,7 @@ const Account = (props) => {
         console.log("fetching enrolled courses");
         setLoading(true);
         const response = await axios.get(
-          `${localhost}/courses/${props.username}`,
+          `${localhost}/courses/${props.username}/category/GENERAL_ENGLISH`,
           { cancelToken: source.token }
         );
         setCourses(response.data);

@@ -85,6 +85,9 @@ const ConversationDetail = (props) => {
             id: i,
             audio: conversation[audio_name].audio,
             content: conversation[audio_name].text,
+            name: conversation[audio_name].voice.nickName,
+            photo: conversation[audio_name].voice.photo,
+
             type:
               i === 1 || i === 3 || i === 5 || i === 7 || i === 9
                 ? "answer"
@@ -122,7 +125,7 @@ const ConversationDetail = (props) => {
         </>
       ) : (
         <>
-          {conversation ? (
+          {conversation && conversation.audio_0 != null ? (
             // <Conversations
             //   convId={conversation.id}
             //   is_completed={conversation.is_completed}
@@ -133,11 +136,19 @@ const ConversationDetail = (props) => {
               is_completed={conversation.is_completed}
               messages={answers()}
               unit={conversation.unit}
-              // messages={processedList()}
-              // questions={questions()}
-              // answers={answers()}
+              photo={conversation.photo}
             />
-          ) : null}
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Paragraph>This conversation is not yet ready</Paragraph>
+            </View>
+          )}
         </>
       )}
     </SafeAreaView>

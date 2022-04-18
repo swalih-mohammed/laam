@@ -27,9 +27,9 @@ const ScoreModal = (props) => {
     }
   }, []);
 
-  const restart = () => {
-    props.restart();
-  };
+  // const doAgain = () => {
+  //   props.doAgain();
+  // };
 
   const navigateToUnit = () => {
     navigation.navigate("Unit Details", {
@@ -90,7 +90,28 @@ const ScoreModal = (props) => {
 
             <AudioPlayerWithoutControl success={true} />
           </View>
-          <View style={{ flex: 0.7, marginHorizontal: 20 }}>
+          <View
+            style={{
+              flex: 2,
+              marginHorizontal: 20,
+              // backgroundColor: "red",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              onPress={props.doAgain}
+              // disabled={score < 79}
+              style={{
+                borderRadius: 8,
+                paddingVertical: 5,
+                marginBottom: 20,
+                borderWidth: 1,
+                borderColor: COLORS.primary,
+              }}
+              mode="outlined"
+            >
+              Do again
+            </Button>
             <Button
               onPress={() => navigateToUnit()}
               // disabled={score < 79}
@@ -100,7 +121,7 @@ const ScoreModal = (props) => {
               }}
               mode="contained"
             >
-              continue
+              continue to next item
             </Button>
             {/* )} */}
           </View>

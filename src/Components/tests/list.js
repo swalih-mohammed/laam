@@ -20,13 +20,9 @@ import {
 import axios from "axios";
 // import { courseListURL } from "../../Helpers/urls";
 import { localhost } from "../../Helpers/urls";
-import CourseItem from "../../Components/course/item";
+import Item from "./item";
 import { useNavigation } from "@react-navigation/native";
-import GetStarted from "../../Screens/getStarted";
-import Loader from "../Utils/Loader";
 import LottieView from "lottie-react-native";
-import { useFocusEffect } from "@react-navigation/native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 // import * as Speech from "expo-speech";
 
@@ -35,47 +31,35 @@ const ITEM_HEIGHT = ITEM_WIDTH * 2;
 
 const CourseList = (props) => {
   const navigation = useNavigation();
-  const [courses, setCourses] = useState();
-  // const [arabicCourses, setArabicCourses] = useState(null);
-  // const [englishCourses, setEnglishCourses] = useState(null);
-  const [otherCourses, setOtherCourses] = useState(null);
+  const [tests, setTests] = useState();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   // const [refreshing, setRefreshing] = React.useState(false);
 
   useEffect(() => {
     const source = axios.CancelToken.source();
-    getCourses(source);
-    pushToHome();
+    getTests(source);
+    // pushToHome();
     return () => {
       // console.log("course list unmounting");
       source.cancel();
     };
   }, []);
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     console.log("focusing course list ");
-  //     const source = axios.CancelToken.source();
-  //     getCourses(source);
-  //     return () => {
-  //       console.log("un focusing course list ");
-  //       // console.log("course list page unmounting");
-  //       source.cancel();
-  //     };
-  //   }, [])
-  // );
-
-  const getCourses = async (source) => {
+  const getTests = async (source) => {
     try {
-      console.log("fetching course list");
+      console.log("fetching tests list");
       setLoading(true);
-      const response = await axios.get(`${localhost}/courses/GENERAL_ENGLISH`, {
-        cancelToken: source.token,
-      });
+      const response = await axios.get(
+        `${localhost}/quizzes/category/GENERAL_ENGLISH/${props.username}`,
+        {
+          cancelToken: source.token,
+        }
+      );
       setLoading(false);
       console.log("loading aftr fetch");
-      setCourses(response.data);
+      setTests(response.data);
+      console.log(response.data);
     } catch (err) {
       if (axios.isCancel(error)) {
         console.log("axios cancel error");
@@ -145,12 +129,11 @@ const CourseList = (props) => {
                 // opacity: 0.9,
               }}
             >
-              A paltform that includes everything you need to take your English
-              to the next level.
+              4 levels of tests avaialble
             </Text>
             <TouchableOpacity
               // disabled={loading}
-              onPress={() => navigation.navigate("general-test-list")}
+              // onPress={handlePress}
               style={{
                 width: 180,
                 height: 30,
@@ -185,7 +168,7 @@ const CourseList = (props) => {
           </View>
         </View>
         <View style={{ flex: 4 }}>
-          {!courses && loading && (
+          {!tests && loading && (
             <View
               style={{
                 zIndex: -1,
@@ -210,7 +193,7 @@ const CourseList = (props) => {
             </View>
           )}
 
-          {courses && (
+          {tests && (
             <View
               style={{
                 // flex: 1,
@@ -220,8 +203,8 @@ const CourseList = (props) => {
                 // backgroundColor: "green",
               }}
             >
-              {courses?.map((item, index) => {
-                return <CourseItem key={index} item={item} loading={loading} />;
+              {tests?.map((item, index) => {
+                return <Item key={index} item={item} loading={loading} />;
               })}
             </View>
           )}
@@ -234,6 +217,7 @@ const CourseList = (props) => {
 const mapStateToProps = (state) => {
   return {
     token: state.auth.token,
+    username: state.auth.username,
     // tokenLoading: state.auth.loading
   };
 };

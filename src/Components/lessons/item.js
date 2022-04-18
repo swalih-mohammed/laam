@@ -90,16 +90,16 @@ const LessonItem = (props) => {
       }}
     >
       <TouchableOpacity
-        style={{ justifyContent: "center", alignItems: "center" }}
+        // style={{ justifyContent: "center", alignItems: "center" }}
         onPress={handlePress}
       >
         <Card
           mode="elevated"
           style={{
             elevation: 10,
-            borderRadius: 10,
-            height: 80,
-            width: 320,
+            borderRadius: 15,
+            height: 100,
+            // width: 320,
           }}
         >
           <View style={styles.container}>

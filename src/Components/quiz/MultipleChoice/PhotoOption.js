@@ -7,7 +7,7 @@ import {
   Dimensions,
   Image,
   Text,
-  View
+  View,
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import Icon from "react-native-vector-icons/AntDesign";
@@ -27,11 +27,11 @@ import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import {
   handleStart,
   handleValidate,
-  handleNext
+  handleNext,
 } from "../../../store/actions/quiz";
 // import console = require("console");
 
-const renderOptions = props => {
+const renderOptions = (props) => {
   // console.log(props.photo_1);
   const animation = React.useRef(null);
 
@@ -46,7 +46,7 @@ const renderOptions = props => {
   const [selectedOption, setSelectedOption] = useState("");
   const [showNextButton, setShowNextButton] = useState(false);
 
-  const validate = option => {
+  const validate = (option) => {
     setShowMessage(true);
     setShowNextButton(true);
     if (option) {
@@ -60,7 +60,7 @@ const renderOptions = props => {
           animation.current.play(0, 100);
         }
         const data = {
-          score: props.score + 1
+          score: props.score + 1,
         };
         props.handleValidate(data);
       } else {
@@ -78,7 +78,7 @@ const renderOptions = props => {
     const data = {
       index:
         props.index !== props.numberOfQuestions ? props.index + 1 : props.index,
-      showScoreModal: props.index === props.numberOfQuestions ? true : false
+      showScoreModal: props.index === props.numberOfQuestions ? true : false,
     };
     // console.log(data);
     props.handleNext(data);
@@ -93,7 +93,7 @@ const renderOptions = props => {
         style={{
           justifyContent: "space-around",
           alignItems: "center",
-          flex: 1.5
+          flex: 1.5,
           // backgroundColor: "red"
         }}
       >
@@ -102,7 +102,7 @@ const renderOptions = props => {
           style={{
             // color: COLORS.black,
             fontSize: 20,
-            paddingBottom: 25
+            paddingBottom: 25,
           }}
         >
           {props.question}
@@ -131,7 +131,7 @@ const renderOptions = props => {
           flexDirection: "row",
           flexWrap: "wrap",
           flex: 3,
-          justifyContent: "center"
+          justifyContent: "center",
           // backgroundColor: "red"
         }}
       >
@@ -152,7 +152,7 @@ const renderOptions = props => {
                 ? COLORS.success
                 : showNextButton && selectedOption != "1"
                 ? COLORS.error
-                : COLORS.primary
+                : COLORS.primary,
           }}
         >
           <Image style={styles.option_photo} source={{ uri: props.photo_1 }} />
@@ -174,7 +174,7 @@ const renderOptions = props => {
                 ? COLORS.success
                 : showNextButton && selectedOption != "2"
                 ? COLORS.error
-                : COLORS.primary
+                : COLORS.primary,
           }}
         >
           <Image style={styles.option_photo} source={{ uri: props.photo_2 }} />
@@ -197,7 +197,7 @@ const renderOptions = props => {
                 ? COLORS.success
                 : showNextButton && selectedOption != "3"
                 ? COLORS.error
-                : COLORS.primary
+                : COLORS.primary,
           }}
         >
           <Image style={styles.option_photo} source={{ uri: props.photo_3 }} />
@@ -220,7 +220,7 @@ const renderOptions = props => {
                 ? COLORS.success
                 : showNextButton && selectedOption != "4"
                 ? COLORS.error
-                : COLORS.primary
+                : COLORS.primary,
           }}
         >
           <Image style={styles.option_photo} source={{ uri: props.photo_4 }} />
@@ -231,7 +231,7 @@ const renderOptions = props => {
           flex: 1.5,
           // backgroundColor: "red",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         {props.audio ? (
@@ -244,7 +244,7 @@ const renderOptions = props => {
               name="sound"
               style={{
                 // color: "black",
-                fontSize: 30
+                fontSize: 30,
               }}
             />
           </TouchableOpacity>
@@ -256,7 +256,7 @@ const renderOptions = props => {
             bottom: 0,
             right: 0,
             left: 0,
-            flex: 1
+            flex: 1,
           }}
         >
           <Button
@@ -279,26 +279,23 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: 5,
     margin: 5,
-    borderColor: "red"
-  }
+    borderColor: "red",
+  },
 });
 
 // export default renderOptions;
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     index: state.quiz.index,
     score: state.quiz.score,
     showAnswer: state.quiz.showAnswer,
-    showScoreModal: state.quiz.showAnswer
+    showScoreModal: state.quiz.showAnswer,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    handleNext: data => dispatch(handleNext(data)),
-    handleValidate: data => dispatch(handleValidate(data))
+    handleNext: (data) => dispatch(handleNext(data)),
+    handleValidate: (data) => dispatch(handleValidate(data)),
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(renderOptions);
+export default connect(mapStateToProps, mapDispatchToProps)(renderOptions);

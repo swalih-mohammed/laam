@@ -8,11 +8,12 @@ import {
   Image,
   Text,
   View,
+  ScrollView,
 } from "react-native";
 // import { View as MotiView, SafeAreaView } from "moti";
 
 const { width, height } = Dimensions.get("window");
-import { Button, Title, Paragraph } from "react-native-paper";
+import { Button, Title, Paragraph, Card } from "react-native-paper";
 import { COLORS, SIZES } from "../../../Helpers/constants";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -143,39 +144,70 @@ const renderOptions = (props) => {
     >
       <View
         style={{
-          flex: 1.5,
-          justifyContent: "center",
-          alignItems: "center",
-          // backgroundColor: "red"
+          flex: 2,
+          // marginBottom: 25,
+          // justifyContent: "center",
+          // alignItems: "center",
+          // backgroundColor: "green",
         }}
       >
-        <Title style={{ fontSize: 18, color: "black" }}>{title}</Title>
-        {showMessage ? (
-          <>
-            <LottieView
-              ref={animation}
-              source={
-                scored
-                  ? require("../../../../assets/lotties/correct.json")
-                  : require("../../../../assets/lotties/incorrect.json")
-              }
-              autoPlay={true}
-              loop={false}
-            />
-            <Audio
-              correct={scored ? true : false}
-              incorrect={scored ? false : true}
-            />
-          </>
-        ) : null}
+        <Card
+          style={{
+            marginHorizontal: 15,
+            marginTop: 10,
+            // maxHeight: SIZES.height / 4,
+          }}
+        >
+          <Card.Cover source={{ uri: props.photo }} />
+          {showMessage ? (
+            <>
+              <LottieView
+                ref={animation}
+                source={
+                  scored
+                    ? require("../../../../assets/lotties/correct.json")
+                    : require("../../../../assets/lotties/incorrect.json")
+                }
+                autoPlay={true}
+                loop={false}
+              />
+              <Audio
+                correct={scored ? true : false}
+                incorrect={scored ? false : true}
+              />
+            </>
+          ) : null}
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              paddingVertical: 8,
+              // marginBottom: 20,
+              // paddingHorizontal: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                opacity: 0.9,
+                paddingVertical: 10,
+                fontWeight: "700",
+                color: COLORS.enactive,
+              }}
+            >
+              {props.title}
+            </Text>
+          </View>
+        </Card>
       </View>
-
+      {/* <ScrollView style={{ flex: 1, backgroundColor: "red" }}> */}
       <View
         style={{
           flex: 3,
           flexDirection: "row",
-          // backgroundColor: "green",
+          // backgroundColor: "red",
           justifyContent: "center",
+          alignItems: "center",
           marginHorizontal: 5,
           marginVertical: 5,
         }}
@@ -308,15 +340,16 @@ const renderOptions = (props) => {
           )}
         </View>
       </View>
+      {/* </ScrollView> */}
 
       <View
         style={{
-          position: "absolute",
+          // position: "absolute",
           bottom: 0,
           right: 0,
           left: 0,
-          // backgroundColor: "red",
-          flex: 1,
+          // backgroundColor: "green",
+          flex: 0.5,
         }}
       >
         <Button
@@ -327,7 +360,16 @@ const renderOptions = (props) => {
             showAnswer ? () => handleNextQuiz() : () => handleValidateQuiz()
           }
           // disabled={!showAnswer}
-          style={{ paddingBottom: 10, paddingTop: 10 }}
+          style={{
+            paddingBottom: 10,
+            paddingTop: 10,
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            left: 0,
+            // backgroundColor: "red",
+            flex: 1,
+          }}
         >
           {showAnswer ? "NEXT" : "CHECK"}
         </Button>

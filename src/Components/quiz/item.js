@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Text
+  Text,
 } from "react-native";
 import {
   List,
@@ -16,7 +16,7 @@ import {
   Avatar,
   Title,
   Paragraph,
-  Caption
+  Caption,
 } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { COLORS, SIZES } from "../../Helpers/constants";
@@ -31,7 +31,7 @@ import { useTheme } from "react-native-paper";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 // import console = require("console");
 
-const QuizItem = props => {
+const QuizItem = (props) => {
   const { item } = props;
   //   const { colors } = useTheme();
   const navigation = useNavigation();
@@ -43,7 +43,7 @@ const QuizItem = props => {
       QuizId: item.id,
       lessonId: 1,
       unitId: 1,
-      sectionId: 1
+      sectionId: 1,
     });
   };
   const resetQuiz = () => {
@@ -53,7 +53,7 @@ const QuizItem = props => {
       score: 0,
       showAnswer: false,
       answerList: [],
-      showScoreModal: false
+      showScoreModal: false,
     };
     props.handleStart(data);
   };
@@ -67,14 +67,14 @@ const QuizItem = props => {
         backgroundColor: item.quizCompleted ? COLORS.primary : COLORS.enactive,
         justifyContent: "center",
         alignItems: "center",
-        marginRight: 10
+        marginRight: 10,
       }}
     >
       <MaterialCommunityIcons
         name="check"
         style={{
           color: COLORS.white,
-          fontSize: 10
+          fontSize: 10,
         }}
       />
     </View>
@@ -87,11 +87,11 @@ const QuizItem = props => {
         // backgroundColor: "green",
         marginHorizontal: 20,
         marginVertical: 10,
-        borderRadius: 15
+        borderRadius: 15,
       }}
     >
       <TouchableOpacity
-        style={{ justifyContent: "center", alignItems: "center" }}
+        // style={{ justifyContent: "center", alignItems: "center" }}
         onPress={handlePressQuizItem}
       >
         <Card
@@ -99,8 +99,8 @@ const QuizItem = props => {
           style={{
             elevation: 10,
             borderRadius: 15,
-            height: 80,
-            width: 320
+            height: 100,
+            // width: 320,
           }}
         >
           <View style={styles.container}>
@@ -113,7 +113,7 @@ const QuizItem = props => {
                   borderRadius: 20 / 2,
                   // backgroundColor: colors.primary,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "center",
                 }}
               >
                 {item.category === "LISTENING" && (
@@ -121,7 +121,7 @@ const QuizItem = props => {
                     name="headphones"
                     style={{
                       color: COLORS.primary,
-                      fontSize: 35
+                      fontSize: 35,
                     }}
                   />
                 )}
@@ -130,7 +130,7 @@ const QuizItem = props => {
                     name="microphone"
                     style={{
                       color: COLORS.primary,
-                      fontSize: 35
+                      fontSize: 35,
                     }}
                   />
                 )}
@@ -139,7 +139,7 @@ const QuizItem = props => {
                     name="book-open"
                     style={{
                       color: COLORS.primary,
-                      fontSize: 35
+                      fontSize: 35,
                     }}
                   />
                 )}
@@ -149,7 +149,7 @@ const QuizItem = props => {
                     name="lead-pencil"
                     style={{
                       color: COLORS.primary,
-                      fontSize: 35
+                      fontSize: 35,
                     }}
                   />
                 )}
@@ -158,7 +158,7 @@ const QuizItem = props => {
                     name="file-word-box-outline"
                     style={{
                       color: COLORS.primary,
-                      fontSize: 35
+                      fontSize: 35,
                     }}
                   />
                 )}
@@ -167,7 +167,7 @@ const QuizItem = props => {
                     name="book"
                     style={{
                       color: COLORS.primary,
-                      fontSize: 35
+                      fontSize: 35,
                     }}
                   />
                 )}
@@ -176,7 +176,16 @@ const QuizItem = props => {
                     name="paper-cut-vertical"
                     style={{
                       color: COLORS.primary,
-                      fontSize: 35
+                      fontSize: 35,
+                    }}
+                  />
+                )}
+                {item.category === "DIALOGUE" && (
+                  <MaterialCommunityIcons
+                    name="chat-processing"
+                    style={{
+                      color: COLORS.primary,
+                      fontSize: 35,
                     }}
                   />
                 )}
@@ -188,7 +197,7 @@ const QuizItem = props => {
                   fontSize: 14,
                   fontWeight: "500",
                   color: COLORS.primary,
-                  opacity: 0.9
+                  opacity: 0.9,
                   // paddingBottom:
                 }}
               >
@@ -217,39 +226,36 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
   },
 
   LeftContainer: {
     flex: 1,
     justifyContent: "center",
-    marginHorizontal: 10
+    marginHorizontal: 10,
     // backgroundColor: "red"
   },
   MiddleContainer: {
     flex: 6,
     justifyContent: "center",
-    marginLeft: 5
+    marginLeft: 5,
   },
   RightContainer: {
     flex: 1,
     justifyContent: "center",
-    marginRight: 10
+    marginRight: 10,
   },
   photo: {
     width: 180,
-    height: 150
-  }
+    height: 150,
+  },
 });
 // export default QuizItem;
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     // setCourseDetails: data => dispatch(setCourseDetails(data)),
-    handleStart: data => dispatch(handleStart(data))
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
-export default connect(
-  null,
-  mapDispatchToProps
-)(QuizItem);
+export default connect(null, mapDispatchToProps)(QuizItem);

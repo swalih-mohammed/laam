@@ -33,11 +33,7 @@ import GetStartedScreen from "./src/Screens/getStarted";
 import TestDetail from "./src/Components/quiz/list";
 import ConversationDetails from "./src/Components/conversations/detail";
 import CertificateScreen from "./src/Screens/CertificateScreen";
-// import TestScreen from "./src/Screens/TestScreen";
-// import DraggingQuiz from "./src/Components/quiz/dragAndDrop/index";
-// import Getstarted from "./src/Screens/getStarted";
-// import LoginScreen from "./src/Screens/Login";
-// import TestDetail from "./src/Components/pacticeTest/list";
+import GeneralTestList from "./src/Components/tests/list";
 
 const Stack = createStackNavigator();
 
@@ -208,6 +204,14 @@ export default function App() {
                   }}
                   name="Certificate"
                   component={CertificateScreen}
+                />
+
+                <Stack.Screen
+                  options={{
+                    headerShown: false,
+                  }}
+                  name="general-test-list"
+                  component={GeneralTestList}
                 />
               </Stack.Navigator>
             </NavigationContainer>

@@ -89,7 +89,7 @@ const ConversationItem = (props) => {
       }}
     >
       <TouchableOpacity
-        style={{ justifyContent: "center", alignItems: "center" }}
+        // style={{ justifyContent: "center", alignItems: "center" }}
         onPress={handlePress}
       >
         <Card
@@ -97,8 +97,8 @@ const ConversationItem = (props) => {
           style={{
             elevation: 10,
             borderRadius: 15,
-            height: 80,
-            width: 320,
+            height: 100,
+            // width: 320,
           }}
         >
           {/* <TouchableOpacity

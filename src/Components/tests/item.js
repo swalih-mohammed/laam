@@ -20,6 +20,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import { TouchableOpacity } from "react-native";
+import { handleStart } from "../../store/actions/quiz";
 import { setCourseDetails } from "../../store/actions/course";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 const { width, height } = Dimensions.get("window");
@@ -42,16 +43,27 @@ const CourseItem = (props) => {
   //   }).start();
   // }, []);
 
-  const handlePress = () => {
-    if (props.token) {
-      const data = {
-        course: item.id,
-      };
-      props.setCourseDetails(data);
-      navigation.navigate("Course Details", { id: item.id });
-    } else {
-      navigation.navigate("Get Started");
-    }
+  const handlePressQuizItem = () => {
+    console.log("handling press quiz item");
+    resetQuiz();
+    navigation.navigate("Quiz Detail", {
+      QuizId: item.id,
+      lessonId: 1,
+      unitId: 1,
+      sectionId: 1,
+      is_general: true,
+    });
+  };
+  const resetQuiz = () => {
+    console.log("resetting questions index");
+    const data = {
+      index: 0,
+      score: 0,
+      showAnswer: false,
+      answerList: [],
+      showScoreModal: false,
+    };
+    props.handleStart(data);
   };
 
   const image = { uri: item.photo };
@@ -127,59 +139,10 @@ const CourseItem = (props) => {
                 {item.description}
               </Text>
             </View>
-            {/* <Button
-              disabled={loading}
-              onPress={handlePress}
-              style={{
-                width: 120,
-                height: 40,
-                // alignSelf: "flex-end",
-                borderRadius: 15,
-                marginTop: 10,
-                // marginHorizontal: 10,
-                alignSelf: "flex-start",
-              }}
-              mode="contained"
-            >
-              Explore
-            </Button> */}
-            {/* <TouchableOpacity
-              disabled={loading}
-              onPress={handlePress}
-              style={{
-                width: 180,
-                height: 30,
-                // alignSelf: "flex-end",
-                borderRadius: 10,
-                marginTop: 10,
 
-                // marginHorizontal: 10,
-                alignSelf: "flex-start",
-                // justifyContent: "center",
-                alignItems: "center",
-                // left: 0,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "600",
-                  color: "#ffffff",
-                  backgroundColor: COLORS.primary,
-                  // color: "#46494c",
-                  // opacity: 0.9,
-                  paddingHorizontal: 25,
-
-                  paddingVertical: 6,
-                  borderRadius: 12,
-                }}
-              >
-                {"EXPLORE"}
-              </Text>
-            </TouchableOpacity> */}
             <TouchableOpacity
               disabled={loading}
-              onPress={handlePress}
+              onPress={handlePressQuizItem}
               style={{
                 width: 130,
                 height: 30,
@@ -209,7 +172,7 @@ const CourseItem = (props) => {
                   borderRadius: 12,
                 }}
               >
-                {"EXPLORE"}
+                {"TAKE TEST"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -294,7 +257,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setCourseDetails: (data) => dispatch(setCourseDetails(data)),
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(CourseItem);

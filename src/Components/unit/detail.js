@@ -48,41 +48,6 @@ const UnitDetail = (props) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   console.log("unit detal mounting");
-  //   // getUnitDetail();
-  //   let source = axios.CancelToken.source();
-  //   const getUnitDetail = async () => {
-  //     const unitId = id;
-  //     const username = props.username;
-  //     if (username !== null && unitId !== null) {
-  //       try {
-  //         setLoading(true);
-  //         const response = await axios.get(
-  //           `${localhost}/courses/units/${unitId}/${username}`,
-  //           { cancelToken: source.token }
-  //         );
-  //         setUnit(response.data[0]);
-  //         setQuizzes(response.data[0].quizzes);
-  //         progressBar();
-  //         setLoading(false);
-  //       } catch (err) {
-  //         if (axios.isCancel(error)) {
-  //           console.log("axios cancel error");
-  //         } else {
-  //           console.log("error occured in catch");
-  //           console.log(err);
-  //         }
-  //       }
-  //     }
-  //   };
-  //   getUnitDetail();
-  //   return () => {
-  //     console.log("unit detail unmounting");
-  //     source.cancel();
-  //   };
-  // }, []);
-
   useFocusEffect(
     React.useCallback(() => {
       console.log("unit detail focussing");
@@ -120,12 +85,7 @@ const UnitDetail = (props) => {
       };
     }, [])
   );
-  // const PushToLessonWhenOneLesson = (lesson, lenght) => {
-  //   if (lenght === 1) {
-  //     console.log("only one lesson hence pusing to lesson details");
-  //     navigation.navigate("Lesson Details", { id: lesson });
-  //   }
-  // };
+
   const progressBar = () => {
     if (unit) {
       const lesson_len = unit.lessons.length;
@@ -155,10 +115,6 @@ const UnitDetail = (props) => {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       {loading ? (
-        // <>
-        //   <Text>Unit detail loading</Text>
-        //   <Loader />
-        // </>
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
@@ -174,7 +130,13 @@ const UnitDetail = (props) => {
           <ScrollView>
             {unit && (
               <Animated.View entering={LightSpeedInRight}>
-                <Card style={{ marginHorizontal: 15, marginTop: 10 }}>
+                <Card
+                  style={{
+                    marginHorizontal: 20,
+                    marginTop: 10,
+                    backgroundColor: "#e9d985",
+                  }}
+                >
                   <Card.Cover source={{ uri: unit.photo }} />
 
                   <View
@@ -205,10 +167,22 @@ const UnitDetail = (props) => {
                     >
                       {unit.title}
                     </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        opacity: 0.9,
+                        color: COLORS.primary,
+                        paddingBottom: 2,
+                        // color: COLORS.enactive
+                      }}
+                    >
+                      {unit.subtitle}
+                    </Text>
 
-                    <Paragraph>{unit.description}</Paragraph>
+                    {/* <Paragraph>{unit.subtitle}</Paragraph>
+                     */}
                   </View>
-                  <View
+                  {/* <View
                     style={{
                       justifyContent: "flex-start",
                       flexDirection: "row",
@@ -227,8 +201,8 @@ const UnitDetail = (props) => {
                     >
                       {unit.subtitle}
                     </Text>
-                  </View>
-                  <View
+                  </View> */}
+                  {/* <View
                     style={{
                       justifyContent: "flex-start",
                       flexDirection: "row",
@@ -247,7 +221,7 @@ const UnitDetail = (props) => {
                     >
                       {unit.vocab_count} new words
                     </Text>
-                  </View>
+                  </View> */}
                   <View>
                     <ProgressBar
                       progress={progressBar()}
@@ -288,7 +262,14 @@ const UnitDetail = (props) => {
               {unit &&
                 unit.quizzes &&
                 unit.quizzes.map((item, index) => {
-                  return <QuizItem key={index} item={item} unitId={unit.id} />;
+                  return (
+                    <QuizItem
+                      key={index}
+                      item={item}
+                      unitId={unit.id}
+                      unitPhoto={unit.photo}
+                    />
+                  );
                 })}
             </View>
           </ScrollView>

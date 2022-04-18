@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Button, Title, Paragraph } from "react-native-paper";
+import { Button, Title, Paragraph, Card } from "react-native-paper";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 const { width, height } = Dimensions.get("window");
 import { COLORS, SIZES } from "../../../Helpers/constants";
@@ -30,6 +30,7 @@ const renderOptions = (props) => {
   const [showMessage, setShowMessage] = useState(false);
   const [showNextButton, setShowNextButton] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  const [currectOption, setCurrectOption] = useState(0);
 
   const { Choices, title, question, numberOfQuestions } = props;
 
@@ -58,8 +59,10 @@ const renderOptions = (props) => {
   };
 
   const handleNextQuiz = () => {
+    setSelectedOption(0);
     props.UnloadSound();
     setScored(false);
+    setShowMessage(false);
     setShowNextButton(false);
     const data = {
       index:
@@ -80,56 +83,102 @@ const renderOptions = (props) => {
     >
       <View
         style={{
-          flex: 2,
-          justifyContent: "center",
-          alignItems: "center",
+          flex: 3,
+          // justifyContent: "center",
+          // alignItems: "center",
           // backgroundColor: "red",
         }}
       >
-        <View
-          style={{ flex: 2, justifyContent: "center", alignItems: "center" }}
+        <Card
+          style={{
+            marginHorizontal: 15,
+            marginTop: 10,
+            // maxHeight: SIZES.height / 4,
+          }}
         >
-          <Paragraph>{props.title}</Paragraph>
-        </View>
-        <View style={{ flex: 1, width: 100, height: 20 }}>
-          {props.isPlaying && (
-            <LottieView
-              ref={animation}
-              source={require("../../../../assets/lotties/audioPlaying.json")}
-              autoPlay={true}
-              loop={true}
-            />
-          )}
-        </View>
+          <Card.Cover source={{ uri: props.photo }} />
+          {showMessage ? (
+            <>
+              <LottieView
+                ref={animation}
+                source={
+                  scored
+                    ? require("../../../../assets/lotties/correct.json")
+                    : require("../../../../assets/lotties/incorrect.json")
+                }
+                autoPlay={true}
+                loop={false}
+              />
 
-        {/* <View style={{ widht: 100, height: 50, backgroundColor: "red" }}> */}
+              <Audio
+                correct={scored ? true : false}
+                incorrect={scored ? false : true}
+              />
+            </>
+          ) : null}
 
-        {/* </View> */}
-        {showMessage ? (
-          <>
-            <LottieView
-              ref={animation}
-              source={
-                scored
-                  ? require("../../../../assets/lotties/correct.json")
-                  : require("../../../../assets/lotties/incorrect.json")
-              }
-              autoPlay={true}
-              loop={false}
-            />
-            <Audio
-              correct={scored ? true : false}
-              incorrect={scored ? false : true}
-            />
-          </>
-        ) : null}
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              paddingVertical: 8,
+              // paddingHorizontal: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                opacity: 0.9,
+                paddingBottom: 2,
+                fontWeight: "700",
+                color: COLORS.enactive,
+              }}
+            >
+              {props.title}
+            </Text>
+            <View
+              style={{
+                width: 100,
+                height: 30,
+                justifyContent: "center",
+                alignItems: "center",
+                marginVertical: 15,
+                // backgroundColor: "red",
+              }}
+            >
+              {props.isPlaying ? (
+                <LottieView
+                  ref={animation}
+                  source={require("../../../../assets/lotties/audioPlaying.json")}
+                  autoPlay={true}
+                  loop={true}
+                />
+              ) : props.audio ? (
+                <TouchableOpacity
+                  style={{ flex: 1, alignSelf: "center" }}
+                  disabled={props.isPlaying}
+                  onPress={props.PlayAudio}
+                >
+                  <Icon
+                    name="sound"
+                    style={{
+                      // color: "black",
+                      alignSelf: "center",
+                      fontSize: 30,
+                    }}
+                  />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          </View>
+        </Card>
       </View>
       <View
         style={{
           flex: 4,
           justifyContent: "center",
           alignItems: "center",
-          // backgroundColor: "green"
+          // backgroundColor: "green",
         }}
       >
         <TouchableOpacity
@@ -142,10 +191,12 @@ const renderOptions = (props) => {
             borderWidth: showNextButton ? 3 : 1,
             // backgroundColor: COLORS.primary,
             opacity: showNextButton ? 0.8 : 1,
+            transform: [{ scale: selectedOption === 1 ? 1.1 : 1 }],
+
             borderColor:
-              showNextButton && selectedOption === "1"
+              showNextButton && props.correct_option === 1
                 ? COLORS.success
-                : showNextButton && selectedOption != "1"
+                : showNextButton && props.correct_option != 1
                 ? COLORS.error
                 : COLORS.primary,
 
@@ -172,10 +223,12 @@ const renderOptions = (props) => {
             // backgroundColor: COLORS.primary,
             borderWidth: showNextButton ? 3 : 1,
             opacity: showNextButton ? 0.8 : 1,
+            transform: [{ scale: selectedOption === 2 ? 1.1 : 1 }],
+
             borderColor:
-              showNextButton && selectedOption === "2"
+              showNextButton && props.correct_option === 2
                 ? COLORS.success
-                : showNextButton && selectedOption != "2"
+                : showNextButton && props.correct_option != 2
                 ? COLORS.error
                 : COLORS.primary,
 
@@ -201,10 +254,12 @@ const renderOptions = (props) => {
             // backgroundColor: COLORS.primary,
             borderWidth: showNextButton ? 3 : 1,
             opacity: showNextButton ? 0.8 : 1,
+            transform: [{ scale: selectedOption === 3 ? 1.1 : 1 }],
+
             borderColor:
-              showNextButton && selectedOption === "3"
+              showNextButton && props.correct_option === 3
                 ? COLORS.success
-                : showNextButton && selectedOption != "3"
+                : showNextButton && props.correct_option != 3
                 ? COLORS.error
                 : COLORS.primary,
 
@@ -220,35 +275,10 @@ const renderOptions = (props) => {
           <Paragraph style={{ fontSize: 14 }}>{props.text_option_3}</Paragraph>
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          flex: 1,
-          // backgroundColor: "red",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {props.audio ? (
-          <TouchableOpacity
-            style={{ flex: 1, alignSelf: "center" }}
-            disabled={props.isPlaying}
-            onPress={props.PlayAudio}
-          >
-            <Icon
-              name="sound"
-              style={{
-                // color: "black",
-                alignSelf: "center",
-                fontSize: 30,
-              }}
-            />
-          </TouchableOpacity>
-        ) : null}
-      </View>
 
       <View
         style={{
-          flex: 1,
+          flex: 0.7,
           // backgroundColor: "red"
         }}
       >

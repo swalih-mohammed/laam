@@ -26,6 +26,8 @@ import Icon from "react-native-vector-icons/AntDesign";
 import LottieView from "lottie-react-native";
 import * as Haptics from "expo-haptics";
 import { MARGIN_TOP } from "../DaragAndDrop/Layout";
+// import { setAudioModeAsync } from "expo-av/build/Audio";
+
 // import console = require("console");
 
 export function Speak(props) {
@@ -36,7 +38,8 @@ export function Speak(props) {
   const [showMessage, setShowMessage] = useState(false);
   const [showNextButton, setShowNextButton] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
-
+  const [any, setAny] = useState(false);
+  // console.log(props.question_split);
   const validate = (option) => {
     setShowMessage(true);
     setShowNextButton(true);
@@ -44,8 +47,11 @@ export function Speak(props) {
       setSelectedOption(option);
       let str_option = option.toString();
       let str_correct_option = props.correct_option.toString();
-      if (str_option === str_correct_option) {
+      if (str_option === str_correct_option || str_correct_option === "ANY") {
         console.log("option correct");
+        if (str_correct_option === "ANY") {
+          setAny(true);
+        }
         setScored(true);
         if (showMessage) {
           animation.current.play(0, 100);
@@ -63,8 +69,11 @@ export function Speak(props) {
 
   const handleNextQuiz = () => {
     props.UnloadSound();
+    setShowMessage(false);
     setScored(false);
     setText("");
+    setAny(false);
+    setSelectedOption(0);
     setShowNextButton(false);
     const data = {
       index:
@@ -75,78 +84,191 @@ export function Speak(props) {
     props.handleNext(data);
   };
 
+  // console.log(props.photo);
+
   return (
     <Animated.View
       style={{ flex: 1 }}
       entering={LightSpeedInRight.duration(1000)}
     >
-      {/* <View
-        style={{
-          felx: 1,
-          backgroundColor: "red",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Paragraph>{props.title}</Paragraph>
-      </View> */}
       <View
         style={{
-          flex: 3,
-          justifyContent: "center",
-          alignItems: "center",
+          flex: 4,
           // backgroundColor: "green",
+          justifyContent: "center",
+          // alignItems: "center",
+          paddingTop: 30,
         }}
       >
-        <Paragraph style={{ paddingBottom: 15 }}>{props.title}</Paragraph>
-
-        <Card
-          style={{
-            width: width - 80,
-            height: height - 500,
-            justifyContent: "center",
-            alignItems: "center",
-            elevation: 5,
-          }}
-          mode="elevated"
-        >
-          <Card.Content
+        {props.has_photo ? (
+          <View
             style={{
-              flex: 1,
-              width: width - 120,
-              justifyContent: "center",
-              alignItems: "center",
+              flex: 4,
+              // alignItems: "center",
             }}
           >
-            {showMessage ? (
-              <>
-                <LottieView
-                  ref={animation}
-                  source={
-                    scored
-                      ? require("../../../../assets/lotties/correct.json")
-                      : require("../../../../assets/lotties/incorrect.json")
-                  }
-                  autoPlay={true}
-                  loop={false}
-                />
+            <Card style={{ marginHorizontal: 15, marginTop: 10 }}>
+              <Card.Cover
+                source={{ uri: props.photo ? props.photo : props.quizPhoto }}
+              />
 
-                <Audio
-                  correct={scored ? true : false}
-                  incorrect={scored ? false : true}
-                />
-              </>
-            ) : null}
-            <Title>{props.qustion}</Title>
-          </Card.Content>
-        </Card>
+              {showMessage ? (
+                <>
+                  <LottieView
+                    ref={animation}
+                    source={
+                      scored
+                        ? require("../../../../assets/lotties/correct.json")
+                        : require("../../../../assets/lotties/incorrect.json")
+                    }
+                    autoPlay={true}
+                    loop={false}
+                  />
+
+                  <Audio
+                    correct={scored ? true : false}
+                    incorrect={scored ? false : true}
+                  />
+                </>
+              ) : null}
+
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingVertical: 8,
+                  // paddingHorizontal: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    opacity: 0.9,
+                    paddingBottom: 2,
+                    fontWeight: "700",
+                    color: COLORS.enactive,
+                  }}
+                >
+                  {props.title}
+                </Text>
+              </View>
+            </Card>
+            <Card
+              style={{
+                marginHorizontal: 15,
+              }}
+            >
+              <Card.Content
+                style={{
+                  justifyContent: props.is_conversation
+                    ? "flex-start"
+                    : "center",
+                  alignItems: props.is_conversation ? "flex-start" : "center",
+                }}
+              >
+                {!props.is_conversation && (
+                  <View style={{ marginTop: 10 }}>
+                    <Title>{props.qustion}</Title>
+                  </View>
+                )}
+
+                {props.is_conversation && (
+                  <View
+                    style={{
+                      marginLeft: 20,
+                      marginRight: 5,
+                      marginVertical: 10,
+                    }}
+                  >
+                    {props.question_split.map((item) => (
+                      <Paragraph
+                        key={item.key}
+                        style={{ fontSize: 14, color: "black" }}
+                      >
+                        {item.word}
+                      </Paragraph>
+                    ))}
+                  </View>
+                )}
+              </Card.Content>
+            </Card>
+          </View>
+        ) : (
+          <View
+            style={{
+              flex: 4,
+              justifyContent: "center",
+              alignItems: "center",
+              // backgroundColor: "green",
+            }}
+          >
+            <Card
+              style={{
+                width: width - 70,
+                height: height - 500,
+                justifyContent: "center",
+                alignItems: "center",
+                elevation: 5,
+              }}
+              mode="elevated"
+            >
+              {showMessage ? (
+                <>
+                  <LottieView
+                    ref={animation}
+                    source={
+                      scored
+                        ? require("../../../../assets/lotties/correct.json")
+                        : require("../../../../assets/lotties/incorrect.json")
+                    }
+                    autoPlay={true}
+                    loop={false}
+                  />
+
+                  <Audio
+                    correct={scored ? true : false}
+                    incorrect={scored ? false : true}
+                  />
+                </>
+              ) : null}
+              <Text
+                style={{
+                  fontSize: 15,
+                  opacity: 0.9,
+                  paddingBottom: 2,
+                  fontWeight: "700",
+                  color: COLORS.enactive,
+                  alignSelf: "center",
+                  // position: "absolute",
+                  // flex: 1,
+                  top: 20,
+                  left: 0,
+                  right: 0,
+                }}
+              >
+                {props.title}
+              </Text>
+              <Card.Content
+                style={{
+                  flex: 1,
+                  width: width - 120,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Title>{props.qustion}</Title>
+              </Card.Content>
+            </Card>
+          </View>
+        )}
       </View>
       <View
         style={{
           flex: 3,
-          justifyContent: "center",
+          justifyContent: "flex-end",
           alignItems: "center",
-          // backgroundColor: "green",
+          marginBottom: 10,
+          // backgroundColor: "red",
         }}
       >
         <TouchableOpacity
@@ -158,10 +280,12 @@ export function Speak(props) {
             borderWidth: showNextButton ? 3 : 1,
             backgroundColor: COLORS.primary,
             opacity: showNextButton ? 0.8 : 1,
+            transform: [{ scale: selectedOption === 1 ? 1.1 : 1 }],
+
             borderColor:
-              showNextButton && selectedOption === "1"
+              showNextButton && (props.correct_option === 1 || any)
                 ? COLORS.success
-                : showNextButton && selectedOption != "1"
+                : showNextButton && props.correct_option != 1
                 ? COLORS.error
                 : COLORS.primary,
 
@@ -185,10 +309,12 @@ export function Speak(props) {
             borderWidth: showNextButton ? 3 : 1,
             backgroundColor: COLORS.primary,
             opacity: showNextButton ? 0.8 : 1,
+            transform: [{ scale: selectedOption === 2 ? 1.1 : 1 }],
+
             borderColor:
-              showNextButton && selectedOption === "2"
+              showNextButton && (props.correct_option === 2 || any)
                 ? COLORS.success
-                : showNextButton && selectedOption != "2"
+                : showNextButton && props.correct_option != 2
                 ? COLORS.error
                 : COLORS.primary,
 
@@ -203,35 +329,40 @@ export function Speak(props) {
             {props.text_option_2}
           </Paragraph>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => validate(3)}
-          disabled={showNextButton}
-          style={{
-            width: width - 80,
-            borderWidth: showNextButton ? 3 : 1,
-            backgroundColor: COLORS.primary,
-            opacity: showNextButton ? 0.8 : 1,
-            borderColor:
-              showNextButton && selectedOption === "3"
-                ? COLORS.success
-                : showNextButton && selectedOption != "3"
-                ? COLORS.error
-                : COLORS.primary,
+        {props.text_option_3 && (
+          <TouchableOpacity
+            onPress={() => validate(3)}
+            disabled={showNextButton}
+            style={{
+              // marginBottom: 30,
+              width: width - 80,
+              borderWidth: showNextButton ? 3 : 1,
+              backgroundColor: COLORS.primary,
+              opacity: showNextButton ? 0.8 : 1,
+              transform: [{ scale: selectedOption === 3 ? 1.1 : 1 }],
+              borderColor:
+                (showNextButton && props.correct_option === 3) ||
+                props.correct_option === "ANY"
+                  ? COLORS.success
+                  : showNextButton && props.correct_option != 3
+                  ? COLORS.error
+                  : COLORS.primary,
 
-            height: 50,
-            borderRadius: 14,
-            alignItems: "center",
-            justifyContent: "center",
-            marginVertical: 5,
-          }}
-        >
-          <Paragraph style={{ fontSize: 14, color: "black" }}>
-            {props.text_option_3}
-          </Paragraph>
-        </TouchableOpacity>
+              height: 50,
+              borderRadius: 14,
+              alignItems: "center",
+              justifyContent: "center",
+              marginVertical: 5,
+            }}
+          >
+            <Paragraph style={{ fontSize: 14, color: "black" }}>
+              {props.text_option_3}
+            </Paragraph>
+          </TouchableOpacity>
+        )}
       </View>
 
-      <View style={{ flex: 1, marginTop: 8 }}>
+      <View style={{ flex: 0.7 }}>
         <Button
           onPress={handleNextQuiz}
           mode={showNextButton ? "contained" : "outlined"}
