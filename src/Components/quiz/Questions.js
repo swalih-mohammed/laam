@@ -130,8 +130,9 @@ const Questions = (props) => {
     // props.handleStart();
     if (!is_completed) {
       try {
-        if (props.lesson !== null) {
+        if (props.lesson) {
           // lesson based
+          console.log("lesson", props.lesson);
           setLoading(true);
           console.log("lesson exist");
           const data = {
@@ -172,32 +173,24 @@ const Questions = (props) => {
               setLoading(false);
             })
             .catch((err) => {
-              // setError(err);
-              console.log("error in posting complet lesson", err);
+              console.log("error in posting complete quiz", err);
             });
-        }
-        if (!loading) {
-          if (props.is_general) {
-            navigation.navigate("general-test-list");
-          } else {
-            navigation.navigate("Unit Details", {
-              id: props.unit,
-              quiz_completed: true,
-            });
-          }
         }
       } catch (error) {
         console.log("error in catch while complet lesson/ quiz", error);
-        navigation.navigate("Unit Details", {
-          id: props.unit,
-          quiz_completed: true,
-        });
       }
-    } else {
+    }
+    redirect();
+  };
+
+  const redirect = () => {
+    if (props.unit) {
       navigation.navigate("Unit Details", {
         id: props.unit,
         quiz_completed: true,
       });
+    } else {
+      navigation.navigate("general-test-list");
     }
   };
 

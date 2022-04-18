@@ -48,9 +48,8 @@ const CourseItem = (props) => {
     resetQuiz();
     navigation.navigate("Quiz Detail", {
       QuizId: item.id,
-      lessonId: 1,
-      unitId: 1,
-      sectionId: 1,
+      lessonId: null,
+      unitId: null,
       is_general: true,
     });
   };

@@ -17,6 +17,8 @@ const QuizList = (props) => {
   const [quiz, setQuiz] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
+  const { is_general, lessonId, QuizId, unitId, sectionId } =
+    props.route.params;
 
   useEffect(() => {
     const source = axios.CancelToken.source();
@@ -30,7 +32,7 @@ const QuizList = (props) => {
           }
         );
         setQuiz(response.data);
-        // console.log(response.data);
+        console.log(response.data);
         setLoading(false);
       } catch (err) {
         if (axios.isCancel(error)) {
@@ -47,9 +49,6 @@ const QuizList = (props) => {
       source.cancel();
     };
   }, []);
-
-  const { is_general, lessonId, QuizId, unitId, sectionId } =
-    props.route.params;
 
   return (
     <>
