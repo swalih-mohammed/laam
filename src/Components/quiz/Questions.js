@@ -128,58 +128,59 @@ const Questions = (props) => {
   const handleSubmitTest = () => {
     UnloadSound();
     // props.handleStart();
-    if (!is_completed) {
-      try {
-        if (props.lesson) {
-          // lesson based
-          console.log("lesson", props.lesson);
-          setLoading(true);
-          console.log("lesson exist");
-          const data = {
-            username: props.username,
-            lessonId: props.lesson,
-            score: 5,
-          };
-          axios.defaults.headers = {
-            "Content-Type": "application/json",
-            Authorization: `Token ${props.token}`,
-          };
-          axios
-            .post(`${localhost}/lessons/lesson-completed-create/`, data)
-            .then((res) => {
-              console.log("lesson completed");
-              setLoading(false);
-            })
-            .catch((err) => {
-              setError(err);
-              console.log("error in posting complet lesson", error);
-            });
-        } else {
-          console.log("not lesson based");
-          setLoading(true);
-          const data = {
-            username: props.username,
-            quizId: props.quiz,
-            score: props.score,
-          };
-          axios.defaults.headers = {
-            "Content-Type": "application/json",
-            Authorization: `Token ${props.token}`,
-          };
-          axios
-            .post(`${localhost}/quizzes/quiz-completed-create/`, data)
-            .then((res) => {
-              console.log("lesson completed");
-              setLoading(false);
-            })
-            .catch((err) => {
-              console.log("error in posting complete quiz", err);
-            });
-        }
-      } catch (error) {
-        console.log("error in catch while complet lesson/ quiz", error);
+    // if (!is_completed) {
+    try {
+      if (props.lesson) {
+        // lesson based
+        console.log("lesson", props.lesson);
+        setLoading(true);
+        console.log("lesson exist");
+        const data = {
+          username: props.username,
+          lessonId: props.lesson,
+          // score: 5,
+        };
+        axios.defaults.headers = {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        };
+        axios
+          .post(`${localhost}/lessons/lesson-completed-create/`, data)
+          .then((res) => {
+            console.log("lesson completed");
+            setLoading(false);
+          })
+          .catch((err) => {
+            setError(err);
+            console.log("error in posting complet lesson", error);
+          });
+      } else {
+        console.log("not lesson based");
+        setLoading(true);
+        const data = {
+          username: props.username,
+          quizId: props.quiz,
+          score: props.score,
+        };
+        // console.log(data)
+        axios.defaults.headers = {
+          "Content-Type": "application/json",
+          Authorization: `Token ${props.token}`,
+        };
+        axios
+          .post(`${localhost}/quizzes/quiz-completed-create/`, data)
+          .then((res) => {
+            console.log("lesson completed");
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log("error in posting complete quiz", err);
+          });
       }
+    } catch (error) {
+      console.log("error in catch while complet lesson/ quiz", error);
     }
+    // }
     redirect();
   };
 

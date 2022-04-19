@@ -15,6 +15,7 @@ const { width, height } = Dimensions.get("window");
 import LottieView from "lottie-react-native";
 import Loader from "../Utils/Loader";
 import AudioPlayerWithoutControl from "../../Helpers/PlayerWithoutControl";
+import CircularProgress from "react-native-circular-progress-indicator";
 
 const ScoreModal = (props) => {
   const { qlength } = props;
@@ -68,7 +69,7 @@ const ScoreModal = (props) => {
 
               {/* Lesson Completed! */}
             </Title>
-            <Title
+            {/* <Title
               style={{
                 color: score > 79 ? COLORS.primary : COLORS.error,
                 fontSize: 30,
@@ -77,7 +78,17 @@ const ScoreModal = (props) => {
               }}
             >
               {score + " %"}
-            </Title>
+            </Title> */}
+            <CircularProgress
+              value={score}
+              valueSuffix={"%"}
+              radius={40}
+              duration={2000}
+              progressValueColor={COLORS.primary}
+              maxValue={100}
+              // activeStrokeWidth={20}
+              // inActiveStrokeWidth={10}
+            />
           </View>
           <View
             style={{ flex: 2, justifyContent: "center", alignItems: "center" }}

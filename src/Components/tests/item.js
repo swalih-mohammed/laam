@@ -8,24 +8,20 @@ import {
   ImageBackground,
 } from "react-native";
 
-import {
-  Card,
-  Title,
-  Paragraph,
-  Subheading,
-  Caption,
-  Button,
-  Text,
-} from "react-native-paper";
+import { Card, Title, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import { TouchableOpacity } from "react-native";
 import { handleStart } from "../../store/actions/quiz";
-import { setCourseDetails } from "../../store/actions/course";
+// import { setCourseDetails } from "../../store/actions/course";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 const { width, height } = Dimensions.get("window");
 // import { View as MotiView } from "moti";
 import { COLORS } from "../../Helpers/constants";
+import CircularProgress from "react-native-circular-progress-indicator";
+
+// import Donut from "../../Helpers/donunt";
+// import * as Progress from "react-native-progress";
 
 const CourseItem = (props) => {
   // const opacityAnim = React.useRef(new Animated.Value(0)).current;
@@ -34,6 +30,7 @@ const CourseItem = (props) => {
   const { item, loading } = props;
   // console.log(item)
   const navigation = useNavigation();
+  const percentage = 66;
 
   // React.useEffect(() => {
   //   Animated.timing(animatedX, {
@@ -69,18 +66,12 @@ const CourseItem = (props) => {
 
   return (
     <Animated.View entering={LightSpeedInRight} style={[styles.mainContainer]}>
-      <Card mode="contianed" style={{ elevation: 8, borderRadius: 10 }}>
+      <Card
+        mode="contianed"
+        style={{ elevation: 8, borderRadius: 10, width: 310 }}
+      >
         <View style={styles.container}>
           <View style={styles.LeftContainer}>
-            {/* <Image
-              style={styles.photo}
-              source={{
-                uri: item.photo,
-              }}
-            /> */}
-            {/* <Card mode="contianed" style={{ elevation: 10, borderRadius: 18 }}>
-              <Card.Cover source={{ uri: item.photo }} />
-            </Card> */}
             <ImageBackground
               source={image}
               style={{ flex: 1, justifyContent: "center", borderRadius: 10 }}
@@ -97,23 +88,7 @@ const CourseItem = (props) => {
             >
               <Text
                 style={{
-                  fontSize: 14,
-                  fontWeight: "700",
-                  color: COLORS.enactive,
-                }}
-              >
-                {item.subtitle}
-              </Text>
-
-              {/* <Title
-                style={{ fontSize: 16, fontWeight: "900", flexWrap: "wrap" }}
-              >
-                {item.title}
-              </Title> */}
-
-              <Text
-                style={{
-                  fontSize: 17,
+                  fontSize: 18,
                   fontWeight: "900",
                   flexWrap: "wrap",
                   paddingBottom: 5,
@@ -124,21 +99,39 @@ const CourseItem = (props) => {
               >
                 {item.title}
               </Text>
-
+            </View>
+            {/* <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                // paddingLeft: 25,
+                height: 100,
+                width: 100,
+                borderRadius: 50,
+                borderColor: COLORS.primary,
+                borderWidth: 2,
+              }}
+            >
               <Text
                 style={{
-                  fontSize: 14,
-                  fontWeight: "500",
-                  // color: COLORS.primary,
-                  color: "#46494c",
-                  opacity: 0.9,
-                  paddingBottom: 5,
+                  fontSize: 30,
+                  fontWeight: "700",
+                  color: COLORS.primary,
                 }}
               >
-                {item.description}
+                {item.score + " %"}
               </Text>
-            </View>
-
+            </View> */}
+            <CircularProgress
+              value={item.score * 10}
+              valueSuffix={"%"}
+              radius={40}
+              duration={2000}
+              progressValueColor={COLORS.primary}
+              maxValue={100}
+              // activeStrokeWidth={20}
+              // inActiveStrokeWidth={10}
+            />
             <TouchableOpacity
               disabled={loading}
               onPress={handlePressQuizItem}
@@ -150,7 +143,7 @@ const CourseItem = (props) => {
                 marginTop: 10,
 
                 // marginHorizontal: 10,
-                alignSelf: "flex-start",
+                alignSelf: "center",
                 justifyContent: "center",
                 alignItems: "center",
                 // backgroundColor: "#293241",
@@ -171,7 +164,7 @@ const CourseItem = (props) => {
                   borderRadius: 12,
                 }}
               >
-                {"TAKE TEST"}
+                {item.score === 0 ? "TAKE TEST" : "RETAKE TEST"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -183,8 +176,8 @@ const CourseItem = (props) => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    // margin: 8,
-    // width: width * 0.7,
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 15,
     paddingTop: 5,
     marginHorizontal: 10,
@@ -202,12 +195,12 @@ const styles = StyleSheet.create({
   },
   RightContainer: {
     flex: 4,
-    justifyContent: "flex-end",
-    alignContent: "center",
-    // marginRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingLeft: 10,
     // backgroundColor: "red",
     // marginHorizontal: 10,
-    paddingLeft: 10,
+    // paddingLeft: 10,
   },
   LeftContainer: {
     flex: 1.8,

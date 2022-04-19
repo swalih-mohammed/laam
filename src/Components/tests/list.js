@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Card, Title, List, Button, Paragraph } from "react-native-paper";
 import { COLORS, SIZES } from "../../Helpers/constants";
+import Donut from "../../Helpers/donunt";
 
 import {
   StyleSheet,
@@ -59,7 +60,7 @@ const CourseList = (props) => {
       setLoading(false);
       console.log("loading aftr fetch");
       setTests(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (err) {
       if (axios.isCancel(error)) {
         console.log("axios cancel error");
@@ -129,42 +130,9 @@ const CourseList = (props) => {
                 // opacity: 0.9,
               }}
             >
-              4 levels of tests avaialble
+              Tests are designed based on Common European Framework of Reference
+              for Languages: Learning, teaching, assessment (CEFR)
             </Text>
-            <TouchableOpacity
-              // disabled={loading}
-              // onPress={handlePress}
-              style={{
-                width: 180,
-                height: 30,
-                // alignSelf: "flex-end",
-                borderRadius: 5,
-                marginTop: 10,
-
-                // marginHorizontal: 10,
-                alignSelf: "flex-end",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#293241",
-                // left: 0,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: "600",
-                  color: "#ffffff",
-                  // backgroundColor: COLORS.primary,
-                  // color: "#46494c",
-                  // opacity: 0.9,
-                  paddingHorizontal: 25,
-                  paddingVertical: 6,
-                  borderRadius: 12,
-                }}
-              >
-                {"TEST YOUR ENGLISH"}
-              </Text>
-            </TouchableOpacity>
           </View>
         </View>
         <View style={{ flex: 4 }}>
