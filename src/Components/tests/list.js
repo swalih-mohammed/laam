@@ -31,6 +31,9 @@ const ITEM_WIDTH = SIZES.width * 0.4;
 const ITEM_HEIGHT = ITEM_WIDTH * 2;
 
 const CourseList = (props) => {
+  // const { is_completed } = props.route.params;
+  // console.log(props.route.params);
+
   const navigation = useNavigation();
   const [tests, setTests] = useState();
   const [error, setError] = useState(null);
@@ -106,7 +109,7 @@ const CourseList = (props) => {
         >
           <View style={{ flex: 2 }}>
             <ImageBackground
-              source={require("../../../assets/happy.png")}
+              source={require("../../../assets/exam.png")}
               style={{
                 flex: 1,
                 justifyContent: "center",

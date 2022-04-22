@@ -58,6 +58,31 @@ const QuizItem = (props) => {
     props.handleStart(data);
   };
 
+  const myIcon = (category) => {
+    switch (category) {
+      case "READING":
+        return "book-open";
+      case "WRITING":
+        return "lead-pencil";
+      case "LISTENING":
+        return "headphones";
+      case "SPEAKING":
+        return "microphone";
+      case "GRAMMAR":
+        return "book";
+      case "DIALOGUE":
+        return "chat-processing";
+      case "VOCABULARY":
+        return "file-word-box-outline";
+      case "UNIT_TEST":
+        return "paper-cut-vertical";
+      case "EMAIL_WRITING":
+        return "email";
+
+      default:
+    }
+  };
+
   const Completed = () => (
     <View
       style={{
@@ -90,10 +115,7 @@ const QuizItem = (props) => {
         borderRadius: 15,
       }}
     >
-      <TouchableOpacity
-        // style={{ justifyContent: "center", alignItems: "center" }}
-        onPress={handlePressQuizItem}
-      >
+      <TouchableOpacity onPress={handlePressQuizItem}>
         <Card
           mode="elevated"
           style={{
@@ -109,86 +131,19 @@ const QuizItem = (props) => {
                 style={{
                   width: 40,
                   height: 40,
-
                   borderRadius: 20 / 2,
                   // backgroundColor: colors.primary,
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                {item.category === "LISTENING" && (
-                  <MaterialCommunityIcons
-                    name="headphones"
-                    style={{
-                      color: COLORS.primary,
-                      fontSize: 35,
-                    }}
-                  />
-                )}
-                {item.category === "SPEAKING" && (
-                  <MaterialCommunityIcons
-                    name="microphone"
-                    style={{
-                      color: COLORS.primary,
-                      fontSize: 35,
-                    }}
-                  />
-                )}
-                {item.category === "READING" && (
-                  <MaterialCommunityIcons
-                    name="book-open"
-                    style={{
-                      color: COLORS.primary,
-                      fontSize: 35,
-                    }}
-                  />
-                )}
-
-                {item.category === "WRITING" && (
-                  <MaterialCommunityIcons
-                    name="lead-pencil"
-                    style={{
-                      color: COLORS.primary,
-                      fontSize: 35,
-                    }}
-                  />
-                )}
-                {item.category === "VOCABULARY" && (
-                  <MaterialCommunityIcons
-                    name="file-word-box-outline"
-                    style={{
-                      color: COLORS.primary,
-                      fontSize: 35,
-                    }}
-                  />
-                )}
-                {item.category === "GRAMMAR" && (
-                  <MaterialCommunityIcons
-                    name="book"
-                    style={{
-                      color: COLORS.primary,
-                      fontSize: 35,
-                    }}
-                  />
-                )}
-                {item.category === "UNIT_TEST" && (
-                  <MaterialCommunityIcons
-                    name="paper-cut-vertical"
-                    style={{
-                      color: COLORS.primary,
-                      fontSize: 35,
-                    }}
-                  />
-                )}
-                {item.category === "DIALOGUE" && (
-                  <MaterialCommunityIcons
-                    name="chat-processing"
-                    style={{
-                      color: COLORS.primary,
-                      fontSize: 35,
-                    }}
-                  />
-                )}
+                <MaterialCommunityIcons
+                  name={myIcon(item.category)}
+                  style={{
+                    color: COLORS.primary,
+                    fontSize: 35,
+                  }}
+                />
               </View>
             </View>
             <View style={styles.MiddleContainer}>
@@ -201,7 +156,7 @@ const QuizItem = (props) => {
                   // paddingBottom:
                 }}
               >
-                {item.subtitle}
+                {item.category}
               </Text>
 
               <Text

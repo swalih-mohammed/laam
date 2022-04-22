@@ -66,7 +66,6 @@ const ConversationDetail = (props) => {
   const [comparingVisibleListIDs, setComparingVisibleListIDs] = useState([]);
 
   const [current, setCurrent] = useState(0);
-
   const [isPlaying, setIsplaying] = React.useState(false);
   const [didJustFinish, setDidJustFinish] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
@@ -99,7 +98,7 @@ const ConversationDetail = (props) => {
     // LoadAudio();
     return () => {
       isMounted.current = false;
-      sound ? sound.current.unloadAsync() : undefined;
+      sound.current.unloadAsync();
       clearTimeout();
     };
   }, [current]);

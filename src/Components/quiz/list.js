@@ -7,11 +7,8 @@ import Questions from "./Questions";
 import Loader from "../Utils/Loader";
 import { Paragraph } from "react-native-paper";
 import { COLORS, SIZES } from "../../Helpers/constants";
-
-// import { QuizProvider } from "./QuizContext";
 import { handleStart } from "../../store/actions/quiz";
-// import { handleStart } from "../../store/actions/quiz";
-// import Questions from "../../Components/pacticeTest/Qustions";
+import Oops from "../Utils/oops";
 
 const QuizList = (props) => {
   const [quiz, setQuiz] = useState(null);
@@ -32,7 +29,7 @@ const QuizList = (props) => {
           }
         );
         setQuiz(response.data);
-        console.log(response.data);
+        // console.log(response.data);
         setLoading(false);
       } catch (err) {
         if (axios.isCancel(error)) {
@@ -75,6 +72,8 @@ const QuizList = (props) => {
               unit={quiz.unit}
               course={quiz.course}
               quizPhoto={quiz.photo}
+              quizTitle={quiz.title}
+              quizSubTitle={quiz.subtitle}
               quizText={quiz.text}
               quizAudio={quiz.audio?.audio}
               is_general={is_general}
@@ -84,10 +83,11 @@ const QuizList = (props) => {
               style={{
                 flex: 1,
                 justifyContent: "center",
-                alignItems: "center",
+                // alignItems: "center",
               }}
             >
-              <Paragraph>This quiz is not yet ready</Paragraph>
+              {/* <Paragraph>This quiz is not yet ready</Paragraph> */}
+              <Oops text={"Oops! this quiz is not yet ready."} />
             </View>
           )}
         </>

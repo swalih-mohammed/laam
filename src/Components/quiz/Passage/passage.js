@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  ImageBackground,
+  Image,
+} from "react-native";
 import { connect } from "react-redux";
 import { handleNext, handleValidate } from "../../../store/actions/quiz";
 import MessageAudio from "../../../Helpers/PlayerWithoutControl";
@@ -11,13 +18,94 @@ import Icon from "react-native-vector-icons/AntDesign";
 import LottieView from "lottie-react-native";
 import * as Haptics from "expo-haptics";
 import { Audio } from "expo-av";
-
 import { MARGIN_TOP } from "../DaragAndDrop/Layout";
 // import console = require("console");
 
-export function Reading(props) {
-  console.log("reading comp");
-  //   console.log(props.quizText);
+function Sentance(props) {
+  function getParts(string, position, charactor) {
+    return string.split(charactor)[position];
+  }
+  const firstPart = getParts(props.word, 0, "(");
+  const inBracket = props.word.match(/\(([^)]+)\)/)
+    ? props.word.match(/\(([^)]+)\)/)[1]
+    : "nothing in bracket";
+  const secondPart = getParts(props.word, 1, ")");
+  const fillText = props.is_visible ? inBracket : " ( _ _ _ ) ";
+
+  return (
+    <>
+      {props.IS_TRANSLATE && (
+        <>
+          {props.IS_WORD ? (
+            <Text>
+              <Paragraph
+                style={{
+                  fontWeight: props.index === props.id ? "bold" : "normal",
+                }}
+              >
+                {firstPart}
+              </Paragraph>
+              <Paragraph
+                style={{
+                  color: props.index === props.id ? "red" : "black",
+                  fontWeight: props.index === props.id ? "bold" : "normal",
+                }}
+              >
+                {inBracket}
+              </Paragraph>
+              <Paragraph
+                style={{
+                  fontWeight: props.index === props.id ? "bold" : "normal",
+                }}
+              >
+                {secondPart + ". "}
+              </Paragraph>
+            </Text>
+          ) : (
+            <Text>
+              <Paragraph
+                style={{
+                  fontWeight: props.index === props.id ? "bold" : "normal",
+                }}
+              >
+                {props.word + " ."}
+              </Paragraph>
+            </Text>
+          )}
+        </>
+      )}
+      {props.IS_FILL_IN_BLANK && (
+        <Text>
+          <Paragraph
+            style={{
+              fontWeight: props.index === props.id ? "bold" : "normal",
+            }}
+          >
+            {firstPart}
+          </Paragraph>
+          <Paragraph
+            style={{
+              color: props.index === props.id ? "red" : "black",
+              fontWeight: props.index === props.id ? "bold" : "normal",
+            }}
+          >
+            {fillText}
+          </Paragraph>
+          <Paragraph
+            style={{
+              fontWeight: props.index === props.id ? "bold" : "normal",
+            }}
+          >
+            {secondPart + ". "}
+          </Paragraph>
+        </Text>
+      )}
+    </>
+  );
+}
+export function Email(props) {
+  // console.log(props, "eamil comp");
+
   const animation = React.useRef(null);
   const [text, setText] = useState("");
   const [scored, setScored] = useState(false);
@@ -25,29 +113,41 @@ export function Reading(props) {
   const [showNextButton, setShowNextButton] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const [any, setAny] = useState(false);
-  // console.log(props.question_split);
-  const validate = (option) => {
+  const [visibleList, setVisibleList] = useState([]);
+  const [visibleListIDs, setVisibleListIDs] = useState([]);
+
+  const validate = (option, answer) => {
+    console.log(option, answer);
+    setSelectedOption(option);
+    let answer1 = answer.toLowerCase();
+    let selectedOption1 = answer1.trim();
+
+    let currectOptoin = props.answer.toLowerCase();
+    let currectOptoin1 = currectOptoin.trim();
+
+    if (!visibleListIDs.includes(props.index)) {
+      const updatedId = [...visibleListIDs, props.index];
+      setVisibleListIDs(updatedId);
+      const item = {
+        index: props.index,
+        answer: currectOptoin1,
+      };
+      const updatedArr = [...visibleList, item];
+      setVisibleList(updatedArr);
+    }
+
+    if (selectedOption1 === currectOptoin1) {
+      setScored(true);
+      const data = {
+        score: props.score + 1,
+      };
+      props.handleValidate(data);
+      console.log("currect option");
+    } else {
+      setScored(false);
+    }
     setShowMessage(true);
     setShowNextButton(true);
-    if (option) {
-      setSelectedOption(option);
-      let str_option = option.toString();
-      let str_correct_option = props.correct_option.toString();
-      setAny(str_correct_option === "ANY");
-      if (str_option === str_correct_option || str_correct_option === "ANY") {
-        console.log("option correct");
-        setScored(true);
-        if (showMessage) {
-          animation.current.play(0, 100);
-        }
-        const data = {
-          score: props.score + 1,
-        };
-        props.handleValidate(data);
-      } else {
-        setScored(false);
-      }
-    }
     setTimeout(() => setShowMessage(false), 1000);
   };
 
@@ -64,11 +164,9 @@ export function Reading(props) {
         props.index !== props.numberOfQuestions ? props.index + 1 : props.index,
       showScoreModal: props.index === props.numberOfQuestions ? true : false,
     };
-    // console.log(data);
     props.handleNext(data);
   };
 
-  // console.log(props.photo);
   const OptionColor = "#c9f2c7";
   const backGroundImage = { uri: props.photo ? props.photo : props.quizPhoto };
 
@@ -79,23 +177,89 @@ export function Reading(props) {
     >
       <View
         style={{
-          flex: 3,
-          // marginHorizontal: 10,
+          flex: 4,
+          marginHorizontal: 18,
           justifyContent: "center",
           alignItems: "center",
           // backgroundColor: "red",
-          // paddingHorizontal: 20,
-          marginHorizontal: 15,
-          marginVertical: 8,
         }}
       >
-        <Card style={{ elevation: 10, borderRadius: 8 }}>
-          <Card.Content
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        <Card
+          style={{
+            elevation: 10,
+            borderRadius: 8,
+            // marginHorizontal: 10,
+            marginVertical: 20,
+            // paddingHorizontal: 5,
+            // paddingVertical: 10,
+            backgroundColor: "#faedcd",
+          }}
+        >
+          {/* <Card.Content style={{ flex: 1 }}> */}
+          <View style={{ flex: 2 }}>
+            <ImageBackground
+              resizeMode="cover"
+              source={backGroundImage}
+              style={{
+                flex: 1,
+                // justifyContent: "center",
+                borderRadius: 10,
+              }}
+            ></ImageBackground>
+          </View>
+
+          <View
+            style={{
+              flex: 0.5,
+              justifyContent: "center",
+              alignItems: "center",
+              // backgroundColor: "red",
+              paddingTop: 5,
+            }}
           >
-            <Title style={{ paddingBottom: 10 }}>{props.quizTitle}</Title>
-            <Paragraph>{props.quizText}</Paragraph>
-          </Card.Content>
+            <Text
+              style={{
+                fontSize: 15,
+                // opacity: 0.9,
+                paddingBottom: 15,
+                fontWeight: "700",
+                color: COLORS.enactive,
+                alignSelf: "center",
+              }}
+            >
+              {props.quizTitle.toUpperCase()}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flex: 4,
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              paddingHorizontal: 20,
+              // backgroundColor: "red",
+            }}
+          >
+            <Title>{props.quizSubTitle}</Title>
+
+            <Text>
+              {props.quizText &&
+                props.quizText.map((item) => (
+                  <Sentance
+                    key={item.key}
+                    id={item.key}
+                    word={item.word}
+                    index={props.index}
+                    IS_WORD={props.IS_WORD}
+                    IS_TRANSLATE={props.IS_TRANSLATE}
+                    IS_FILL_IN_BLANK={props.IS_FILL_IN_BLANK}
+                    visibleList={visibleList}
+                    is_visible={visibleListIDs.includes(item.key)}
+                  />
+                ))}
+            </Text>
+          </View>
+          {/* </Card.Content> */}
           {showMessage ? (
             <>
               <LottieView
@@ -117,28 +281,11 @@ export function Reading(props) {
           ) : null}
         </Card>
       </View>
-      <Animated.View
-        entering={LightSpeedInRight.duration(1000)}
-        style={{
-          flex: 0.5,
-          justifyContent: "center",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          // backgroundColor: "red",
-        }}
-      >
-        <Paragraph
-          style={{ fontWeight: "bold" }}
-          // entering={LightSpeedInRight.duration(1000)}
-        >
-          {props.question}
-        </Paragraph>
-      </Animated.View>
 
       <Animated.View
         entering={LightSpeedInRight.duration(1000)}
         style={{
-          flex: 2,
+          flex: 1.5,
           justifyContent: "center",
           alignItems: "center",
           //   marginBottom: 10,
@@ -146,7 +293,7 @@ export function Reading(props) {
         }}
       >
         <TouchableOpacity
-          onPress={() => validate(1)}
+          onPress={() => validate(1, props.text_option_1)}
           disabled={showNextButton}
           // key={option.id}
           style={{
@@ -157,13 +304,13 @@ export function Reading(props) {
             transform: [{ scale: selectedOption === 1 ? 1.1 : 1 }],
 
             borderColor:
-              (showNextButton && props.correct_option === 1) || any
+              showNextButton && props.correct_option === 1
                 ? COLORS.success
                 : showNextButton && props.correct_option != 1
                 ? COLORS.error
                 : COLORS.primary,
 
-            height: 60,
+            height: 50,
             borderRadius: 10,
             alignItems: "center",
             justifyContent: "center",
@@ -175,7 +322,7 @@ export function Reading(props) {
           <Paragraph style={{ fontSize: 14 }}>{props.text_option_1}</Paragraph>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => validate(2)}
+          onPress={() => validate(2, props.text_option_2)}
           disabled={showNextButton}
           // key={option.id}
           style={{
@@ -192,7 +339,7 @@ export function Reading(props) {
                 ? COLORS.error
                 : COLORS.primary,
 
-            height: 60,
+            height: 50,
             borderRadius: 10,
             alignItems: "center",
             justifyContent: "center",
@@ -207,7 +354,7 @@ export function Reading(props) {
         </TouchableOpacity>
         {props.text_option_3 && (
           <TouchableOpacity
-            onPress={() => validate(3)}
+            onPress={() => validate(3, props.text_option_3)}
             disabled={showNextButton}
             // key={option.id}
             style={{
@@ -223,7 +370,7 @@ export function Reading(props) {
                   ? COLORS.error
                   : COLORS.primary,
 
-              height: 60,
+              height: 50,
               borderRadius: 10,
               alignItems: "center",
               justifyContent: "center",
@@ -239,7 +386,7 @@ export function Reading(props) {
         )}
       </Animated.View>
 
-      <View style={{ flex: 0.4 }}>
+      <View style={{ flex: 0.6 }}>
         <Button
           onPress={handleNextQuiz}
           mode={showNextButton ? "contained" : "outlined"}
@@ -285,4 +432,4 @@ const mapDispatchToProps = (dispatch) => {
     handleValidate: (data) => dispatch(handleValidate(data)),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Reading);
+export default connect(mapStateToProps, mapDispatchToProps)(Email);

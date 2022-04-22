@@ -304,6 +304,7 @@ export function Speak(props) {
           }}
         >
           <TouchableOpacity
+            disabled={props.isPlaying}
             onPress={() => PlayOriginalAudio(false)}
             style={styles.iconContainer}
           >
@@ -354,7 +355,7 @@ export function Speak(props) {
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              // disabled={true}
+              disabled={!listened}
               onPress={StartRecording}
               style={styles.iconContainer}
             >
@@ -405,7 +406,7 @@ export function Speak(props) {
               // IsPLaying ? () => StopPlaying() : () => PlayRecordedAudio()
               PlayRecordedAudio
             }
-            disabled={IsPLaying}
+            disabled={!recorded}
             style={styles.iconContainer}
           >
             <MaterialCommunityIcons

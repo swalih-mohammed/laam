@@ -23,6 +23,9 @@ import { COLORS, SIZES } from "../../Helpers/constants";
 import ScoreModal from "./model";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Dialogue from "./Dialogue/index";
+import Email from "./Email/email";
+import Passage from "./Passage/passage";
+// import PassageFillInBlank from "./Passage/fillInBlank";
 
 const Questions = (props) => {
   const navigation = useNavigation();
@@ -43,7 +46,8 @@ const Questions = (props) => {
     LoadAudio();
     return () => {
       isMounted.current = false;
-      UnloadSound();
+      // UnloadSound();
+      sound.current.unloadAsync();
     };
   }, [props.index]);
 
@@ -191,7 +195,7 @@ const Questions = (props) => {
         quiz_completed: true,
       });
     } else {
-      navigation.navigate("general-test-list");
+      navigation.navigate("general-test-list", { is_completed: true });
     }
   };
 
@@ -228,10 +232,12 @@ const Questions = (props) => {
     return words2;
   };
 
-  const processMatch = (text, randomize, is_sentance) => {
+  const processMatch = (text, randomize, is_sentance, is_email) => {
     var sentance_list = "";
     if (is_sentance) {
       var sentance_list = text.split(".");
+    } else if (is_email) {
+      var sentance_list = text.split("/");
     } else {
       var sentance_list = text.split(",");
     }
@@ -270,9 +276,34 @@ const Questions = (props) => {
     allQuestions[props.index].category === "FILL_IN_BLANK_WITH_PHOTO_CON"
       ? true
       : false;
-  const COMPREHENSION =
-    allQuestions[props.index].category === "READING_COMPREHENSION" ||
-    allQuestions[props.index].category === "LISTENING_COMPREHENSION"
+  const IS_EMAIL =
+    allQuestions[props.index].category === "EMAIL_FIll_IN_BLANK" ||
+    allQuestions[props.index].category === "EMAIL_TRANSLATE_WORD" ||
+    allQuestions[props.index].category === "EMAIL_TRANSLATE_SENT"
+      ? true
+      : false;
+
+  const IS_PASSAGE =
+    allQuestions[props.index].category === "PASSAGE_FILL_IN_BLANK" ||
+    allQuestions[props.index].category === "PASSAGE_TRANSLATE_WORD" ||
+    allQuestions[props.index].category === "PASSAGE_TRANSLATE_SENT"
+      ? true
+      : false;
+  const IS_FILL_IN_BLANK =
+    allQuestions[props.index].category === "PASSAGE_FILL_IN_BLANK" ||
+    allQuestions[props.index].category === "EMAIL_FIll_IN_BLANK"
+      ? true
+      : false;
+  const IS_TRANSLATE =
+    allQuestions[props.index].category === "PASSAGE_TRANSLATE_WORD" ||
+    allQuestions[props.index].category === "PASSAGE_TRANSLATE_SENT" ||
+    allQuestions[props.index].category === "EMAIL_TRANSLATE_WORD" ||
+    allQuestions[props.index].category === "EMAIL_TRANSLATE_SENT"
+      ? true
+      : false;
+  const IS_WORD =
+    allQuestions[props.index].category === "EMAIL_TRANSLATE_WORD" ||
+    allQuestions[props.index].category === "PASSAGE_TRANSLATE_WORD"
       ? true
       : false;
   return (
@@ -369,6 +400,7 @@ const Questions = (props) => {
         {allQuestions[props.index].category === "READING_COMPREHENSION" && (
           <ReadingComprehension
             numberOfQuestions={allQuestions.length - 1}
+            quizTitle={props.quizTitle}
             title={allQuestions[props.index].title}
             question={allQuestions[props.index].question}
             answer={allQuestions[props.index].answer}
@@ -403,6 +435,54 @@ const Questions = (props) => {
             quizPhoto={props.quizPhoto}
             quizText={props.quizText}
             quizAudio={props.quizAudio}
+          />
+        )}
+        {IS_EMAIL && (
+          <Email
+            numberOfQuestions={allQuestions.length - 1}
+            title={allQuestions[props.index].title}
+            question={allQuestions[props.index].question}
+            answer={allQuestions[props.index].answer}
+            correct_option={allQuestions[props.index].correct_option}
+            text_option_1={allQuestions[props.index].text_option_1}
+            text_option_2={allQuestions[props.index].text_option_2}
+            text_option_3={allQuestions[props.index].text_option_3}
+            PlayAudio={PlayAudio}
+            UnloadSound={UnloadSound}
+            isPlaying={isPlaying}
+            photo={allQuestions[props.index].photo}
+            quizTitle={props.quizTitle}
+            quizSubTitle={props.quizSubTitle}
+            quizPhoto={props.quizPhoto}
+            quizText={processMatch(props.quizText, false, true, false)}
+            quizAudio={props.audio}
+            IS_FILL_IN_BLANK={IS_FILL_IN_BLANK}
+            IS_TRANSLATE={IS_TRANSLATE}
+            IS_WORD={IS_WORD}
+          />
+        )}
+        {IS_PASSAGE && (
+          <Passage
+            numberOfQuestions={allQuestions.length - 1}
+            title={allQuestions[props.index].title}
+            question={allQuestions[props.index].question}
+            answer={allQuestions[props.index].answer}
+            correct_option={allQuestions[props.index].correct_option}
+            text_option_1={allQuestions[props.index].text_option_1}
+            text_option_2={allQuestions[props.index].text_option_2}
+            text_option_3={allQuestions[props.index].text_option_3}
+            PlayAudio={PlayAudio}
+            UnloadSound={UnloadSound}
+            isPlaying={isPlaying}
+            photo={allQuestions[props.index].photo}
+            quizTitle={props.quizTitle}
+            quizSubTitle={props.quizSubTitle}
+            quizPhoto={props.quizPhoto}
+            quizText={processMatch(props.quizText, false, true, false)}
+            quizAudio={props.audio}
+            IS_FILL_IN_BLANK={IS_FILL_IN_BLANK}
+            IS_TRANSLATE={IS_TRANSLATE}
+            IS_WORD={IS_WORD}
           />
         )}
 
@@ -478,69 +558,6 @@ const Questions = (props) => {
           qlength={allQuestions.length}
         />
       ) : null}
-
-      {/* {props.showScoreModal ? (
-        <View style={{ flex: 1, marginVertical: 5 }}>
-          <ImageBackground
-            source={require("../../../assets/goodjob.jpg")}
-            resizeMode="cover"
-            style={{ flex: 1, justifyContent: "center", opacity: 0.9 }}
-          >
-            <View
-              style={{
-                flex: 2,
-                justifyContent: "flex-end",
-                alignItems: "center"
-              }}
-            >
-              <Title
-                style={{ color: COLORS.white, fontSize: 30, fontWeight: "900" }}
-              >
-                Lesson Completed!
-              </Title>
-              <Paragraph
-                style={{ color: COLORS.white, fontSize: 18, fontWeight: "900" }}
-              >
-                Keep up the good work
-              </Paragraph>
-            </View>
-            <View style={{ flex: 2 }}>
-              <LottieView
-                // ref={animation}
-                source={require("../../../assets/lotties/successGreenRight.json")}
-                autoPlay={true}
-                loop={false}
-                autoPlay
-              />
-              <Audio correct={true} />
-            </View>
-            <View style={{ flex: 1, marginHorizontal: 20 }}>
-              <Button
-                // onPress={watchAgain}
-                style={{
-                  borderRadius: 8,
-                  marginBottom: 20,
-                  borderColor: COLORS.primary,
-                  paddingVertical: 5
-                }}
-                mode="outlined"
-              >
-                Watch again
-              </Button>
-              <Button
-                // onPress={redirectToUnit}
-                style={{
-                  borderRadius: 8,
-                  paddingVertical: 5
-                }}
-                mode="contained"
-              >
-                Go back to unit
-              </Button>
-            </View>
-          </ImageBackground>
-        </View>
-      ) : null} */}
     </SafeAreaView>
   );
 };

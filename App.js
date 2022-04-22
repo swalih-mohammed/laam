@@ -9,7 +9,7 @@ import {
 import { Provider as StoreProvider } from "react-redux";
 import { COLORS, SIZES } from "./src/Helpers/constants";
 
-import { StyleSheet, Text, View } from "react-native";
+// import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -34,7 +34,7 @@ import TestDetail from "./src/Components/quiz/list";
 import ConversationDetails from "./src/Components/conversations/detail";
 import CertificateScreen from "./src/Screens/CertificateScreen";
 import GeneralTestList from "./src/Components/tests/list";
-
+import ErrorPage from "./src/Screens/ErrorPage";
 const Stack = createStackNavigator();
 
 // const Tabs = createBottomTabNavigator();
@@ -212,6 +212,13 @@ export default function App() {
                   }}
                   name="general-test-list"
                   component={GeneralTestList}
+                />
+                <Stack.Screen
+                  options={{
+                    headerShown: false,
+                  }}
+                  name="error-page"
+                  component={ErrorPage}
                 />
               </Stack.Navigator>
             </NavigationContainer>

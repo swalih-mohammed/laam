@@ -41,6 +41,7 @@ const CourseDetail = (props) => {
   const [loading, setLoading] = useState(null);
 
   const { id } = props.route.params;
+  // console.log(props.route.params);
 
   // useEffect(() => {
   //   // getCourseDetail();

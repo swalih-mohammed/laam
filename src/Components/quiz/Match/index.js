@@ -235,12 +235,12 @@ const renderOptions = (props) => {
                       ? COLORS.error
                       : COLORS.primary,
 
-                  height: 50,
-                  borderRadius: 14,
+                  height: 60,
+                  borderRadius: 5,
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  paddingHorizontal: 15,
+                  paddingHorizontal: 10,
                   marginVertical: 5,
                   transform: [{ scale: item.key === selectedA ? 1.1 : 1 }],
                   opacity: showAnswer
@@ -285,12 +285,12 @@ const renderOptions = (props) => {
                           ? COLORS.error
                           : COLORS.primary,
 
-                      height: 50,
-                      borderRadius: 14,
+                      height: 60,
+                      borderRadius: 5,
                       flexDirection: "row",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      paddingHorizontal: 15,
+                      paddingHorizontal: 10,
                       marginVertical: 5,
                       opacity:
                         checkIfInBucketB(item.key) || bDisabled ? 0.4 : 1,
@@ -320,12 +320,12 @@ const renderOptions = (props) => {
                           ? COLORS.error
                           : COLORS.primary,
 
-                      height: 50,
-                      borderRadius: 14,
+                      height: 60,
+                      borderRadius: 5,
                       flexDirection: "row",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      paddingHorizontal: 15,
+                      paddingHorizontal: 10,
                       marginVertical: 5,
                       opacity:
                         checkIfInBucketB(item.key) || bDisabled ? 0.4 : 1,

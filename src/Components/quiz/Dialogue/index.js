@@ -50,7 +50,7 @@ const Dialogue = (props) => {
 
   const addToDisplay = (text, is_question, currect_option) => {
     if (!isMounted.current) return;
-    console.log(visibleListIDs);
+    // console.log(visibleListIDs);
     if (!visibleListIDs.includes(text)) {
       const updatedId = [...visibleListIDs, text];
       setVisibleListIDs(updatedId);
@@ -67,43 +67,56 @@ const Dialogue = (props) => {
   };
 
   const validate = (option) => {
-    console.log("option", option);
+    console.log("option selected is", option);
     setShowMessage(true);
+    setSelectedOption(option);
     setShowNextButton(true);
-    let str_correct_option = props.correct_option.toString();
-    let str_option = option.toString();
+    const str_correct_option = props.correct_option.toString();
+    const str_option = option.toString();
     const optionCurrect =
       str_option === str_correct_option || str_correct_option === "ANY"
         ? true
         : false;
-    if (option) {
-      setSelectedOption(option);
-      if (str_correct_option === "ANY") {
-        setAny(true);
-      }
-      if (optionCurrect) {
-        console.log("option correct");
-        setScored(true);
-        if (showMessage) {
-          animation.current.play(0, 100);
-        }
-        const data = {
-          score: props.score + 1,
-        };
-        props.handleValidate(data);
-        // animation.current.play(0, 100);
-      } else {
-        setScored(false);
-      }
+
+    if (str_correct_option === "ANY") {
+      setAny(true);
+      setScored(true);
+      console.log("any");
+    } else if (str_option === str_correct_option) {
+      console.log("option correct");
+      setScored(true);
+    } else {
+      setScored(false);
     }
-    setTimeout(() => setShowMessage(false), 1000);
-    const answerText =
-      str_correct_option === "1"
+    const answerText_any =
+      str_option === "1"
         ? props.text_option_1
-        : props.correct_option === "2"
+        : str_option === "2"
         ? props.text_option_2
         : props.text_option_3;
-    addToDisplay(answerText, false, optionCurrect);
+
+    const answerText_currect =
+      str_correct_option === "1"
+        ? props.text_option_1
+        : str_correct_option === "2"
+        ? props.text_option_2
+        : props.text_option_3;
+
+    if (str_correct_option === "ANY") {
+      addToDisplay(answerText_any, false, optionCurrect);
+    } else {
+      addToDisplay(answerText_currect, false, optionCurrect);
+    }
+    if (optionCurrect) {
+      const data = {
+        score: props.score + 1,
+      };
+      props.handleValidate(data);
+    }
+    if (showMessage) {
+      animation.current.play(0, 100);
+    }
+    setTimeout(() => setShowMessage(false), 1000);
   };
 
   const handleNextQuiz = () => {
@@ -126,6 +139,7 @@ const Dialogue = (props) => {
   };
 
   const backGroundImage = { uri: props.quizPhoto };
+  const OptionColor = "#c9f2c7";
 
   return (
     <View style={{ flex: 1 }}>
@@ -172,23 +186,103 @@ const Dialogue = (props) => {
       </View>
       <View
         style={{
-          flex: 2,
+          flex: 2.3,
           justifyContent: "center",
           alignItems: "center",
           //   backgroundColor: "black",
         }}
       >
-        <Options
-          text_option_1={props.text_option_1}
-          text_option_2={props.text_option_2}
-          text_option_3={props.text_option_3}
-          showNextButton={showNextButton}
-          validate={validate}
-          selectedOption={selectedOption}
-          correct_option={props.correct_option}
-          index={props.index}
-          any={any}
-        />
+        <TouchableOpacity
+          // disabled={props.isPlaying}
+          onPress={() => validate(1)}
+          disabled={showNextButton || props.isPlaying}
+          style={{
+            width: SIZES.width - 50,
+            borderWidth: showNextButton ? 2 : 1,
+            // backgroundColor: COLORS.primary,
+            backgroundColor: OptionColor,
+            opacity: showNextButton || props.isPlaying ? 0.7 : 1,
+            transform: [{ scale: selectedOption === 1 ? 1.1 : 1 }],
+            borderColor: props.isPlaying
+              ? COLORS.enactive
+              : showNextButton && (props.correct_option === 1 || any)
+              ? COLORS.success
+              : showNextButton && props.correct_option != 1
+              ? COLORS.error
+              : COLORS.success,
+
+            height: 60,
+            borderRadius: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            marginVertical: 5,
+            paddingHorizontal: 10,
+          }}
+        >
+          <Paragraph style={{ fontSize: 14 }}>{props.text_option_1}</Paragraph>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => validate(2)}
+          disabled={showNextButton || props.isPlaying}
+          // key={option.id}
+          style={{
+            width: SIZES.width - 50,
+            borderWidth: showNextButton ? 2 : 1,
+            backgroundColor: OptionColor,
+            opacity: showNextButton || props.isPlaying ? 0.7 : 1,
+            transform: [{ scale: selectedOption === 2 ? 1.1 : 1 }],
+            borderColor: props.isPlaying
+              ? COLORS.enactive
+              : showNextButton && (props.correct_option === 2 || any)
+              ? COLORS.success
+              : showNextButton && props.correct_option != 2
+              ? COLORS.error
+              : COLORS.primary,
+
+            height: 60,
+            borderRadius: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            marginVertical: 5,
+            paddingHorizontal: 10,
+          }}
+        >
+          <Paragraph style={{ fontSize: 14, color: "black" }}>
+            {props.text_option_2}
+          </Paragraph>
+        </TouchableOpacity>
+        {props.text_option_3 && (
+          <TouchableOpacity
+            onPress={() => validate(3)}
+            disabled={showNextButton || props.isPlaying}
+            // key={option.id}
+            style={{
+              width: SIZES.width - 50,
+              borderWidth: showNextButton ? 2 : 1,
+              backgroundColor: OptionColor,
+              opacity: showNextButton || props.isPlaying ? 0.7 : 1,
+              transform: [{ scale: selectedOption === 3 ? 1.1 : 1 }],
+              borderColor: props.isPlaying
+                ? COLORS.enactive
+                : showNextButton && (props.correct_option === 3 || any)
+                ? COLORS.success
+                : props.showNextButton && props.correct_option != 3
+                ? COLORS.error
+                : COLORS.primary,
+
+              height: 60,
+              borderRadius: 10,
+              alignItems: "center",
+              justifyContent: "center",
+              marginVertical: 5,
+              paddingHorizontal: 10,
+            }}
+          >
+            <Paragraph style={{ fontSize: 14, color: "black" }}>
+              {props.text_option_3}
+            </Paragraph>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={{ flex: 0.5 }}>

@@ -88,10 +88,20 @@ const CourseItem = (props) => {
             >
               <Text
                 style={{
+                  fontSize: 14,
+                  fontWeight: "700",
+                  color: COLORS.enactive,
+                }}
+              >
+                {item.subtitle}
+              </Text>
+              <Text
+                style={{
                   fontSize: 18,
                   fontWeight: "900",
                   flexWrap: "wrap",
-                  paddingBottom: 5,
+                  paddingBottom: 10,
+                  // paddingTop: 1,
                   // color: COLORS.primary,
                   // color: "#46494c",
                   // opacity: 0.9,
@@ -100,28 +110,7 @@ const CourseItem = (props) => {
                 {item.title}
               </Text>
             </View>
-            {/* <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                // paddingLeft: 25,
-                height: 100,
-                width: 100,
-                borderRadius: 50,
-                borderColor: COLORS.primary,
-                borderWidth: 2,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 30,
-                  fontWeight: "700",
-                  color: COLORS.primary,
-                }}
-              >
-                {item.score + " %"}
-              </Text>
-            </View> */}
+
             <CircularProgress
               value={item.score * 10}
               valueSuffix={"%"}
@@ -153,8 +142,8 @@ const CourseItem = (props) => {
             >
               <Text
                 style={{
-                  fontSize: 12,
-                  fontWeight: "600",
+                  fontSize: 13,
+                  fontWeight: "700",
                   color: "#ffffff",
                   // backgroundColor: COLORS.primary,
                   // color: "#46494c",
