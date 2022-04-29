@@ -97,7 +97,7 @@ export function Speak(props) {
     if (!isMounted.current) return;
     console.log("starting to record");
     AudioPlayer.current.unloadAsync();
-    setTimeout(() => StopRecording(), 5000);
+    setTimeout(() => StopRecording(), 10000);
     try {
       // Check if user has given the permission to record
       if (AudioPermission === true) {

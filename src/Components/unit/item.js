@@ -9,7 +9,7 @@ import {
   Caption,
   Title,
   ProgressBar,
-  Paragraph
+  Paragraph,
 } from "react-native-paper";
 // import * as Animatable from "react-native-animatable";
 // import { useTheme } from "react-native-paper";
@@ -23,7 +23,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { COLORS, SIZES } from "../../Helpers/constants";
 // import console = require("console");
 
-const UnitItem = props => {
+const UnitItem = (props) => {
   const navigation = useNavigation();
   const { item } = props;
   // console.log(item);
@@ -36,7 +36,7 @@ const UnitItem = props => {
 
   const resetCourse = () => {
     const data = {
-      unit: item.id
+      unit: item.id,
     };
     props.setCourseDetails(data);
   };
@@ -46,7 +46,7 @@ const UnitItem = props => {
       score: 0,
       showAnswer: false,
       answerList: [],
-      showScoreModal: false
+      showScoreModal: false,
     };
     props.handleStart(data);
   };
@@ -66,7 +66,7 @@ const UnitItem = props => {
                 item.progress === 1 ? COLORS.primary : COLORS.enactive,
               justifyContent: "center",
               alignItems: "center",
-              marginRight: 10
+              marginRight: 10,
               // flex: 1
             }}
           >
@@ -74,7 +74,7 @@ const UnitItem = props => {
               name="check"
               style={{
                 color: COLORS.white,
-                fontSize: 10
+                fontSize: 10,
               }}
             />
           </View>
@@ -83,11 +83,18 @@ const UnitItem = props => {
             <Card
               mode={item.progress === 1 ? "outlined" : "contained"}
               style={{
+                transform: [
+                  { scale: item.title === "Unit Revision" ? 1.06 : 1 },
+                ],
                 borderRadius: 15,
                 marginHorizontal: 20,
                 elevation: 10,
+                borderStyle:
+                  item.title === "Unit Revision" ? "dashed" : "solid",
+                borderWidth: item.title === "Unit Revision" ? 3 : 1,
                 flex: 12,
-                borderColor: item.progress === 1 ? COLORS.primary : COLORS.white
+                borderColor:
+                  item.progress === 1 ? COLORS.primary : COLORS.white,
               }}
             >
               <TouchableOpacity onPress={handlePress}>
@@ -96,7 +103,7 @@ const UnitItem = props => {
                     <Image
                       style={styles.photo}
                       source={{
-                        uri: item.photo
+                        uri: item.photo,
                       }}
                     />
                   </View>
@@ -105,7 +112,7 @@ const UnitItem = props => {
                       style={{
                         fontSize: 14,
                         fontWeight: "700",
-                        color: COLORS.enactive
+                        color: COLORS.enactive,
                       }}
                     >
                       {"UNIT " + item.order}
@@ -120,7 +127,7 @@ const UnitItem = props => {
                         fontWeight: "500",
                         color: COLORS.primary,
                         opacity: 0.9,
-                        paddingBottom: 10
+                        paddingBottom: 10,
                       }}
                     >
                       {item.subtitle}
@@ -148,14 +155,14 @@ const styles = StyleSheet.create({
   mainContainer: {
     margin: 8,
     // backgroundColor: "red",
-    flex: 1
+    flex: 1,
     // borderRadius: 15
   },
 
   container: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   RightContainer: {
     flex: 2,
@@ -163,27 +170,24 @@ const styles = StyleSheet.create({
     // marginLeft: 25
     // backgroundColor: "red",
     marginRight: 10,
-    marginLeft: 35
+    marginLeft: 35,
   },
   LeftContainer: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   photo: {
     margin: 10,
     borderRadius: 15,
     width: 100,
-    height: 100
-  }
+    height: 100,
+  },
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setCourseDetails: data => dispatch(setCourseDetails(data)),
-    handleStart: data => dispatch(handleStart(data))
+    setCourseDetails: (data) => dispatch(setCourseDetails(data)),
+    handleStart: (data) => dispatch(handleStart(data)),
   };
 };
-export default connect(
-  null,
-  mapDispatchToProps
-)(UnitItem);
+export default connect(null, mapDispatchToProps)(UnitItem);

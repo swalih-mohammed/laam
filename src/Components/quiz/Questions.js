@@ -235,11 +235,11 @@ const Questions = (props) => {
   const processMatch = (text, randomize, is_sentance, is_email) => {
     var sentance_list = "";
     if (is_sentance) {
-      var sentance_list = text.split(".");
+      var sentance_list = text.split("/");
     } else if (is_email) {
       var sentance_list = text.split("/");
     } else {
-      var sentance_list = text.split(",");
+      var sentance_list = text.split("/");
     }
     const Bucket = [];
     for (let i = 0; i < sentance_list.length; i++) {
@@ -335,7 +335,7 @@ const Questions = (props) => {
             UnloadSound={UnloadSound}
             isPlaying={isPlaying}
             photo={allQuestions[props.index].photo}
-            index={current}
+            // index={current}
           />
         )}
 

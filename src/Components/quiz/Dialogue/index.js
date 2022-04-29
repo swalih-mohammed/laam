@@ -51,8 +51,12 @@ const Dialogue = (props) => {
   const addToDisplay = (text, is_question, currect_option) => {
     if (!isMounted.current) return;
     // console.log(visibleListIDs);
-    if (!visibleListIDs.includes(text)) {
-      const updatedId = [...visibleListIDs, text];
+    const item = {
+      text: text,
+      id: props.index,
+    };
+    if (!visibleListIDs.includes(item)) {
+      const updatedId = [...visibleListIDs, item];
       setVisibleListIDs(updatedId);
 
       const messageItem = {

@@ -70,6 +70,8 @@ const QuizItem = (props) => {
         return "microphone";
       case "GRAMMAR":
         return "book";
+      case "TRANSLATE":
+        return "translate";
       case "DIALOGUE":
         return "chat-processing";
       case "VOCABULARY":
@@ -78,8 +80,8 @@ const QuizItem = (props) => {
         return "paper-cut-vertical";
       case "EMAIL_WRITING":
         return "email";
-
       default:
+        return "google-classroom";
     }
   };
 
@@ -160,7 +162,12 @@ const QuizItem = (props) => {
               </Text>
 
               <Text
-                style={{ fontSize: 15, fontWeight: "900", flexWrap: "wrap" }}
+                style={{
+                  textTransform: "capitalize",
+                  fontSize: 15,
+                  fontWeight: "900",
+                  flexWrap: "wrap",
+                }}
               >
                 {item.title}
               </Text>

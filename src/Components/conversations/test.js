@@ -289,7 +289,7 @@ const ConversationDetail = (props) => {
     if (!isMounted.current) return;
     console.log("starting to record");
     setIsRecording(true);
-    setTimeout(() => forceStopRecording(), 15000);
+    setTimeout(() => StopRecording(), 10000);
 
     // interval();
 

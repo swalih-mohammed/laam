@@ -245,35 +245,39 @@ const renderOptions = (props) => {
             {props.text_option_2}
           </Paragraph>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => validate(3)}
-          disabled={showNextButton}
-          style={{
-            width: width - 100,
-            // borderWidth: 1,
-            // backgroundColor: COLORS.primary,
-            borderWidth: showNextButton ? 3 : 1,
-            opacity: showNextButton ? 0.8 : 1,
-            transform: [{ scale: selectedOption === 3 ? 1.1 : 1 }],
+        {props.text_option_3 && (
+          <TouchableOpacity
+            onPress={() => validate(3)}
+            disabled={showNextButton}
+            style={{
+              width: width - 80,
+              // borderWidth: 1,
+              // backgroundColor: COLORS.primary,
+              borderWidth: showNextButton ? 3 : 1,
+              opacity: showNextButton ? 0.8 : 1,
+              transform: [{ scale: selectedOption === 3 ? 1.1 : 1 }],
 
-            borderColor:
-              showNextButton && props.correct_option === 3
-                ? COLORS.success
-                : showNextButton && props.correct_option != 3
-                ? COLORS.error
-                : COLORS.primary,
+              borderColor:
+                showNextButton && props.correct_option === 3
+                  ? COLORS.success
+                  : showNextButton && props.correct_option != 3
+                  ? COLORS.error
+                  : COLORS.primary,
 
-            // height: 45,
-            borderRadius: 14,
-            alignItems: "center",
-            justifyContent: "center",
-            marginVertical: 15,
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-          }}
-        >
-          <Paragraph style={{ fontSize: 14 }}>{props.text_option_3}</Paragraph>
-        </TouchableOpacity>
+              height: 50,
+              borderRadius: 14,
+              alignItems: "center",
+              justifyContent: "center",
+              marginVertical: 15,
+              paddingHorizontal: 10,
+              paddingVertical: 10,
+            }}
+          >
+            <Paragraph style={{ fontSize: 14 }}>
+              {props.text_option_3}
+            </Paragraph>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View

@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  ImageBackground,
+} from "react-native";
 import { connect } from "react-redux";
 import { handleNext, handleValidate } from "../../../store/actions/quiz";
 import MessageAudio from "../../../Helpers/PlayerWithoutControl";
@@ -16,7 +22,7 @@ import { MARGIN_TOP } from "../DaragAndDrop/Layout";
 // import console = require("console");
 
 export function Reading(props) {
-  console.log("reading comp");
+  console.log(props.answer, "reading comp");
   //   console.log(props.quizText);
   const animation = React.useRef(null);
   const [text, setText] = useState("");
@@ -71,31 +77,88 @@ export function Reading(props) {
   // console.log(props.photo);
   const OptionColor = "#c9f2c7";
   const backGroundImage = { uri: props.photo ? props.photo : props.quizPhoto };
-
+  const has_3rd_option = props.text_option_3 ? 2 : 1.3;
   return (
     <Animated.View
-      style={{ flex: 1 }}
+      style={{ flex: 1, marginTop: 5 }}
       entering={LightSpeedInRight.duration(1000)}
     >
-      <View
+      <ImageBackground
+        resizeMode="cover"
+        source={require("../../../../assets/readingComprehension.png")}
         style={{
           flex: 3,
-          // marginHorizontal: 10,
           justifyContent: "center",
           alignItems: "center",
-          // backgroundColor: "red",
-          // paddingHorizontal: 20,
-          marginHorizontal: 15,
-          marginVertical: 8,
+          height: null,
+          width: null,
+          // marginTop: 20,
+          // alignSelf: "center",
+          paddingTop: 20,
+          paddingBottom: 20,
+          // borderRadius: 10,
         }}
       >
-        <Card style={{ elevation: 10, borderRadius: 8 }}>
-          <Card.Content
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <Title style={{ paddingBottom: 10 }}>{props.quizTitle}</Title>
-            <Paragraph>{props.quizText}</Paragraph>
-          </Card.Content>
+        <View
+          style={{
+            flex: 1.5,
+            // marginHorizontal: 10,
+            // justifyContent: "center",
+            // alignItems: "center",
+            // backgroundColor: "red",
+            paddingHorizontal: 20,
+            marginHorizontal: 10,
+            // marginTop: 25,
+          }}
+        >
+          {/* <View style={{ flex: 0.4 }}>
+            <View
+              style={{
+                flex: 2,
+                justifyContent: "center",
+                alignItems: "center",
+                // paddingRight: 20,
+                // paddingHorizontal: 2,
+                // backgroundColor: "red",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+
+                  fontWeight: "700",
+                  color: COLORS.enactive,
+                }}
+              >
+                {props.quizTitle.toUpperCase()}
+              </Text>
+            </View> */}
+          {/* <View style={{ flex: 0.3, paddingTop: 10 }}>
+              <ImageBackground
+                resizeMode="contain"
+                source={require("../../../../assets/lamp3.png")}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  borderRadius: 10,
+                }}
+              ></ImageBackground>
+            </View> */}
+          {/* </View> */}
+          <View style={{ flex: 4, padding: 15 }}>
+            <Paragraph
+              style={{
+                fontWeight: "bold",
+                paddingBottom: 10,
+                alignSelf: "center",
+                fontSize: 16,
+              }}
+            >
+              {props.quizTitle}
+            </Paragraph>
+            {/* <Paragraph>{props.answer ? props.anwer : props.quizText}</Paragraph> */}
+            <Paragraph>{props.text ? props.text : props.quizText}</Paragraph>
+          </View>
           {showMessage ? (
             <>
               <LottieView
@@ -115,8 +178,11 @@ export function Reading(props) {
               />
             </>
           ) : null}
-        </Card>
-      </View>
+          {/* </View> */}
+
+          {/* </Card> */}
+        </View>
+      </ImageBackground>
       <Animated.View
         entering={LightSpeedInRight.duration(1000)}
         style={{
@@ -124,6 +190,7 @@ export function Reading(props) {
           justifyContent: "center",
           alignItems: "center",
           paddingHorizontal: 20,
+          paddingTop: 10,
           // backgroundColor: "red",
         }}
       >
@@ -138,7 +205,7 @@ export function Reading(props) {
       <Animated.View
         entering={LightSpeedInRight.duration(1000)}
         style={{
-          flex: 2,
+          flex: has_3rd_option,
           justifyContent: "center",
           alignItems: "center",
           //   marginBottom: 10,

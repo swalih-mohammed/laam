@@ -47,7 +47,8 @@ function Sentance(props) {
               </Paragraph>
               <Paragraph
                 style={{
-                  color: props.index === props.id ? "red" : "black",
+                  color: "red",
+                  // color: props.index === props.id ? "red" : "black",
                   fontWeight: props.index === props.id ? "bold" : "normal",
                 }}
               >
@@ -55,10 +56,11 @@ function Sentance(props) {
               </Paragraph>
               <Paragraph
                 style={{
+                  // color: "red",
                   fontWeight: props.index === props.id ? "bold" : "normal",
                 }}
               >
-                {secondPart + ". "}
+                {secondPart + " "}
               </Paragraph>
             </Text>
           ) : (
@@ -68,7 +70,7 @@ function Sentance(props) {
                   fontWeight: props.index === props.id ? "bold" : "normal",
                 }}
               >
-                {props.word + " ."}
+                {props.word + " "}
               </Paragraph>
             </Text>
           )}
@@ -85,7 +87,7 @@ function Sentance(props) {
           </Paragraph>
           <Paragraph
             style={{
-              color: props.index === props.id ? "red" : "black",
+              color: "red",
               fontWeight: props.index === props.id ? "bold" : "normal",
             }}
           >
@@ -96,7 +98,7 @@ function Sentance(props) {
               fontWeight: props.index === props.id ? "bold" : "normal",
             }}
           >
-            {secondPart + ". "}
+            {secondPart + " "}
           </Paragraph>
         </Text>
       )}
@@ -117,26 +119,27 @@ export function Email(props) {
   const [visibleListIDs, setVisibleListIDs] = useState([]);
 
   const validate = (option, answer) => {
-    console.log(option, answer);
+    // console.log(option, answer);
     setSelectedOption(option);
     let answer1 = answer.toLowerCase();
-    let selectedOption1 = answer1.trim();
+    let selectedOption = answer1.trim();
+    let selectedOption1 = selectedOption.toLowerCase();
 
-    let currectOptoin = props.answer.toLowerCase();
-    let currectOptoin1 = currectOptoin.trim();
+    let currectOption = props.answer.toLowerCase();
+    let currectOption1 = currectOption.trim();
 
     if (!visibleListIDs.includes(props.index)) {
       const updatedId = [...visibleListIDs, props.index];
       setVisibleListIDs(updatedId);
       const item = {
         index: props.index,
-        answer: currectOptoin1,
+        answer: currectOption1,
       };
       const updatedArr = [...visibleList, item];
       setVisibleList(updatedArr);
     }
-
-    if (selectedOption1 === currectOptoin1) {
+    console.log("current option ", selectedOption1, currectOption1);
+    if (selectedOption1 === currectOption1) {
       setScored(true);
       const data = {
         score: props.score + 1,
@@ -165,6 +168,10 @@ export function Email(props) {
       showScoreModal: props.index === props.numberOfQuestions ? true : false,
     };
     props.handleNext(data);
+    if (props.index === props.numberOfQuestions) {
+      setVisibleListIDs([]);
+      setVisibleList([]);
+    }
   };
 
   const OptionColor = "#c9f2c7";
@@ -234,7 +241,7 @@ export function Email(props) {
           <View
             style={{
               flex: 4,
-              justifyContent: "space-evenly",
+              justifyContent: "center",
               alignItems: "center",
               paddingHorizontal: 20,
               // backgroundColor: "red",

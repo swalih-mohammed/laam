@@ -235,12 +235,12 @@ const renderOptions = (props) => {
                       ? COLORS.error
                       : COLORS.primary,
 
-                  height: 60,
+                  height: 62,
                   borderRadius: 5,
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "space-between",
-                  paddingHorizontal: 10,
+                  justifyContent: "center",
+                  paddingHorizontal: 5,
                   marginVertical: 5,
                   transform: [{ scale: item.key === selectedA ? 1.1 : 1 }],
                   opacity: showAnswer
@@ -250,7 +250,14 @@ const renderOptions = (props) => {
                     : 1,
                 }}
               >
-                <Paragraph style={{ fontSize: 14, color: "black" }}>
+                <Paragraph
+                  style={{
+                    alignContent: "center",
+                    textAlign: "center",
+                    fontSize: 14,
+                    color: "black",
+                  }}
+                >
                   {item.word}
                   {/* {checkIfInBucketA(item.key) ? "inA" : "notInA"} */}
                 </Paragraph>
@@ -285,18 +292,24 @@ const renderOptions = (props) => {
                           ? COLORS.error
                           : COLORS.primary,
 
-                      height: 60,
+                      height: 62,
                       borderRadius: 5,
                       flexDirection: "row",
                       alignItems: "center",
-                      justifyContent: "space-between",
-                      paddingHorizontal: 10,
+                      justifyContent: "center",
+                      paddingHorizontal: 5,
                       marginVertical: 5,
                       opacity:
                         checkIfInBucketB(item.key) || bDisabled ? 0.4 : 1,
                     }}
                   >
-                    <Paragraph style={{ fontSize: 14, color: "black" }}>
+                    <Paragraph
+                      style={{
+                        textAlign: "center",
+                        fontSize: 14,
+                        color: "black",
+                      }}
+                    >
                       {item.word}
                     </Paragraph>
                   </TouchableOpacity>
@@ -320,18 +333,24 @@ const renderOptions = (props) => {
                           ? COLORS.error
                           : COLORS.primary,
 
-                      height: 60,
+                      height: 62,
                       borderRadius: 5,
                       flexDirection: "row",
                       alignItems: "center",
-                      justifyContent: "space-between",
-                      paddingHorizontal: 10,
+                      justifyContent: "center",
+                      paddingHorizontal: 5,
                       marginVertical: 5,
                       opacity:
                         checkIfInBucketB(item.key) || bDisabled ? 0.4 : 1,
                     }}
                   >
-                    <Paragraph style={{ fontSize: 14, color: "black" }}>
+                    <Paragraph
+                      style={{
+                        textAlign: "center",
+                        // fontSize: 14,
+                        color: "black",
+                      }}
+                    >
                       {item.word}
                     </Paragraph>
                   </TouchableOpacity>

@@ -256,7 +256,7 @@ export function Speak(props) {
                   alignItems: "center",
                 }}
               >
-                <Title>{props.qustion}</Title>
+                <Paragraph>{props.qustion}</Paragraph>
               </Card.Content>
             </Card>
           </View>
@@ -276,7 +276,7 @@ export function Speak(props) {
           disabled={showNextButton}
           // key={option.id}
           style={{
-            width: width - 80,
+            width: width - 50,
             borderWidth: showNextButton ? 3 : 1,
             backgroundColor: COLORS.primary,
             opacity: showNextButton ? 0.8 : 1,
@@ -289,11 +289,13 @@ export function Speak(props) {
                 ? COLORS.error
                 : COLORS.primary,
 
-            height: 50,
-            borderRadius: 14,
+            height: 60,
+            borderRadius: 10,
             alignItems: "center",
             justifyContent: "center",
-            marginVertical: 5,
+            marginBottom: 8,
+            paddingVertical: 5,
+            paddingHorizontal: 10,
           }}
         >
           <Paragraph style={{ fontSize: 14, color: "black" }}>
@@ -305,7 +307,7 @@ export function Speak(props) {
           disabled={showNextButton}
           // key={option.id}
           style={{
-            width: width - 80,
+            width: width - 50,
             borderWidth: showNextButton ? 3 : 1,
             backgroundColor: COLORS.primary,
             opacity: showNextButton ? 0.8 : 1,
@@ -318,11 +320,13 @@ export function Speak(props) {
                 ? COLORS.error
                 : COLORS.primary,
 
-            height: 50,
-            borderRadius: 14,
+            height: 60,
+            borderRadius: 10,
             alignItems: "center",
             justifyContent: "center",
-            marginVertical: 5,
+            marginBottom: 8,
+            paddingVertical: 5,
+            paddingHorizontal: 10,
           }}
         >
           <Paragraph style={{ fontSize: 14, color: "black" }}>
@@ -335,7 +339,7 @@ export function Speak(props) {
             disabled={showNextButton}
             style={{
               // marginBottom: 30,
-              width: width - 80,
+              width: width - 50,
               borderWidth: showNextButton ? 3 : 1,
               backgroundColor: COLORS.primary,
               opacity: showNextButton ? 0.8 : 1,
