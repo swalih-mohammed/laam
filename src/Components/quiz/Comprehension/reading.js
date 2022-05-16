@@ -156,7 +156,6 @@ export function Reading(props) {
             >
               {props.quizTitle}
             </Paragraph>
-            {/* <Paragraph>{props.answer ? props.anwer : props.quizText}</Paragraph> */}
             <Paragraph>{props.text ? props.text : props.quizText}</Paragraph>
           </View>
           {showMessage ? (

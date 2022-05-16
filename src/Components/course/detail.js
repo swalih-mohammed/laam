@@ -77,6 +77,7 @@ const CourseDetail = (props) => {
       );
       setCourse(response.data);
       setUnits(response.data.units);
+      current_unit();
       // console.log(response.data);
       setLoading(false);
     } catch (err) {
@@ -109,6 +110,18 @@ const CourseDetail = (props) => {
       setLoading(false);
     } catch (error) {
       console.log("error in catch while enrolling", error);
+    }
+  };
+
+  const current_unit = () => {
+    if (units) {
+      let current = "";
+      for (let i = 0; i < units.length; i++) {
+        if (units[i].progress === 1) {
+          current = units[i].order + 1;
+        }
+      }
+      return current;
     }
   };
 
@@ -280,7 +293,7 @@ const CourseDetail = (props) => {
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => {
-                  return <UnitItem item={item} />;
+                  return <UnitItem item={item} current_unit={current_unit()} />;
                 }}
               />
             )}

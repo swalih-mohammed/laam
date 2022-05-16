@@ -139,7 +139,7 @@ const ConversationItem = (props) => {
                   // paddingBottom:
                 }}
               >
-                {item.subtitle}
+                {item.subtitle ? item.subtitle : "CONVERSATION"}
               </Text>
 
               <Text

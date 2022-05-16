@@ -235,12 +235,12 @@ const renderOptions = (props) => {
                       ? COLORS.error
                       : COLORS.primary,
 
-                  height: 62,
+                  height: 65,
                   borderRadius: 5,
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "center",
-                  paddingHorizontal: 5,
+                  paddingHorizontal: 3,
                   marginVertical: 5,
                   transform: [{ scale: item.key === selectedA ? 1.1 : 1 }],
                   opacity: showAnswer
@@ -254,7 +254,7 @@ const renderOptions = (props) => {
                   style={{
                     alignContent: "center",
                     textAlign: "center",
-                    fontSize: 14,
+                    fontSize: 13,
                     color: "black",
                   }}
                 >
@@ -292,12 +292,12 @@ const renderOptions = (props) => {
                           ? COLORS.error
                           : COLORS.primary,
 
-                      height: 62,
+                      height: 65,
                       borderRadius: 5,
                       flexDirection: "row",
                       alignItems: "center",
                       justifyContent: "center",
-                      paddingHorizontal: 5,
+                      paddingHorizontal: 3,
                       marginVertical: 5,
                       opacity:
                         checkIfInBucketB(item.key) || bDisabled ? 0.4 : 1,
@@ -306,7 +306,7 @@ const renderOptions = (props) => {
                     <Paragraph
                       style={{
                         textAlign: "center",
-                        fontSize: 14,
+                        fontSize: 13,
                         color: "black",
                       }}
                     >
@@ -333,12 +333,12 @@ const renderOptions = (props) => {
                           ? COLORS.error
                           : COLORS.primary,
 
-                      height: 62,
+                      height: 65,
                       borderRadius: 5,
                       flexDirection: "row",
                       alignItems: "center",
                       justifyContent: "center",
-                      paddingHorizontal: 5,
+                      paddingHorizontal: 3,
                       marginVertical: 5,
                       opacity:
                         checkIfInBucketB(item.key) || bDisabled ? 0.4 : 1,
@@ -347,7 +347,7 @@ const renderOptions = (props) => {
                     <Paragraph
                       style={{
                         textAlign: "center",
-                        // fontSize: 14,
+                        fontSize: 13,
                         color: "black",
                       }}
                     >

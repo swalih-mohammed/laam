@@ -40,6 +40,7 @@ const LeftContent = (props) => <Avatar.Icon {...props} icon="school" />;
 
 const UnitDetail = (props) => {
   const { id, quiz_completed } = props.route.params;
+  console.log("quiz completed", quiz_completed);
 
   const navigation = useNavigation();
   const [quizzes, setQuizzes] = useState(null);
@@ -48,43 +49,53 @@ const UnitDetail = (props) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // useEffect(() => {
+  //   const source = axios.CancelToken.source();
+  //   getUnitDetail(source);
+  //   return () => {
+  //     source.cancel();
+  //   };
+  // }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       console.log("unit detail focussing");
-      // console.log("unit detail route params", props.route.params);
-      // console.log("quiz completed", quiz_completed);
       let source = axios.CancelToken.source();
-      const getUnitDetail = async () => {
-        const unitId = id;
-        const username = props.username;
-        if (username !== null && unitId !== null) {
-          try {
-            setLoading(true);
-            const response = await axios.get(
-              `${localhost}/courses/units/${unitId}/${username}`,
-              { cancelToken: source.token }
-            );
-            setUnit(response.data[0]);
-            setQuizzes(response.data[0].quizzes);
-            progressBar();
-            setLoading(false);
-          } catch (err) {
-            if (axios.isCancel(error)) {
-              console.log("axios cancel error");
-            } else {
-              console.log("error occured in catch");
-              console.log(err);
-            }
-          }
-        }
-      };
-      getUnitDetail();
+      // if (quiz_completed) {
+      console.log("quiz completed hence fetching");
+      getUnitDetail(source);
+      // }
       return () => {
         console.log("unit detail unfocussing");
         source.cancel();
       };
     }, [])
   );
+
+  const getUnitDetail = async (source) => {
+    const unitId = id;
+    const username = props.username;
+    if (username !== null && unitId !== null) {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `${localhost}/courses/units/${unitId}/${username}`,
+          { cancelToken: source.token }
+        );
+        setUnit(response.data[0]);
+        setQuizzes(response.data[0].quizzes);
+        progressBar();
+        setLoading(false);
+      } catch (err) {
+        if (axios.isCancel(error)) {
+          console.log("axios cancel error");
+        } else {
+          console.log("error occured in catch");
+          console.log(err);
+        }
+      }
+    }
+  };
 
   const progressBar = () => {
     if (unit) {

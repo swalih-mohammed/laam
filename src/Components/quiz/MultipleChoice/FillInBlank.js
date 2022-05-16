@@ -32,7 +32,7 @@ import { MARGIN_TOP } from "../DaragAndDrop/Layout";
 
 export function Speak(props) {
   const animation = React.useRef(null);
-
+  const isMounted = React.useRef(null);
   const [text, setText] = useState("");
   const [scored, setScored] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
@@ -40,6 +40,13 @@ export function Speak(props) {
   const [selectedOption, setSelectedOption] = useState("");
   const [any, setAny] = useState(false);
   // console.log(props.question_split);
+
+  React.useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, [props.index]);
   const validate = (option) => {
     setShowMessage(true);
     setShowNextButton(true);
@@ -64,7 +71,7 @@ export function Speak(props) {
         setScored(false);
       }
     }
-    setTimeout(() => setShowMessage(false), 1000);
+    if (isMounted.current) return setTimeout(() => setShowMessage(false), 1000);
   };
 
   const handleNextQuiz = () => {
@@ -85,6 +92,8 @@ export function Speak(props) {
   };
 
   // console.log(props.photo);
+
+  const optionHeight = props.text_option_3 ? 50 : 65;
 
   return (
     <Animated.View
@@ -289,7 +298,7 @@ export function Speak(props) {
                 ? COLORS.error
                 : COLORS.primary,
 
-            height: 60,
+            height: optionHeight,
             borderRadius: 10,
             alignItems: "center",
             justifyContent: "center",
@@ -320,7 +329,7 @@ export function Speak(props) {
                 ? COLORS.error
                 : COLORS.primary,
 
-            height: 60,
+            height: optionHeight,
             borderRadius: 10,
             alignItems: "center",
             justifyContent: "center",

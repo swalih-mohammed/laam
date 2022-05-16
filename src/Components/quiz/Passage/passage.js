@@ -176,6 +176,7 @@ export function Email(props) {
 
   const OptionColor = "#c9f2c7";
   const backGroundImage = { uri: props.photo ? props.photo : props.quizPhoto };
+  console.log(backGroundImage);
 
   return (
     <Animated.View
@@ -203,17 +204,20 @@ export function Email(props) {
           }}
         >
           {/* <Card.Content style={{ flex: 1 }}> */}
-          <View style={{ flex: 2 }}>
-            <ImageBackground
-              resizeMode="cover"
-              source={backGroundImage}
-              style={{
-                flex: 1,
-                // justifyContent: "center",
-                borderRadius: 10,
-              }}
-            ></ImageBackground>
-          </View>
+          {backGroundImage.uri != null && (
+            <View style={{ flex: 2 }}>
+              <ImageBackground
+                resizeMode="cover"
+                source={backGroundImage}
+                style={{
+                  flex: 1,
+                  // justifyContent: "center",
+                  borderRadius: 10,
+                  backgroundColor: "red",
+                }}
+              ></ImageBackground>
+            </View>
+          )}
 
           <View
             style={{
@@ -221,17 +225,17 @@ export function Email(props) {
               justifyContent: "center",
               alignItems: "center",
               // backgroundColor: "red",
-              paddingTop: 5,
+              // paddingTop: 5,
             }}
           >
             <Text
               style={{
                 fontSize: 15,
                 // opacity: 0.9,
-                paddingBottom: 15,
+                // paddingBottom: 15,
                 fontWeight: "700",
                 color: COLORS.enactive,
-                alignSelf: "center",
+                // alignSelf: "center",
               }}
             >
               {props.quizTitle.toUpperCase()}
@@ -247,7 +251,7 @@ export function Email(props) {
               // backgroundColor: "red",
             }}
           >
-            <Title>{props.quizSubTitle}</Title>
+            {props.quizSubTitle && <Title>{props.quizSubTitle}</Title>}
 
             <Text>
               {props.quizText &&

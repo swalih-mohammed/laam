@@ -25,7 +25,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Dialogue from "./Dialogue/index";
 import Email from "./Email/email";
 import Passage from "./Passage/passage";
-// import PassageFillInBlank from "./Passage/fillInBlank";
+import Conversation from "./Conversation/FillInBlank";
 
 const Questions = (props) => {
   const navigation = useNavigation();
@@ -42,6 +42,7 @@ const Questions = (props) => {
     // console.log("question", allQuestions[props.index]);
     // console.log("question index", props.index);
     // console.log("questions");
+    // processedQuestions();
     isMounted.current = true;
     LoadAudio();
     return () => {
@@ -269,7 +270,26 @@ const Questions = (props) => {
     }
     return Bucket;
   };
-  // useKeepAwake();
+
+  const processedQuestions = () => {
+    // console.log("test");
+    const Questions = [];
+    for (let i = 0; i < allQuestions.length; i++) {
+      let obj = {};
+      obj["key"] = i;
+      obj["question"] = allQuestions[i].question.trim();
+      Questions.push(obj);
+    }
+    // console.log(Questions);
+    return Questions;
+  };
+
+  const IS_CONVERSATION =
+    allQuestions[props.index].category === "CONVERSATION_TRANSLATE" ||
+    allQuestions[props.index].category === "CONVERSATION_FILL_IN_BLANK"
+      ? true
+      : false;
+
   const FILL_IN_BLANK =
     allQuestions[props.index].category === "FILL_IN_BLANK" ||
     allQuestions[props.index].category === "FILL_IN_BLANK_WITH_PHOTO" ||
@@ -291,14 +311,16 @@ const Questions = (props) => {
       : false;
   const IS_FILL_IN_BLANK =
     allQuestions[props.index].category === "PASSAGE_FILL_IN_BLANK" ||
-    allQuestions[props.index].category === "EMAIL_FIll_IN_BLANK"
+    allQuestions[props.index].category === "EMAIL_FIll_IN_BLANK" ||
+    allQuestions[props.index].category === "CONVERSATION_FILL_IN_BLANK"
       ? true
       : false;
   const IS_TRANSLATE =
     allQuestions[props.index].category === "PASSAGE_TRANSLATE_WORD" ||
     allQuestions[props.index].category === "PASSAGE_TRANSLATE_SENT" ||
     allQuestions[props.index].category === "EMAIL_TRANSLATE_WORD" ||
-    allQuestions[props.index].category === "EMAIL_TRANSLATE_SENT"
+    allQuestions[props.index].category === "EMAIL_TRANSLATE_SENT" ||
+    allQuestions[props.index].category === "CONVERSATION_TRANSLATE"
       ? true
       : false;
   const IS_WORD =
@@ -403,6 +425,7 @@ const Questions = (props) => {
             quizTitle={props.quizTitle}
             title={allQuestions[props.index].title}
             question={allQuestions[props.index].question}
+            text={allQuestions[props.index].text}
             answer={allQuestions[props.index].answer}
             correct_option={allQuestions[props.index].correct_option}
             text_option_1={allQuestions[props.index].text_option_1}
@@ -454,11 +477,12 @@ const Questions = (props) => {
             quizTitle={props.quizTitle}
             quizSubTitle={props.quizSubTitle}
             quizPhoto={props.quizPhoto}
-            quizText={processMatch(props.quizText, false, true, false)}
+            // quizText={processMatch(props.quizText, false, true, false)}
             quizAudio={props.audio}
             IS_FILL_IN_BLANK={IS_FILL_IN_BLANK}
             IS_TRANSLATE={IS_TRANSLATE}
             IS_WORD={IS_WORD}
+            processedQuestions={processedQuestions()}
           />
         )}
         {IS_PASSAGE && (
@@ -483,6 +507,33 @@ const Questions = (props) => {
             IS_FILL_IN_BLANK={IS_FILL_IN_BLANK}
             IS_TRANSLATE={IS_TRANSLATE}
             IS_WORD={IS_WORD}
+          />
+        )}
+        {IS_CONVERSATION && (
+          <Conversation
+            numberOfQuestions={allQuestions.length - 1}
+            title={allQuestions[props.index].title}
+            question={allQuestions[props.index].question}
+            answer={allQuestions[props.index].answer}
+            correct_option={allQuestions[props.index].correct_option}
+            text_option_1={allQuestions[props.index].text_option_1}
+            text_option_2={allQuestions[props.index].text_option_2}
+            text_option_3={allQuestions[props.index].text_option_3}
+            photo_1={allQuestions[0]?.photo}
+            photo_2={allQuestions[1]?.photo}
+            PlayAudio={PlayAudio}
+            UnloadSound={UnloadSound}
+            isPlaying={isPlaying}
+            photo={allQuestions[props.index].photo}
+            quizTitle={props.quizTitle}
+            quizSubTitle={props.quizSubTitle}
+            quizPhoto={props.quizPhoto}
+            quizText={processMatch(props.quizText, false, true, false)}
+            quizAudio={props.audio}
+            IS_FILL_IN_BLANK={IS_FILL_IN_BLANK}
+            IS_TRANSLATE={IS_TRANSLATE}
+            IS_WORD={IS_WORD}
+            processedQuestions={processedQuestions()}
           />
         )}
 

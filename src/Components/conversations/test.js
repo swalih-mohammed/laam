@@ -73,21 +73,6 @@ const ConversationDetail = (props) => {
     React.useState(false);
   const [AudioPermission, SetAudioPermission] = useState(false);
 
-  // const backAction = () => {
-  //   console.log(123);
-  //   setModalVisible(false);
-  //   navigation.navigate("Unit Details", {
-  //     id: props.unit,
-  //   });
-  // };
-
-  // function handleBackButtonClick() {
-  //   navigation.goBack();
-  //   console.log("handling backbutton");
-  //   modalVisible(false);
-  //   return true;
-  // }
-
   useEffect(() => {
     GetPermission();
     isMounted.current = true;
@@ -585,6 +570,7 @@ const ConversationDetail = (props) => {
                     <MessageItem
                       item={item}
                       key={item.id}
+                      LoadAudio={PlayAudio}
                       is_speaking={item.id === current && isPlaying}
                     />
                   ))

@@ -48,7 +48,8 @@ const ConversationItem = (props) => {
           : LightSpeedInRight.duration(1000)
       }
     >
-      <View
+      <TouchableOpacity
+        onPress={props.LoadAudio}
         style={{
           // backgroundColor: "red"
           justifyContent: "flex-start",
@@ -153,7 +154,7 @@ const ConversationItem = (props) => {
             )}
           </View>
         </Card>
-      </View>
+      </TouchableOpacity>
     </Animated.View>
   );
 };

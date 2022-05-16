@@ -21,45 +21,7 @@ import { Audio } from "expo-av";
 import { MARGIN_TOP } from "../DaragAndDrop/Layout";
 // import console = require("console");
 
-// function Sentance(props) {
-//   const answer = "  " + props.visibleList[props.id]?.answer + "  ";
-//   const dash =
-//     props.index === props.id
-//       ? " [ " + "- - - -" + " ] "
-//       : "  " + "- - - -" + "  ";
-//   const text = props.is_visible ? answer : dash;
-//   // console.log(props.visibleList[props.id]?.answer);
-//   return (
-//     <Text>
-//       <Paragraph
-//         style={{ fontWeight: props.index === props.id ? "bold" : "normal" }}
-//       >
-//         {props.word}
-//       </Paragraph>
-//       <Paragraph
-//         style={{
-//           color: "red",
-//           fontWeight: props.index === props.id ? "bold" : "normal",
-//         }}
-//       >
-//         {text}
-//       </Paragraph>
-//     </Text>
-//   );
-// }
-
 function Sentance(props) {
-  // console.log(props);
-  // function getParts(string, position, charactor) {
-  //   return string.split(charactor)[position];
-  // }
-  // const firstPart = getParts(props.word, 0, "(");
-  // const inBracket = props.word.match(/\(([^)]+)\)/)
-  //   ? props.word.match(/\(([^)]+)\)/)[1]
-  //   : "nothing in bracket";
-  // const secondPart = getParts(props.word, 1, ")");
-  // const fillText = props.is_visible ? inBracket : " ( _ _ _ ) ";
-
   //   console.log(props);
   function getParts(string, position, charactor) {
     if (string) return string.split(charactor)[position];
@@ -96,10 +58,11 @@ function Sentance(props) {
               </Paragraph>
               <Paragraph
                 style={{
+                  // color: "red",
                   fontWeight: props.index === props.id ? "bold" : "normal",
                 }}
               >
-                {secondPart}
+                {secondPart + " "}
               </Paragraph>
             </Text>
           ) : (
@@ -109,7 +72,7 @@ function Sentance(props) {
                   fontWeight: props.index === props.id ? "bold" : "normal",
                 }}
               >
-                {props.word}
+                {props.word + " "}
               </Paragraph>
             </Text>
           )}
@@ -126,7 +89,7 @@ function Sentance(props) {
           </Paragraph>
           <Paragraph
             style={{
-              color: props.index === props.id ? "red" : "black",
+              color: "red",
               fontWeight: props.index === props.id ? "bold" : "normal",
             }}
           >
@@ -137,7 +100,7 @@ function Sentance(props) {
               fontWeight: props.index === props.id ? "bold" : "normal",
             }}
           >
-            {secondPart}
+            {secondPart + " "}
           </Paragraph>
         </Text>
       )}
@@ -145,7 +108,8 @@ function Sentance(props) {
   );
 }
 export function Email(props) {
-  // console.log(props.processedQuestions, "eamil comp");
+  // console.log(props.processedQuestions, "conv comp");
+
   const animation = React.useRef(null);
   const [text, setText] = useState("");
   const [scored, setScored] = useState(false);
@@ -209,10 +173,15 @@ export function Email(props) {
       showScoreModal: props.index === props.numberOfQuestions ? true : false,
     };
     props.handleNext(data);
+    if (props.index === props.numberOfQuestions) {
+      setVisibleListIDs([]);
+      setVisibleList([]);
+    }
   };
 
   const OptionColor = "#c9f2c7";
-  const backGroundImage = { uri: props.photo ? props.photo : props.quizPhoto };
+  const Image1 = { uri: props.photo_1 };
+  const Image2 = { uri: props.photo_2 };
 
   return (
     <Animated.View
@@ -222,57 +191,45 @@ export function Email(props) {
       <View
         style={{
           flex: 5,
-          marginHorizontal: 10,
-          // justifyContent: "center",
-          // alignItems: "center",
-          // backgroundColor: "red",
+          marginHorizontal: 18,
+          justifyContent: "center",
+          alignItems: "center",
+          //   backgroundColor: "red",
         }}
       >
         <Card
           style={{
-            flex: 1,
             elevation: 10,
             borderRadius: 8,
-            marginHorizontal: 10,
-            marginVertical: 10,
-            paddingHorizontal: 5,
+            // marginHorizontal: 10,
+            marginVertical: 15,
+            // paddingHorizontal: 5,
             // paddingVertical: 10,
-            paddingBottom: 5,
             backgroundColor: "#faedcd",
           }}
         >
-          <Card.Content style={{ flex: 1 }}>
-            {/* <Text
-              style={{
-                fontSize: 15,
-                // opacity: 0.9,
-                paddingBottom: 15,
-                fontWeight: "700",
-                color: COLORS.enactive,
-                alignSelf: "center",
-              }}
-            >
-              {props.quizTitle.toUpperCase()}
-            </Text> */}
-            <View style={{ flex: 0.8, flexDirection: "row" }}>
-              <View style={{ flex: 3 }}>
-                <Text>From: maryam@email.com</Text>
-                <Text>To: raj@email.com</Text>
-                <Paragraph style={{ fontWeight: "bold" }}>
-                  {"Subject: " + props.quizSubTitle}
-                </Paragraph>
-              </View>
-              <View style={{ flex: 1 }}>
-                <ImageBackground
-                  resizeMode="cover"
-                  source={require("../../../../assets/oops.png")}
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    borderRadius: 10,
-                  }}
-                ></ImageBackground>
-              </View>
+          <View
+            style={{
+              flex: 0.5,
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+              paddingTop: 5,
+              //   backgroundColor: "red",
+              // paddingTop: 5,
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <ImageBackground
+                resizeMode="contain"
+                source={Image1}
+                style={{
+                  flex: 1,
+                  // justifyContent: "center",
+                  borderRadius: 10,
+                  //   backgroundColor: "red",
+                }}
+              ></ImageBackground>
             </View>
             <View
               style={{
@@ -281,55 +238,60 @@ export function Email(props) {
                 alignItems: "center",
               }}
             >
-              <Paragraph style={{ alignSelf: "flex-start", paddingBottom: 5 }}>
-                Dear Raj,
-              </Paragraph>
-              <Text>
-                {props.processedQuestions &&
-                  props.processedQuestions.map((item) => (
-                    <Sentance
-                      key={item.key}
-                      id={item.key}
-                      word={item.question}
-                      index={props.index}
-                      IS_WORD={props.IS_WORD}
-                      IS_TRANSLATE={props.IS_TRANSLATE}
-                      IS_FILL_IN_BLANK={props.IS_FILL_IN_BLANK}
-                      visibleList={visibleList}
-                      is_visible={visibleListIDs.includes(item.key)}
-                    />
-                  ))}
-              </Text>
-            </View>
-            <View
-              style={{
-                flex: 0.8,
-                flexDirection: "row",
-                // backgroundColor: "red",
-              }}
-            >
-              <View style={{ flex: 3 }}>
-                <Text>Regards,</Text>
-                <Text>Maryam</Text>
-              </View>
-              <View
+              <Text
                 style={{
-                  flex: 1,
-                  alignSelf: "flex-end",
+                  fontSize: 15,
+                  // opacity: 0.9,
+                  // paddingBottom: 15,
+                  fontWeight: "700",
+                  color: COLORS.enactive,
+                  // alignSelf: "center",
                 }}
               >
-                <ImageBackground
-                  resizeMode="contain"
-                  source={require("../../../../assets/email.png")}
-                  style={{
-                    flex: 1,
-                    justifyContent: "flex-end",
-                    borderRadius: 10,
-                  }}
-                ></ImageBackground>
-              </View>
+                {props.quizTitle.toUpperCase()}
+              </Text>
             </View>
-          </Card.Content>
+            <View style={{ flex: 1 }}>
+              <ImageBackground
+                resizeMode="contain"
+                source={Image2}
+                style={{
+                  flex: 1,
+                  // justifyContent: "center",
+                  borderRadius: 10,
+                  //   backgroundColor: "red",
+                }}
+              ></ImageBackground>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flex: 4,
+              justifyContent: "center",
+              alignItems: "flex-start",
+              paddingHorizontal: 15,
+              //   backgroundColor: "red",
+            }}
+          >
+            <>
+              {props.processedQuestions &&
+                props.processedQuestions.map((item) => (
+                  <Sentance
+                    key={item.key}
+                    id={item.key}
+                    word={item.question}
+                    index={props.index}
+                    IS_WORD={props.IS_WORD}
+                    IS_TRANSLATE={props.IS_TRANSLATE}
+                    IS_FILL_IN_BLANK={props.IS_FILL_IN_BLANK}
+                    visibleList={visibleList}
+                    is_visible={visibleListIDs.includes(item.key)}
+                  />
+                ))}
+            </>
+          </View>
+          {/* </Card.Content> */}
           {showMessage ? (
             <>
               <LottieView
@@ -352,14 +314,13 @@ export function Email(props) {
         </Card>
       </View>
 
-      <Animated.View
-        entering={LightSpeedInRight.duration(1000)}
+      <View
         style={{
           flex: 1.5,
           justifyContent: "center",
           alignItems: "center",
           //   marginBottom: 10,
-          // backgroundColor: "black",
+          //   backgroundColor: "black",
         }}
       >
         <TouchableOpacity
@@ -374,7 +335,7 @@ export function Email(props) {
             transform: [{ scale: selectedOption === 1 ? 1.1 : 1 }],
 
             borderColor:
-              (showNextButton && props.correct_option === 1) || any
+              showNextButton && props.correct_option === 1
                 ? COLORS.success
                 : showNextButton && props.correct_option != 1
                 ? COLORS.error
@@ -454,7 +415,7 @@ export function Email(props) {
             </Paragraph>
           </TouchableOpacity>
         )}
-      </Animated.View>
+      </View>
 
       <View style={{ flex: 0.6 }}>
         <Button
