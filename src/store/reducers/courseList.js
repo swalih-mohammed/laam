@@ -2,24 +2,24 @@ import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utility";
 
 const initialState = {
-  course: {},
+  courseList: [],
   loading: false,
   error: null,
 };
-const courseStart = (state, action) => {
+const courseListStart = (state, action) => {
   return updateObject(state, {
     error: null,
     loading: true,
   });
 };
-const courseSuccess = (state, action) => {
+const courseListSuccess = (state, action) => {
   return updateObject(state, {
     error: null,
     loading: false,
-    course: action.course,
+    courseList: action.courseList,
   });
 };
-const courseFail = (state, action) => {
+const courseListFail = (state, action) => {
   return updateObject(state, {
     error: action.error,
     loading: false,
@@ -28,12 +28,12 @@ const courseFail = (state, action) => {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.GET_COURSE_START:
-      return courseStart(state, action);
-    case actionTypes.GET_COURSE_SUCCESS:
-      return courseSuccess(state, action);
-    case actionTypes.GET_COURSE_FAIL:
-      return courseFail(state, action);
+    case actionTypes.GET_COURSELIST_START:
+      return courseListStart(state, action);
+    case actionTypes.GET_COURSELIST_SUCCESS:
+      return courseListSuccess(state, action);
+    case actionTypes.GET_COURSELIST_FAIL:
+      return courseListFail(state, action);
     default:
       return state;
   }

@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { useKeepAwake } from "expo-keep-awake";
 import axios from "axios";
-import { createASNT } from "../../store/actions/assignments";
 import { handleNext, handleStart } from "../../store/actions/quiz";
 import { useNavigation } from "@react-navigation/native";
 import { Audio } from "expo-av";
 import { localhost } from "../../Helpers/urls";
-import nlp from "compromise";
+// import nlp from "compromise";
 import ProgressBar from "./Progress";
 import PhotoOption from "./MultipleChoice/PhotoOption";
 import TextChoices from "./MultipleChoice/TextOptions";
@@ -28,6 +26,7 @@ import Passage from "./Passage/passage";
 import Conversation from "./Conversation/FillInBlank";
 
 const Questions = (props) => {
+  console.log();
   const navigation = useNavigation();
   const sound = React.useRef(new Audio.Sound());
   const isMounted = React.useRef(null);
@@ -39,15 +38,10 @@ const Questions = (props) => {
   const allQuestions = questions;
 
   React.useEffect(() => {
-    // console.log("question", allQuestions[props.index]);
-    // console.log("question index", props.index);
-    // console.log("questions");
-    // processedQuestions();
     isMounted.current = true;
     LoadAudio();
     return () => {
       isMounted.current = false;
-      // UnloadSound();
       sound.current.unloadAsync();
     };
   }, [props.index]);
@@ -87,7 +81,6 @@ const Questions = (props) => {
           if (isMounted.current) {
             setIsplaying(true);
           }
-
           return await sound.current.playAsync();
         }
         if (result.isPlaying === false && didJustFinish) {
@@ -106,9 +99,7 @@ const Questions = (props) => {
   const StopPlaying = async () => {
     if (!isMounted.current) return;
     try {
-      //Get Player Status
       const playerStatus = await sound.current.getStatusAsync();
-      // If song is playing then stop it
       if (playerStatus.isLoaded === true)
         await AudioPlayer.current.unloadAsync();
       if (playerStatus.isPlaying) {
@@ -117,7 +108,6 @@ const Questions = (props) => {
       setIsplaying(false);
     } catch (error) {}
   };
-
   const onPlaybackStatusUpdate = (audio) => {
     if (isMounted.current) {
       if (audio.isLoaded) {
@@ -132,19 +122,16 @@ const Questions = (props) => {
 
   const handleSubmitTest = () => {
     UnloadSound();
-    // props.handleStart();
-    // if (!is_completed) {
     try {
       if (props.lesson) {
-        // lesson based
         console.log("lesson", props.lesson);
         setLoading(true);
         console.log("lesson exist");
         const data = {
           username: props.username,
           lessonId: props.lesson,
-          // score: 5,
         };
+        console.log("data", data);
         axios.defaults.headers = {
           "Content-Type": "application/json",
           Authorization: `Token ${props.token}`,
@@ -164,10 +151,10 @@ const Questions = (props) => {
         setLoading(true);
         const data = {
           username: props.username,
-          quizId: props.quiz,
+          quizId: props.quiz.id,
           score: props.score,
         };
-        // console.log(data)
+        console.log("data in unit quiz", data);
         axios.defaults.headers = {
           "Content-Type": "application/json",
           Authorization: `Token ${props.token}`,
@@ -175,7 +162,7 @@ const Questions = (props) => {
         axios
           .post(`${localhost}/quizzes/quiz-completed-create/`, data)
           .then((res) => {
-            console.log("lesson completed");
+            console.log("quiz completed");
             setLoading(false);
           })
           .catch((err) => {
@@ -185,12 +172,13 @@ const Questions = (props) => {
     } catch (error) {
       console.log("error in catch while complet lesson/ quiz", error);
     }
-    // }
+
     redirect();
   };
 
   const redirect = () => {
-    if (props.unit) {
+    console.log("porps.unit", props.lesson);
+    if (props.unit || props.lesson) {
       navigation.navigate("Unit Details", {
         id: props.unit,
         quiz_completed: true,
@@ -201,36 +189,35 @@ const Questions = (props) => {
   };
 
   const Tokenize = (text) => {
-    let doc = nlp(text);
-    let doc1 = doc.json();
-    let terms = doc1[0].terms;
-    let words2 = [];
-    for (let i = 0; i < terms.length; i++) {
-      var singleObj = {};
-      // console.log(terms[i].tags);
-      singleObj["id"] = i;
-      singleObj["word"] = terms[i].text;
-      singleObj["tags"] = terms[i].tags;
-      singleObj["pre_space"] = terms[i].pre;
-      singleObj["post_space"] = terms[i].post;
-      words2.push(singleObj);
-    }
+    // let doc = nlp(text);
+    // let doc1 = doc.json();
+    // let terms = doc1[0].terms;
+    // let words2 = [];
+    // for (let i = 0; i < terms.length; i++) {
+    //   var singleObj = {};
+    //   singleObj["id"] = i;
+    //   singleObj["word"] = terms[i].text;
+    //   singleObj["tags"] = terms[i].tags;
+    //   singleObj["pre_space"] = terms[i].pre;
+    //   singleObj["post_space"] = terms[i].post;
+    //   words2.push(singleObj);
+    // }
 
-    let currentIndex = words2.length,
-      randomIndex;
-    while (currentIndex != 0) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
+    // let currentIndex = words2.length,
+    //   randomIndex;
+    // while (currentIndex != 0) {
+    //   // Pick a remaining element...
+    //   randomIndex = Math.floor(Math.random() * currentIndex);
+    //   currentIndex--;
+    //   // And swap it with the current element.
+    //   [words2[currentIndex], words2[randomIndex]] = [
+    //     words2[randomIndex],
+    //     words2[currentIndex],
+    //   ];
+    // }
+    // return words2;
 
-      // And swap it with the current element.
-      [words2[currentIndex], words2[randomIndex]] = [
-        words2[randomIndex],
-        words2[currentIndex],
-      ];
-    }
-    // console.log(Bucket);
-    return words2;
+    return text;
   };
 
   const processMatch = (text, randomize, is_sentance, is_email) => {
@@ -249,7 +236,6 @@ const Questions = (props) => {
       obj["word"] = sentance_list[i].trim();
       Bucket.push(obj);
     }
-
     // While there remain elements to shuffle...
     if (randomize) {
       let currentIndex = Bucket.length,
@@ -258,21 +244,18 @@ const Questions = (props) => {
         // Pick a remaining element...
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
-
         // And swap it with the current element.
         [Bucket[currentIndex], Bucket[randomIndex]] = [
           Bucket[randomIndex],
           Bucket[currentIndex],
         ];
       }
-      // console.log(Bucket);
       return Bucket;
     }
     return Bucket;
   };
 
   const processedQuestions = () => {
-    // console.log("test");
     const Questions = [];
     for (let i = 0; i < allQuestions.length; i++) {
       let obj = {};
@@ -280,7 +263,6 @@ const Questions = (props) => {
       obj["question"] = allQuestions[i].question.trim();
       Questions.push(obj);
     }
-    // console.log(Questions);
     return Questions;
   };
 
@@ -332,8 +314,6 @@ const Questions = (props) => {
     <SafeAreaView
       style={{
         flex: 1,
-        // flexDirection: "row"
-        // backgroundColor: "red"
       }}
     >
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
@@ -342,7 +322,6 @@ const Questions = (props) => {
         allQuestionsLength={allQuestions.length}
       />
       <View style={{ flex: 1 }}>
-        {/* ///render options start  */}
         {allQuestions[props.index].category === "TEXT_OPTIONS" && (
           <TextChoices
             numberOfQuestions={allQuestions.length - 1}
@@ -357,7 +336,6 @@ const Questions = (props) => {
             UnloadSound={UnloadSound}
             isPlaying={isPlaying}
             photo={allQuestions[props.index].photo}
-            // index={current}
           />
         )}
 
@@ -385,7 +363,6 @@ const Questions = (props) => {
             type={allQuestions[props.index].posType}
             qustion={Tokenize(allQuestions[props.index].question)}
             answer={allQuestions[props.index].answer}
-            // has_audio={allQuestions[props.index].questionType.has_audio}
             PlayAudio={PlayAudio}
             isPlaying={isPlaying}
           />
@@ -477,7 +454,6 @@ const Questions = (props) => {
             quizTitle={props.quizTitle}
             quizSubTitle={props.quizSubTitle}
             quizPhoto={props.quizPhoto}
-            // quizText={processMatch(props.quizText, false, true, false)}
             quizAudio={props.audio}
             IS_FILL_IN_BLANK={IS_FILL_IN_BLANK}
             IS_TRANSLATE={IS_TRANSLATE}
@@ -619,12 +595,15 @@ const mapStateToProps = (state) => {
     username: state.auth.username,
     index: state.quiz.index,
     score: state.quiz.score,
+    lesson: state.quiz.quiz.lesson,
+    unit: state.quiz.quiz.unit,
+    quiz: state.quiz.quiz,
+    // is_completed: state.quiz.quiz.i,
     showScoreModal: state.quiz.showScoreModal,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    createASNT: (token, asnt) => dispatch(createASNT(token, asnt)),
     handleNext: (data) => dispatch(handleNext(data)),
     handleStart: (data) => dispatch(handleStart(data)),
   };

@@ -3,18 +3,20 @@
     "name": "Lakaters",
     "slug": "Lakaters",
     "description": "A Platform Interactive Language Learning",
-    "version": "1.1.5",
+    "version": "1.1.7",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/Android_splash_3.png",
+      "image": "./assets/splash4.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "bundleIdentifier": "com.lakaters.lakaters",
       "buildNumber": "1.0.0",
@@ -22,13 +24,28 @@
     },
     "android": {
       "package": "com.lakaters.lakaters",
-      "versionCode": 5,
+      "versionCode": 7,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
-    "plugins": ["expo-av"]
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "laam academy",
+            "project": "laam academy",
+            "authToken": "b7efffd23c774b068ff5a55c8b6437df760033e3e9df4dcca18d55c7b72bb45c"
+          }
+        }
+      ]
+    },
+    "plugins": [
+      "expo-av", "sentry-expo"
+    ]   
   },
+ 
   "jsEngine": "hermes"
 }

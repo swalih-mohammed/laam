@@ -1,28 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-
-import axios from "axios";
-import {
-  View,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-} from "react-native";
-import { Card, Paragraph, Avatar } from "react-native-paper";
-// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-// import { COLORS, SIZES } from "../../Helpers/constants";
-// import * as Animatable from "react-native-animatable";
-// import { setCourseDetails } from "../../store/actions/course";
-// import { localhost } from "../../Helpers/urls";
-// import UnitItem from "../unit/item";
-// import UnitList from "../unit/list";
-// import { useNavigation } from "@react-navigation/native";
-// import { useTheme } from "react-native-paper";
-import { handleStart } from "../../store/actions/quiz";
+import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { Card, Paragraph } from "react-native-paper";
 import LottieView from "lottie-react-native";
-
-// import { View as MotiView } from "moti";
 import Animated, {
   LightSpeedInRight,
   LightSpeedInLeft,
@@ -31,8 +11,6 @@ import Animated, {
 const ConversationItem = (props) => {
   const animation = React.useRef(null);
   const { item, is_speaking, is_playing, did_finish } = props;
-  // console.log(item);
-  // console.log("current item", item.id, is_speaking);
 
   useEffect(() => {
     if (is_speaking) {
@@ -51,9 +29,7 @@ const ConversationItem = (props) => {
       <TouchableOpacity
         onPress={props.LoadAudio}
         style={{
-          // backgroundColor: "red"
           justifyContent: "flex-start",
-          // alignItems: "flex-end"
         }}
       >
         <Card
@@ -66,9 +42,6 @@ const ConversationItem = (props) => {
             borderRadius: 16,
             maxWidth: 250,
             minHeight: 100,
-            // flex: 1,
-            //   flexGrow: 0
-            //   height: "auto"
           }}
         >
           <View style={{ flexDirection: "row", flex: 5 }}>
@@ -189,12 +162,9 @@ const styles = StyleSheet.create({
     height: 150,
   },
 });
-// export default LessonItem;
-
 const mapDispatchToProps = (dispatch) => {
   return {
-    // setCourseDetails: data => dispatch(setCourseDetails(data)),
-    handleStart: (data) => dispatch(handleStart(data)),
+    // handleStart: (data) => dispatch(handleStart(data)),
   };
 };
 export default connect(null, mapDispatchToProps)(ConversationItem);

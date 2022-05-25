@@ -13,72 +13,46 @@ import Header from "../Components/Utils/Header";
 import TextInput from "../Components/Utils/TextInput";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Loader from "../Components/Utils/Loader";
 import { COLORS, SIZES } from "../Helpers/constants";
-import { Card, Button, Paragraph } from "react-native-paper";
+import { Card, Paragraph } from "react-native-paper";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
-
+import * as actions from "../store/actions/auth";
 import {
   emailValidator,
   passwordValidator,
   usernameValidator,
 } from "../Components/Utils/Utilities";
 
-import * as actions from "../store/actions/auth";
-
 const LoginScreen = (props) => {
   const navigation = useNavigation();
-
   useEffect(() => {
-    // console.log(props.token);
     if (props.token) {
       navigation.navigate("Home");
     }
-    // setTimeout(pushToHome, 500);
   }, [props.token]);
-
-  // console.log(props.token);
-
-  // const { colors } = useTheme();
-  // const [email, setEmail] = useState({ value: "", error: "" });
+  const [email, setEmail] = useState({ value: "", error: "" });
   const [username, setUsername] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   const _onLoginPressed = () => {
-    // const emailError = emailValidator(email.value);
-    const usernameError = usernameValidator(username.value);
+    const emailError = emailValidator(email.value);
+    // const usernameError = usernameValidator(username.value);
     const passwordError = passwordValidator(password.value);
-
-    // if (emailError || passwordError) {
-    //   setEmail({ ...email, error: emailError });
-    //   setPassword({ ...password, error: passwordError });
-    //   alert("error");
-    //   // return;
-    // } else {
-    //   alert("no error");
-    //   props.onAuth(username, password);
-    // }
-
-    if (usernameError || passwordError) {
-      // if (emailError || passwordError) {
-      // setEmail({ ...email, error: emailError });
-      setUsername({ ...username, error: usernameError });
+    if (emailError || passwordError) {
+      setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
     } else {
-      // console.log(loading);
-      login(username.value, password.value);
-      // console.log(loading);
+      login(email.value, password.value);
     }
   };
 
-  const login = async (username, pass) => {
+  const login = async (email, pass) => {
     setLoading(true);
     console.log("loggin in", loading);
     try {
-      await props.onAuth(username, pass);
+      await props.onAuth(email, pass);
       if (props.token) {
         setLoading(false);
         navigation.navigate("Home");
@@ -123,7 +97,6 @@ const LoginScreen = (props) => {
               style={{
                 width: SIZES.width * 0.9,
                 height: 50,
-                // marginBottom: 25
               }}
             >
               <View
@@ -147,32 +120,19 @@ const LoginScreen = (props) => {
               paddingHorizontal: 15,
             }}
           >
-            {/* <BackButton goBack={() => navigation.navigate("Home")} /> */}
-            {/* <Logo /> */}
             <Header>Welcome back</Header>
-            {/* <TextInput
-            label="Email"
-            returnKeyType="next"
-            value={email.value}
-            onChangeText={text => setEmail({ value: text, error: "" })}
-            error={!!email.error}
-            errorText={email.error}
-            autoCapitalize="none"
-            autoCompleteType="email"
-            textContentType="emailAddress"
-            keyboardType="email-address"
-          /> */}
             <TextInput
-              label="User Name"
+              label="Email"
               returnKeyType="next"
-              value={username.value}
-              onChangeText={(text) => setUsername({ value: text, error: "" })}
-              error={!!username.error}
-              errorText={username.error}
+              value={email.value}
+              onChangeText={(text) => setEmail({ value: text, error: "" })}
+              error={!!email.error}
+              errorText={email.error}
               autoCapitalize="none"
-              autoCompleteType="username"
-              textContentType="username"
-              // keyboardType="username"
+              autoCompleteType="email"
+              textContentType="emailAddress"
+              keyboardType="email-address"
+              caretHidden={false}
             />
             <TextInput
               label="Password"
@@ -192,22 +152,6 @@ const LoginScreen = (props) => {
                 </Text>
               </TouchableOpacity>
             </View>
-            {/* <Button
-              disabled={loading}
-              mode="contained"
-              onPress={_onLoginPressed}
-              style={{ width: "100%", marginBottom: 20 }}
-            >
-              Login
-            </Button>
-            <Button
-              style={{ width: "100%", height: 40 }}
-              disabled={loading}
-              mode="outlined"
-              onPress={() => navigation.navigate("SignUp")}
-            >
-              Sign Up
-            </Button> */}
             <TouchableOpacity
               disabled={loading}
               style={{
@@ -269,16 +213,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  // label: {
-  //   color: colors.secondary
-  // },
-  // link: {
-  //   fontWeight: "bold",
-  //   color: colors.primary
-  // }
 });
-
-// export default memo(LoginScreen);
 
 const mapStateToProps = (state) => {
   return {

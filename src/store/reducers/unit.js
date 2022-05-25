@@ -2,24 +2,25 @@ import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utility";
 
 const initialState = {
-  course: {},
+  unit: {},
   loading: false,
   error: null,
 };
-const courseStart = (state, action) => {
+const unitStart = (state, action) => {
   return updateObject(state, {
     error: null,
     loading: true,
   });
 };
-const courseSuccess = (state, action) => {
+const unitSuccess = (state, action) => {
+  // console.log("unit", action[0]);
   return updateObject(state, {
     error: null,
     loading: false,
-    course: action.course,
+    unit: action,
   });
 };
-const courseFail = (state, action) => {
+const unitFail = (state, action) => {
   return updateObject(state, {
     error: action.error,
     loading: false,
@@ -28,14 +29,15 @@ const courseFail = (state, action) => {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.GET_COURSE_START:
-      return courseStart(state, action);
-    case actionTypes.GET_COURSE_SUCCESS:
-      return courseSuccess(state, action);
-    case actionTypes.GET_COURSE_FAIL:
-      return courseFail(state, action);
+    case actionTypes.GET_UNIT_START:
+      return unitStart(state, action);
+    case actionTypes.GET_UNIT_SUCCESS:
+      return unitSuccess(state, action);
+    case actionTypes.GET_UNIT_FAIL:
+      return unitFail(state, action);
     default:
       return state;
   }
 };
+
 export default reducer;

@@ -1,79 +1,59 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Card, Title, List, Button, Paragraph } from "react-native-paper";
-import { COLORS, SIZES } from "../../Helpers/constants";
-import Donut from "../../Helpers/donunt";
-
+import { Paragraph } from "react-native-paper";
+import { COLORS } from "../../Helpers/constants";
 import {
-  StyleSheet,
-  FlatList,
-  // ActivityIndicator,
   View,
   Text,
   StatusBar,
-  Image,
   ScrollView,
-  TouchableOpacity,
   ActivityIndicator,
   ImageBackground,
-  // SectionList
 } from "react-native";
 import axios from "axios";
-// import { courseListURL } from "../../Helpers/urls";
 import { localhost } from "../../Helpers/urls";
 import Item from "./item";
 import { useNavigation } from "@react-navigation/native";
-import LottieView from "lottie-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import * as Speech from "expo-speech";
 
-const ITEM_WIDTH = SIZES.width * 0.4;
-const ITEM_HEIGHT = ITEM_WIDTH * 2;
-
-const CourseList = (props) => {
-  // const { is_completed } = props.route.params;
-  // console.log(props.route.params);
-
+const TestList = (props) => {
   const navigation = useNavigation();
   const [tests, setTests] = useState();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  // const [refreshing, setRefreshing] = React.useState(false);
 
   useEffect(() => {
     const source = axios.CancelToken.source();
+    const getTests = async () => {
+      try {
+        console.log("fetching tests list");
+        setLoading(true);
+        const response = await axios.get(
+          `${localhost}/quizzes/category/GENERAL_ENGLISH/${props.username}`,
+          {
+            cancelToken: source.token,
+          }
+        );
+        setLoading(false);
+        console.log("loading aftr fetch");
+        setTests(response.data);
+      } catch (err) {
+        if (axios.isCancel(error)) {
+          console.log("axios cancel error");
+        } else {
+          setLoading(false);
+          console.log("error occured in catch");
+          console.log(err);
+        }
+      }
+    };
+
     getTests(source);
-    // pushToHome();
+    pushToHome();
     return () => {
-      // console.log("course list unmounting");
       source.cancel();
     };
   }, []);
-
-  const getTests = async (source) => {
-    try {
-      console.log("fetching tests list");
-      setLoading(true);
-      const response = await axios.get(
-        `${localhost}/quizzes/category/GENERAL_ENGLISH/${props.username}`,
-        {
-          cancelToken: source.token,
-        }
-      );
-      setLoading(false);
-      console.log("loading aftr fetch");
-      setTests(response.data);
-      // console.log(response.data);
-    } catch (err) {
-      if (axios.isCancel(error)) {
-        console.log("axios cancel error");
-      } else {
-        setLoading(false);
-        console.log("error occured in catch");
-        console.log(err);
-      }
-    }
-  };
 
   function pushToHome() {
     if (!props.token) {
@@ -82,20 +62,14 @@ const CourseList = (props) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#dce1de" }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
-      {/* <Card> */}
-      <ScrollView
-        showsHorizontalScrollIndicator={false}
-        // contentContainerStyle={{ flex: 1 }}
-      >
+      <ScrollView showsHorizontalScrollIndicator={false}>
         <View
           style={{
             flex: 2,
             flexDirection: "row",
             marginTop: 20,
-            // marginBottom: 35,
-            // marginBottom: 20,
             height: 150,
             justifyContent: "center",
             alignItems: "center",
@@ -104,7 +78,6 @@ const CourseList = (props) => {
             backgroundColor: "#e9d985",
 
             borderRadius: 8,
-            // alignSelf: "center",
           }}
         >
           <View style={{ flex: 2 }}>
@@ -128,9 +101,6 @@ const CourseList = (props) => {
                 paddingLeft: 20,
                 justifyContent: "flex-end",
                 alignSelf: "flex-end",
-                // color: COLORS.primary,
-                // color: "#46494c",
-                // opacity: 0.9,
               }}
             >
               Tests are designed based on Common European Framework of Reference
@@ -138,7 +108,7 @@ const CourseList = (props) => {
             </Text>
           </View>
         </View>
-        <View style={{ flex: 4 }}>
+        <View style={{ flex: 4, marginBottom: 10 }}>
           {!tests && loading && (
             <View
               style={{
@@ -147,8 +117,6 @@ const CourseList = (props) => {
                 justifyContent: "flex-end",
                 alignItems: "center",
                 marginTop: 35,
-
-                // backgroundColor: "green",
               }}
             >
               <Paragraph
@@ -167,11 +135,8 @@ const CourseList = (props) => {
           {tests && (
             <View
               style={{
-                // flex: 1,
-                // marginVertical: 8,
                 marginHorizontal: 10,
                 zIndex: 100,
-                // backgroundColor: "green",
               }}
             >
               {tests?.map((item, index) => {
@@ -189,8 +154,6 @@ const mapStateToProps = (state) => {
   return {
     token: state.auth.token,
     username: state.auth.username,
-    // tokenLoading: state.auth.loading
   };
 };
-
-export default connect(mapStateToProps, null)(CourseList);
+export default connect(mapStateToProps, null)(TestList);

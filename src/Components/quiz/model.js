@@ -1,34 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
-import {
-  Modal,
-  View,
-  TouchableOpacity,
-  Text,
-  Dimensions,
-  ImageBackground,
-} from "react-native";
-import { COLORS, SIZES } from "../../Helpers/constants";
-import { handleStart } from "../../store/actions/quiz";
-import { Button, Title, Paragraph } from "react-native-paper";
-const { width, height } = Dimensions.get("window");
+import { Modal, View, ImageBackground } from "react-native";
+import { COLORS } from "../../Helpers/constants";
+import { handleRestart } from "../../store/actions/quiz";
+import { Button, Title } from "react-native-paper";
 import LottieView from "lottie-react-native";
-import Loader from "../Utils/Loader";
 import AudioPlayerWithoutControl from "../../Helpers/PlayerWithoutControl";
 import CircularProgress from "react-native-circular-progress-indicator";
 
 const ScoreModal = (props) => {
+  const isMounted = React.useRef(null);
   const { qlength } = props;
-
   const animation = useRef(null);
   useEffect(() => {
     if (animation.current) {
       animation.current.play(0, 100);
     }
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
   const restartQuiz = () => {
-    props.handleStart();
+    props.handleRestart();
   };
 
   const score = Math.round((props.score / qlength) * 100);
@@ -39,15 +33,10 @@ const ScoreModal = (props) => {
       : require("../../../assets/sad_cat.jpg");
 
   return (
-    <Modal
-      animationType="slide"
-      // transparent={true}
-      visible={true}
-    >
+    <Modal animationType="slide" visible={true}>
       <View style={{ flex: 1, marginVertical: 5, marginHorizontal: 5 }}>
         <ImageBackground
           source={icon}
-          // source={require("../../../assets/goodjob.jpg")}
           resizeMode="cover"
           style={{ flex: 1, justifyContent: "center", opacity: 0.9 }}
         >
@@ -66,19 +55,7 @@ const ScoreModal = (props) => {
               }}
             >
               {score > 79 ? "Congratulations!" : "Oops!"}
-
-              {/* Lesson Completed! */}
             </Title>
-            {/* <Title
-              style={{
-                color: score > 79 ? COLORS.primary : COLORS.error,
-                fontSize: 30,
-                fontWeight: "900",
-                marginTop: 10,
-              }}
-            >
-              {score + " %"}
-            </Title> */}
             <CircularProgress
               value={score}
               valueSuffix={"%"}
@@ -86,8 +63,6 @@ const ScoreModal = (props) => {
               duration={2000}
               progressValueColor={COLORS.primary}
               maxValue={100}
-              // activeStrokeWidth={20}
-              // inActiveStrokeWidth={10}
             />
           </View>
           <View
@@ -95,14 +70,12 @@ const ScoreModal = (props) => {
           >
             {score > 79 ? (
               <LottieView
-                // ref={animation}
                 source={require("../../../assets/lotties/successGreenRight.json")}
                 autoPlay={true}
                 loop={false}
               />
             ) : (
               <LottieView
-                // ref={animation}
                 source={require("../../../assets/lotties/unapproved-cross.json")}
                 autoPlay={true}
                 loop={false}
@@ -156,8 +129,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleNext: (data) => dispatch(handleNext(data)),
-    handleStart: (data) => dispatch(handleStart(data)),
+    handleRestart: () => dispatch(handleRestart()),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ScoreModal);

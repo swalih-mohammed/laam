@@ -1,62 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-
-import axios from "axios";
-import {
-  View,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Text,
-} from "react-native";
-import {
-  List,
-  Card,
-  Avatar,
-  Title,
-  Paragraph,
-  Caption,
-} from "react-native-paper";
+import React from "react";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { Card } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { COLORS, SIZES } from "../../Helpers/constants";
-// import * as Animatable from "react-native-animatable";
-import { setCourseDetails } from "../../store/actions/course";
-import { handleStart } from "../../store/actions/quiz";
-import UnitItem from "../unit/item";
-import UnitList from "../unit/list";
+import { COLORS } from "../../Helpers/constants";
 import { useNavigation } from "@react-navigation/native";
-import { useTheme } from "react-native-paper";
-// import { View as MotiView } from "moti";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
-// import console = require("console");
 
 const QuizItem = (props) => {
   const { item } = props;
-  //   const { colors } = useTheme();
   const navigation = useNavigation();
-
-  const handlePressQuizItem = () => {
-    console.log("handling press quiz item");
-    resetQuiz();
-    navigation.navigate("Quiz Detail", {
-      QuizId: item.id,
-      lessonId: 1,
-      unitId: 1,
-      sectionId: 1,
-    });
-  };
-  const resetQuiz = () => {
-    console.log("resetting questions index");
-    const data = {
-      index: 0,
-      score: 0,
-      showAnswer: false,
-      answerList: [],
-      showScoreModal: false,
-    };
-    props.handleStart(data);
-  };
 
   const myIcon = (category) => {
     switch (category) {
@@ -111,20 +63,24 @@ const QuizItem = (props) => {
     <Animated.View
       entering={LightSpeedInRight.duration(1000)}
       style={{
-        // backgroundColor: "green",
         marginHorizontal: 20,
         marginVertical: 10,
         borderRadius: 15,
       }}
     >
-      <TouchableOpacity onPress={handlePressQuizItem}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("Quiz Detail", {
+            QuizId: item.id,
+          })
+        }
+      >
         <Card
           mode="elevated"
           style={{
             elevation: 10,
             borderRadius: 15,
             height: 100,
-            // width: 320,
           }}
         >
           <View style={styles.container}>
@@ -134,7 +90,6 @@ const QuizItem = (props) => {
                   width: 40,
                   height: 40,
                   borderRadius: 20 / 2,
-                  // backgroundColor: colors.primary,
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -155,7 +110,6 @@ const QuizItem = (props) => {
                   fontWeight: "500",
                   color: COLORS.primary,
                   opacity: 0.9,
-                  // paddingBottom:
                 }}
               >
                 {item.category}
@@ -195,7 +149,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     marginHorizontal: 10,
-    // backgroundColor: "red"
   },
   MiddleContainer: {
     flex: 6,
@@ -212,12 +165,5 @@ const styles = StyleSheet.create({
     height: 150,
   },
 });
-// export default QuizItem;
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // setCourseDetails: data => dispatch(setCourseDetails(data)),
-    handleStart: (data) => dispatch(handleStart(data)),
-  };
-};
-export default connect(null, mapDispatchToProps)(QuizItem);
+export default QuizItem;

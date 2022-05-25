@@ -1,19 +1,19 @@
 import { combineReducers } from "redux";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import authReducer from "./auth";
-import assignmentReducer from "./assignment";
-import quizReducer from "./quiz";
+import courseListReducer from "./courseList";
 import courseReducer from "./course";
+import unitReducer from "./unit";
+import lessonReducer from "./lesson";
+import quizReducer from "./quiz";
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  assignment: assignmentReducer,
+  courseList: courseListReducer,
+  course: courseReducer,
+  unit: unitReducer,
+  lesson: lessonReducer,
   quiz: quizReducer,
-  course: courseReducer
-  // assignment: persistReducer(persistConfig, assignmentReducer),
-  // quiz: persistReducer(persistConfig, quizReducer),
-  // course: persistReducer(persistConfig, courseReducer)
 });
 
 export default rootReducer;

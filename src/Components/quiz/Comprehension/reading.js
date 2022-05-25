@@ -12,7 +12,6 @@ import MessageAudio from "../../../Helpers/PlayerWithoutControl";
 import { Paragraph, Button, Card, Title } from "react-native-paper";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
 import { COLORS, SIZES } from "../../../Helpers/constants";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/AntDesign";
 import LottieView from "lottie-react-native";
 import * as Haptics from "expo-haptics";

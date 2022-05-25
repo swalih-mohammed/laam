@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-
 import axios from "axios";
-import { View, ImageBackground, StyleSheet, StatusBar } from "react-native";
+import { View, ImageBackground, StatusBar } from "react-native";
 import {
   Title,
   Paragraph,
@@ -18,8 +17,9 @@ import { useNavigation } from "@react-navigation/native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { localhost } from "../../Helpers/urls";
 
-const LessonItem = (props) => {
+const VideoPlayer = (props) => {
   const { videoLink, unit, lesson } = props;
+  const isMounted = React.useRef(null);
   const video = React.useRef(null);
   const navigation = useNavigation();
   const [error, setError] = useState(false);
@@ -31,11 +31,11 @@ const LessonItem = (props) => {
   });
 
   useEffect(() => {
+    isMounted.current = true;
     changeScreenOrientation();
     PlayVideo();
-    console.log("lesson", props.lessonId);
-
     return () => {
+      isMounted.current = false;
       changeScreenOrientationBack();
       if (video.current) {
         video.current.setStatusAsync({
@@ -47,18 +47,19 @@ const LessonItem = (props) => {
   }, []);
 
   async function changeScreenOrientation() {
+    if (!isMounted.current) return;
     await ScreenOrientation.lockAsync(
       ScreenOrientation.OrientationLock.DEFAULT
     );
   }
-
   async function changeScreenOrientationBack() {
+    if (!isMounted.current) return;
     await ScreenOrientation.lockAsync(
       ScreenOrientation.OrientationLock.PORTRAIT
     );
   }
-
   const PlayVideo = async () => {
+    if (!isMounted.current) return;
     try {
       if (video.current !== null) {
         await video.current.presentFullscreenPlayer();
@@ -69,7 +70,7 @@ const LessonItem = (props) => {
   };
 
   const updatePlaybackCallback = (status) => {
-    // console.log(status, "status");
+    if (!isMounted.current) return;
     if (status.isLoaded) {
       setPlaybackInstanceInfo({
         ...playbackInstanceInfo,
@@ -83,7 +84,6 @@ const LessonItem = (props) => {
       });
     }
     if (status.didJustFinish) {
-      // console.log("finished");
       handleSubmitMarkLessonComplete();
     } else {
       if (status.isLoaded === false && status.error) {
@@ -96,7 +96,6 @@ const LessonItem = (props) => {
   const redirectToUnit = () => {
     navigation.navigate("Unit Details", { id: unit });
   };
-
   const watchAgain = () => {
     setPlaybackInstanceInfo({
       ...playbackInstanceInfo,
@@ -106,6 +105,7 @@ const LessonItem = (props) => {
   };
 
   const handleSubmitMarkLessonComplete = () => {
+    if (!isMounted.current) return;
     console.log("marking lesson as complete");
     const data = {
       username: props.username,
@@ -126,20 +126,17 @@ const LessonItem = (props) => {
         setError(err);
         console.log("error in posting complet lesson", err);
       });
-    // navigate("Unit Details", { id: props.unit });
   };
 
   return (
     <Animated.View
       entering={LightSpeedInRight.duration(1000)}
       style={{
-        // backgroundColor: "green",
         flex: 1,
         marginHorizontal: 5,
       }}
     >
       <StatusBar hidden />
-
       {playbackInstanceInfo.state === "Buffering" && (
         <ActivityIndicator animating={true} color={COLORS.primary} />
       )}
@@ -170,7 +167,6 @@ const LessonItem = (props) => {
             </View>
             <View style={{ flex: 2 }}>
               <LottieView
-                // ref={animation}
                 source={require("../../../assets/lotties/successGreenRight.json")}
                 autoPlay={true}
                 loop={false}
@@ -225,41 +221,10 @@ const LessonItem = (props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 10,
-    paddingBottom: 10,
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-
-  LeftContainer: {
-    flex: 1,
-    justifyContent: "center",
-    marginHorizontal: 10,
-    // backgroundColor: "red"
-  },
-  MiddleContainer: {
-    flex: 6,
-    justifyContent: "center",
-    marginLeft: 5,
-  },
-  RightContainer: {
-    flex: 1,
-    justifyContent: "center",
-    marginRight: 10,
-  },
-  photo: {
-    width: 180,
-    height: 150,
-  },
-});
-
 const mapStateToProps = (state) => {
   return {
     username: state.auth.username,
     token: state.auth.token,
   };
 };
-export default connect(mapStateToProps, null)(LessonItem);
+export default connect(mapStateToProps, null)(VideoPlayer);

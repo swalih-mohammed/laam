@@ -1,60 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-
-import axios from "axios";
-import {
-  View,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Text,
-} from "react-native";
-import {
-  List,
-  Card,
-  Avatar,
-  Title,
-  Paragraph,
-  Caption,
-} from "react-native-paper";
+import React from "react";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { Card } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { COLORS, SIZES } from "../../Helpers/constants";
-// import * as Animatable from "react-native-animatable";
-import { setCourseDetails } from "../../store/actions/course";
-import { localhost } from "../../Helpers/urls";
-import UnitItem from "../unit/item";
-import UnitList from "../unit/list";
 import { useNavigation } from "@react-navigation/native";
-import { useTheme } from "react-native-paper";
-import { handleStart } from "../../store/actions/quiz";
-
-// import { View as MotiView } from "moti";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
-import item from "../section/item";
 
 const LessonItem = (props) => {
-  const { LessonItem, is_quiz } = props;
-  const { colors } = useTheme();
   const navigation = useNavigation();
+  const { LessonItem } = props;
 
-  const handlePress = () => {
-    resetQuiz();
-    navigation.navigate("Lesson Details", { id: LessonItem.id });
-  };
-
-  const resetQuiz = () => {
-    console.log("resetting questions index");
-    const data = {
-      index: 0,
-      score: 0,
-      showAnswer: false,
-      answerList: [],
-      showScoreModal: false,
-    };
-    props.handleStart(data);
-  };
   const Completed = () => (
     <View
       style={{
@@ -62,7 +18,7 @@ const LessonItem = (props) => {
         height: 20,
         borderRadius: 20 / 2,
         backgroundColor: LessonItem.lessonCompleted
-          ? colors.primary
+          ? COLORS.primary
           : COLORS.enactive,
         justifyContent: "center",
         alignItems: "center",
@@ -83,15 +39,15 @@ const LessonItem = (props) => {
     <Animated.View
       entering={LightSpeedInRight.duration(1000)}
       style={{
-        // backgroundColor: "green",
         marginHorizontal: 20,
         marginVertical: 10,
         borderRadius: 15,
       }}
     >
       <TouchableOpacity
-        // style={{ justifyContent: "center", alignItems: "center" }}
-        onPress={handlePress}
+        onPress={() =>
+          navigation.navigate("Lesson Details", { id: LessonItem.id })
+        }
       >
         <Card
           mode="elevated"
@@ -99,7 +55,6 @@ const LessonItem = (props) => {
             elevation: 10,
             borderRadius: 15,
             height: 100,
-            // width: 320,
           }}
         >
           <View style={styles.container}>
@@ -109,7 +64,6 @@ const LessonItem = (props) => {
                   width: 40,
                   height: 40,
                   borderRadius: 20 / 2,
-                  // backgroundColor: colors.primary,
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -118,22 +72,15 @@ const LessonItem = (props) => {
                   <MaterialIcons
                     name="video-collection"
                     style={{
-                      color: colors.primary,
+                      color: COLORS.primary,
                       fontSize: 35,
                     }}
                   />
                 ) : (
-                  // <MaterialCommunityIcons
-                  //   name="google-classroom"
-                  //   style={{
-                  //     color: colors.primary,
-                  //     fontSize: 35
-                  //   }}
-                  // />
                   <MaterialIcons
                     name="video-collection"
                     style={{
-                      color: colors.primary,
+                      color: COLORS.primary,
                       fontSize: 35,
                     }}
                   />
@@ -147,7 +94,6 @@ const LessonItem = (props) => {
                   fontWeight: "500",
                   color: COLORS.primary,
                   opacity: 0.9,
-                  // paddingBottom:d
                 }}
               >
                 {LessonItem.subtitle}
@@ -182,7 +128,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     marginHorizontal: 10,
-    // backgroundColor: "red"
   },
   MiddleContainer: {
     flex: 6,
@@ -199,12 +144,5 @@ const styles = StyleSheet.create({
     height: 150,
   },
 });
-// export default LessonItem;
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // setCourseDetails: data => dispatch(setCourseDetails(data)),
-    handleStart: (data) => dispatch(handleStart(data)),
-  };
-};
-export default connect(null, mapDispatchToProps)(LessonItem);
+export default LessonItem;

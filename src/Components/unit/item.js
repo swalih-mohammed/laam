@@ -1,59 +1,33 @@
 import React from "react";
-import { connect } from "react-redux";
-
-import { TouchableOpacity, View, Text, StyleSheet, Image } from "react-native";
 import {
-  List,
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Modal,
+} from "react-native";
+import {
   Card,
-  Avatar,
-  Caption,
   Title,
   ProgressBar,
   Paragraph,
   Button,
 } from "react-native-paper";
 import Dash from "react-native-dash";
-
-// import * as Animatable from "react-native-animatable";
-// import { useTheme } from "react-native-paper";
-import { setCourseDetails } from "../../store/actions/course";
-import { handleStart } from "../../store/actions/quiz";
-
-// import { View as MotiView } from "moti";
 import { useNavigation } from "@react-navigation/native";
-import Animated, { LightSpeedInRight } from "react-native-reanimated";
+import Animated, {
+  LightSpeedInRight,
+  BounceInDown,
+} from "react-native-reanimated";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { COLORS, SIZES } from "../../Helpers/constants";
-import item from "../course/item";
-// import console = require("console");
 
 const UnitItem = (props) => {
   const navigation = useNavigation();
   const { item } = props;
-  // console.log(item);
-  const handlePress = () => {
-    resetCourse();
-    resetQuiz();
-    navigation.navigate("Unit Details", { id: item.id });
-    // console.log("unit details");
-  };
+  const [modalVisible, setModalVisible] = React.useState(false);
 
-  const resetCourse = () => {
-    const data = {
-      unit: item.id,
-    };
-    props.setCourseDetails(data);
-  };
-  const resetQuiz = () => {
-    const data = {
-      index: 0,
-      score: 0,
-      showAnswer: false,
-      answerList: [],
-      showScoreModal: false,
-    };
-    props.handleStart(data);
-  };
   return (
     <>
       {item ? (
@@ -82,7 +56,6 @@ const UnitItem = (props) => {
                       justifyContent: "center",
                       alignItems: "center",
                       marginRight: 10,
-                      // flex: 1
                     }}
                   >
                     <MaterialCommunityIcons
@@ -106,7 +79,6 @@ const UnitItem = (props) => {
                     justifyContent: "center",
                     alignItems: "center",
                     // backgroundColor: "green",
-                    // width: 20,
                   }}
                 >
                   <Dash
@@ -129,21 +101,30 @@ const UnitItem = (props) => {
                 mode={item.progress === 1 ? "outlined" : "contained"}
                 style={{
                   position: "relative",
-                  // transform: [{ scale: item.title === "Revision" ? 1.06 : 1 }],
                   borderRadius: 15,
                   marginVertical: 10,
                   marginRight: 15,
-                  marginBottom: item.title === "Revision" ? 10 : 0,
+                  marginBottom: item.title === "Revision" ? 15 : 10,
                   elevation: item.title === "Revision" ? 5 : 10,
-                  // borderStyle: item.title === "Revision" ? "dashed" : "solid",
                   borderWidth: item.title === "Revision" ? 3 : 1,
                   flex: 1,
                   borderColor:
                     item.progress === 1 ? COLORS.primary : COLORS.white,
                 }}
               >
-                <TouchableOpacity onPress={handlePress}>
-                  <View style={styles.container}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("Unit Details", { id: item.id })
+                  }
+                >
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      marginBottom: item.title === "Revision" ? 20 : 0,
+                    }}
+                  >
                     <View style={styles.LeftContainer}>
                       <Image
                         style={styles.photo}
@@ -161,15 +142,14 @@ const UnitItem = (props) => {
                         }}
                       >
                         {item.title === "Revision"
-                          ? "UNIT REVISIONS"
+                          ? "UNIT REVISION"
                           : item.title === "Milestone"
                           ? "Milestone"
                           : "UNIT " + item.order}
                       </Text>
                       <Title style={{ fontSize: 14, fontWeight: "800" }}>
-                        {item.title}
+                        {item.title === "Revision" ? item.subtitle : item.title}
                       </Title>
-                      {/* {item.progress === 1 || item.progress === 0 ? ( */}
                       <Text
                         style={{
                           fontSize: 14,
@@ -179,9 +159,10 @@ const UnitItem = (props) => {
                           paddingBottom: 10,
                         }}
                       >
-                        {item.subtitle}
+                        {item.title === "Revision"
+                          ? item.description
+                          : item.subtitle}
                       </Text>
-                      {/* ) : null} */}
                       {item.progress === 1 || item.progress === 0 ? null : (
                         <View style={{ marginLeft: 5, marginRight: 25 }}>
                           <ProgressBar
@@ -195,36 +176,169 @@ const UnitItem = (props) => {
                 </TouchableOpacity>
                 {item.title === "Revision" && (
                   <TouchableOpacity
+                    onPress={() => setModalVisible(true)}
                     style={{
                       position: "absolute",
-                      bottom: -15,
+                      bottom: -35 / 2,
                       alignSelf: "center",
-                      width: 180,
-                      height: 30,
+                      width: 200,
+                      height: 35,
                       borderRadius: 20,
-                      // marginTop: 10,
                       justifyContent: "center",
                       alignItems: "center",
                       backgroundColor: "#d90429",
-                      // left: 0,
+                      flexDirection: "row",
                     }}
                   >
                     <Text
                       style={{
-                        fontSize: 12,
-                        fontWeight: "600",
+                        fontSize: 13,
+                        fontWeight: "bold",
                         color: "#ffffff",
-
-                        paddingHorizontal: 25,
+                        paddingHorizontal: 10,
                         paddingVertical: 6,
                         borderRadius: 12,
                       }}
                     >
                       {"ATTEND A LIVE CLASS"}
                     </Text>
+
+                    <View
+                      style={{
+                        width: 25,
+                        height: 25,
+                        borderRadius: 25 / 2,
+                        backgroundColor: "white",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginRight: 10,
+                        // flex: 1
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="chevron-right-circle"
+                        style={{
+                          color: COLORS.enactive,
+                          fontSize: 20,
+                        }}
+                      />
+                    </View>
                   </TouchableOpacity>
                 )}
               </Card>
+              {modalVisible && (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Modal transparent={true}>
+                    <Animated.View
+                      entering={BounceInDown}
+                      style={{
+                        backgroundColor: "#edeec9",
+                        alignSelf: "center",
+                        width: SIZES.width - 80,
+                        marginVertical: 100,
+                        marginHorizontal: 10,
+                        flex: 1,
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={{ alignSelf: "flex-end" }}
+                        onPress={() => setModalVisible(false)}
+                      >
+                        <View
+                          style={{
+                            width: 45,
+                            height: 45,
+                            borderRadius: 20 / 2,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name="close"
+                            style={{
+                              color: COLORS.enactive,
+                              fontSize: 35,
+                            }}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          // backgroundColor: "red",
+                        }}
+                      >
+                        <View
+                          style={{
+                            width: 150,
+                            height: 30,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "red",
+                          }}
+                        >
+                          <Paragraph
+                            style={{ color: "white", fontWeight: "bold" }}
+                          >
+                            LIVE CLASS !
+                          </Paragraph>
+                        </View>
+                      </View>
+
+                      <View
+                        style={{
+                          flex: 2,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        {item.liveClasses.length > 0 ? (
+                          <>
+                            <Paragraph>Live Class is avaiable on</Paragraph>
+                            <Paragraph style={{ fontWeight: "bold" }}>
+                              {item.liveClasses[0].class_date}
+                            </Paragraph>
+                            <Paragraph>Stay tuned!</Paragraph>
+                          </>
+                        ) : (
+                          <Paragraph>
+                            No Live class is avaiable for this unit. Check back
+                            later
+                          </Paragraph>
+                        )}
+                      </View>
+
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: 22,
+                        }}
+                      >
+                        <Button
+                          style={{
+                            marginBottom: 15,
+                            borderRadius: 20,
+                            width: 200,
+                          }}
+                          mode="contained"
+                        >
+                          Join the class!
+                        </Button>
+                      </View>
+                    </Animated.View>
+                  </Modal>
+                </View>
+              )}
             </View>
           </View>
         </Animated.View>
@@ -243,13 +357,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: item.title === "Revision" ? 15 : 0,
+    // backgroundColor: "red",
   },
   RightContainer: {
     flex: 2,
     justifyContent: "center",
-    // marginLeft: 25
-    // backgroundColor: "red",
+
     marginRight: 10,
     marginLeft: 35,
   },
@@ -265,10 +378,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setCourseDetails: (data) => dispatch(setCourseDetails(data)),
-    handleStart: (data) => dispatch(handleStart(data)),
-  };
-};
-export default connect(null, mapDispatchToProps)(UnitItem);
+export default UnitItem;

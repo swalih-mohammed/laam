@@ -1,31 +1,19 @@
-import { registerRootComponent } from "expo";
+// import { registerRootComponent } from "expo";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  DefaultTheme,
-  configureFonts,
-  Provider as PaperProvider,
-} from "react-native-paper";
+import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { Provider as StoreProvider } from "react-redux";
-import { COLORS, SIZES } from "./src/Helpers/constants";
-
-// import { StyleSheet, Text, View } from "react-native";
+import { loadAsync } from "expo-font";
+import { AppLoading } from "expo";
+import { COLORS } from "./src/Helpers/constants";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// import { HomeStackScreen } from "./src/Navigation/homeNavigator";
-// import { AuthStackScreen } from "./src/Navigation/homeNavigator";
 import { store, persistor } from "./src/store/index";
-// import store from "./src/store/index";
-// import persistor from "./src/store/index";
 import { PersistGate } from "redux-persist/integration/react";
 import { createStackNavigator } from "@react-navigation/stack";
-import HomeScreen from "./src/Components/course/list";
-import CourseDetail from "./src/Components/course/detail";
-import SectionDetail from "./src/Components/section/detail";
+
 import UnitDetail from "./src/Components/unit/detail";
 import LessonDetail from "./src/Components/lessons/detail";
-import PhotoLessonList from "./src/Components/lessons/photoLessonList";
 import Account from "./src/Screens/AccountScreen";
 import LoginScreen from "./src/Screens/LoginScreen";
 import SignUp from "./src/Screens/SignUpScreen";
@@ -36,38 +24,38 @@ import CertificateScreen from "./src/Screens/CertificateScreen";
 import GeneralTestList from "./src/Components/tests/list";
 import ErrorPage from "./src/Screens/ErrorPage";
 const Stack = createStackNavigator();
-
-// const Tabs = createBottomTabNavigator();
 const Tabs = createMaterialBottomTabNavigator();
+// import HomeScreen from "./src/Screens/TestScreen";
+import HomeScreen from "./src/Components/course/detail";
 
-// const fetchFonts = async () =>
-//   await Font.loadAsync({
-//     'Inter-Black': require('./assets/fonts/Inter-Black.otf'),
-//   });
+import * as Sentry from "sentry-expo";
 
-// const fontConfig = {
-//   android: {
-//     regular: {
-//       fontFamily: "sans-serif",
-//       fontWeight: "normal"
-//     },
-//     medium: {
-//       fontFamily: "sans-serif-medium",
-//       fontWeight: "normal"
-//     },
-//     light: {
-//       fontFamily: "sans-serif-light",
-//       fontWeight: "normal"
-//     },
-//     thin: {
-//       fontFamily: "sans-serif-thin",
-//       fontWeight: "normal"
-//     }
-//   }
-// };
+Sentry.init({
+  dsn: "https://c7a1462cb3bb48fb82490d0bab0b811c@o1257480.ingest.sentry.io/6429229",
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 1.0,
+});
+
+async function loadState(setState) {
+  Sentry.Native.addBreadcrumb({
+    type: "user",
+    category: "openApp",
+    message: "Loading resources",
+    // enableInExpoDevelopment: true,
+  });
+  await loadAsync({
+    // load some fonts
+  });
+  Sentry.Native.addBreadcrumb({
+    type: "transaction",
+    category: "sentry.transaction",
+    message: "Loaded fonts",
+  });
+}
+
 const MyTheme = {
   ...DefaultTheme,
-  // fonts: configureFonts(fontConfig),
   colors: {
     ...DefaultTheme.colors,
     notification: "red",
@@ -77,8 +65,6 @@ const MyTheme = {
     primary: "#14a800",
     secondary: "#414757",
     error: "#f13a59",
-    // text: "#ffffff",
-    // background: "#333333",
     white: "#FFFFFF",
     black: "#171717",
     offWhite: "#F8F0E3",
@@ -114,7 +100,7 @@ export const TabScreens = () => (
   </Tabs.Navigator>
 );
 
-export default function App() {
+function App() {
   return (
     <StoreProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -136,20 +122,7 @@ export default function App() {
                   name="Get Started"
                   component={GetStartedScreen}
                 />
-                <Stack.Screen
-                  name="Course Details"
-                  options={{
-                    headerShown: false,
-                  }}
-                  component={CourseDetail}
-                />
-                <Stack.Screen
-                  options={{
-                    headerShown: false,
-                  }}
-                  name="Section Details"
-                  component={SectionDetail}
-                />
+
                 <Stack.Screen
                   name="Unit Details"
                   options={{
@@ -165,10 +138,6 @@ export default function App() {
                   component={LessonDetail}
                 />
                 <Stack.Screen
-                  name="Photo Lesson List"
-                  component={PhotoLessonList}
-                />
-                <Stack.Screen
                   options={{
                     headerShown: false,
                   }}
@@ -182,7 +151,6 @@ export default function App() {
                   name="Conversation Details"
                   component={ConversationDetails}
                 />
-
                 <Stack.Screen
                   options={{
                     headerShown: false,
@@ -228,3 +196,4 @@ export default function App() {
     </StoreProvider>
   );
 }
+export default App;

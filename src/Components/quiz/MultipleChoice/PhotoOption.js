@@ -84,6 +84,8 @@ const renderOptions = (props) => {
     props.handleNext(data);
   };
 
+  const questionTitle = props.title ? props.title : "Selec the correct choice";
+
   return (
     <Animated.View
       style={{ flex: 1 }}
@@ -97,7 +99,7 @@ const renderOptions = (props) => {
           // backgroundColor: "red"
         }}
       >
-        <Paragraph>{props.title}</Paragraph>
+        <Paragraph>{questionTitle}</Paragraph>
         <Title
           style={{
             // color: COLORS.black,

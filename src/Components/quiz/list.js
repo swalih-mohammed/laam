@@ -1,56 +1,22 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { View, Text, ActivityIndicator } from "react-native";
-import { localhost } from "../../Helpers/urls";
+import { View, ActivityIndicator } from "react-native";
 import Questions from "./Questions";
-import Loader from "../Utils/Loader";
 import { Paragraph } from "react-native-paper";
-import { COLORS, SIZES } from "../../Helpers/constants";
-import { handleStart } from "../../store/actions/quiz";
+import { COLORS } from "../../Helpers/constants";
 import Oops from "../Utils/oops";
+import * as actions from "../../store/actions/quiz";
 
 const QuizList = (props) => {
-  const [quiz, setQuiz] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(null);
-  const { is_general, lessonId, QuizId, unitId, sectionId } =
-    props.route.params;
-
+  const { is_general, QuizId } = props.route.params;
+  const { quiz, error, loading } = props;
   useEffect(() => {
-    const source = axios.CancelToken.source();
-    const getTest = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `${localhost}/quizzes/${QuizId}/${props.username}`,
-          {
-            cancelToken: source.token,
-          }
-        );
-        setQuiz(response.data);
-        // console.log(response.data);
-        setLoading(false);
-      } catch (err) {
-        if (axios.isCancel(error)) {
-          console.log("axios cancel error");
-        } else {
-          console.log("error occured in catch");
-          console.log(err);
-        }
-      }
-    };
-    getTest();
-    return () => {
-      console.log("quiz list unmounting");
-      source.cancel();
-    };
+    props.getQuiz(props.username, QuizId);
   }, []);
 
   return (
     <>
       {loading ? (
-        // <Loader />
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
@@ -67,8 +33,8 @@ const QuizList = (props) => {
             <Questions
               is_completed={quiz.is_completed}
               questions={quiz.questions}
-              quiz={quiz.id}
-              lesson={quiz.lesson}
+              // quiz={quiz.id}
+              // lesson={quiz.lesson}
               unit={quiz.unit}
               course={quiz.course}
               quizPhoto={quiz.photo}
@@ -83,10 +49,8 @@ const QuizList = (props) => {
               style={{
                 flex: 1,
                 justifyContent: "center",
-                // alignItems: "center",
               }}
             >
-              {/* <Paragraph>This quiz is not yet ready</Paragraph> */}
               <Oops text={"Oops! this quiz is not yet ready."} />
             </View>
           )}
@@ -98,13 +62,14 @@ const QuizList = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleStart: (data) => dispatch(handleStart(data)),
+    getQuiz: (username, id) => dispatch(actions.getQuiz(username, id)),
   };
 };
 const mapStateToProps = (state) => {
   return {
     username: state.auth.username,
-    // token: state.auth.token
+    quiz: state.quiz.quiz,
+    loading: state.quiz.loading,
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(QuizList);

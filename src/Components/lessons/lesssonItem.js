@@ -1,31 +1,14 @@
 import * as React from "react";
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  Image,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-} from "react-native";
-// import { useKeepAwake } from "expo-keep-awake";
-import PhotoAndTitle from "./LessonPhoto";
 import { connect } from "react-redux";
-import { handleStart } from "../../store/actions/quiz";
-import Constants from "expo-constants";
-import { Button, Title, Paragraph } from "react-native-paper";
+import { View } from "react-native";
+import { Button, Paragraph } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Audio } from "expo-av";
-// import * as Haptics from "expo-haptics";
-
-const { width, height } = Dimensions.get("window");
 import { useNavigation } from "@react-navigation/native";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import * as Speech from "expo-speech";
 import Slider from "@react-native-community/slider";
-
 import { COLORS, SIZES } from "../../Helpers/constants";
 import Animated, { LightSpeedInRight } from "react-native-reanimated";
+import LessonItemPhotoAndTitle from "./lessonItemPhoto";
 
 function lessonItem(props) {
   const {
@@ -39,17 +22,12 @@ function lessonItem(props) {
   } = props;
 
   const navigation = useNavigation();
-
-  // const [Loaded, SetLoaded] = React.useState(false);
-  // const [Loading, SetLoading] = React.useState(false);
   const [index, setIndex] = React.useState(0);
-  // const [lastSongIndex, setLastSongIndex] = React.useState(0);
   const [isPlaying, setIsplaying] = React.useState(false);
   const [didJustFinish, setDidJustFinish] = React.useState(false);
   const [positionMillis, setPositionMillis] = React.useState(0);
   const [durationMillis, setDurationMillis] = React.useState(0);
   const [currentPosition, setCurrentPosition] = React.useState(0);
-  // const [sliderValue, setSliderValue] = React.useState(0);
 
   const sound = React.useRef(new Audio.Sound());
   const keySound = React.useRef(new Audio.Sound());
@@ -71,6 +49,7 @@ function lessonItem(props) {
   };
 
   const LoadAudio = async () => {
+    if (!isMounted) return;
     if (lessonItems[index].audio) {
       try {
         const audio = lessonItems[index].audio.audio;
@@ -93,7 +72,7 @@ function lessonItem(props) {
   };
 
   const HandleSliderMove = async (value) => {
-    // console.log(value);
+    if (!isMounted) return;
     try {
       const result = await sound.current.getStatusAsync();
       if (result.isLoaded) {
@@ -138,28 +117,28 @@ function lessonItem(props) {
   };
 
   const PlayAudio = async () => {
-    if (isMounted.current) {
-      try {
-        const result = await sound.current.getStatusAsync();
-        sound.current.setStatusAsync({ progressUpdateIntervalMillis: 1000 });
-        sound.current.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-        if (result.isLoaded) {
-          if (result.isPlaying === false && !didJustFinish) {
-            setIsplaying(true);
-            return await sound.current.playAsync();
-          }
-          if (result.isPlaying === false && didJustFinish) {
-            setIsplaying(true);
-            return await sound.current.replayAsync();
-          }
+    if (!isMounted) return;
+    try {
+      const result = await sound.current.getStatusAsync();
+      sound.current.setStatusAsync({ progressUpdateIntervalMillis: 1000 });
+      sound.current.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+      if (result.isLoaded) {
+        if (result.isPlaying === false && !didJustFinish) {
+          setIsplaying(true);
+          return await sound.current.playAsync();
         }
-        LoadAudio();
-      } catch (error) {
-        console.log(error);
+        if (result.isPlaying === false && didJustFinish) {
+          setIsplaying(true);
+          return await sound.current.replayAsync();
+        }
       }
+      LoadAudio();
+    } catch (error) {
+      console.log(error);
     }
   };
   const PauseAudio = async () => {
+    if (!isMounted) return;
     try {
       const result = await sound.current.getStatusAsync();
       if (result.isLoaded) {
@@ -173,13 +152,12 @@ function lessonItem(props) {
     }
   };
 
-  // below is wokring code
   const handlePressNext = () => {
+    if (!isMounted) return;
     UnloadSound();
     playKeySound();
     if (index === lessonItems.length - 1) {
       if (hasQuiz) {
-        resetQuiz();
         navigateToQuiz();
       }
     } else {
@@ -188,16 +166,11 @@ function lessonItem(props) {
   };
 
   const handlePressPrevious = () => {
+    if (!isMounted) return;
     UnloadSound();
     playKeySound();
     if (index === 0) {
-      if (sectionId != null) {
-        navigation.navigate("Section Details", {
-          id: sectionId,
-        });
-      } else {
-        navigation.navigate("Unit Details", { id: unitId });
-      }
+      navigation.navigate("Unit Details", { id: unitId });
     } else {
       setIndex(index - 1);
     }
@@ -213,32 +186,16 @@ function lessonItem(props) {
     });
   };
 
-  const resetQuiz = () => {
-    const data = {
-      index: 0,
-      score: 0,
-      showAnswer: false,
-      answerList: [],
-      showScoreModal: false,
-    };
-    props.handleStart(data);
-    navigateToQuiz();
-  };
-
   const sliderValue =
     positionMillis !== 0 ? positionMillis / durationMillis : 0;
-
-  // key press sound
   const playKeySound = async () => {
     const checkLoading = await keySound.current.getStatusAsync();
     if (checkLoading.isLoaded === false) {
-      // console.log("key sound");
       try {
         await keySound.current.loadAsync(
           require("../../../assets/sounds/keyPress.mp3"),
           { shouldPlay: true }
         );
-        // await keySound.current.unloadAsync();
       } catch (error) {
         console.log(error);
       }
@@ -246,14 +203,13 @@ function lessonItem(props) {
       console.log("erro");
     }
   };
-  useKeepAwake();
   return (
     <View style={{ flex: 1, marginHorizontal: 10 }}>
       <Animated.View
         entering={LightSpeedInRight.duration(1000)}
         style={{ flex: 5, justifyContent: "center" }}
       >
-        <PhotoAndTitle
+        <LessonItemPhotoAndTitle
           photo={lessonItems[index].photo.photo}
           title={lessonItems[index].title}
         />
@@ -313,10 +269,8 @@ function lessonItem(props) {
         <MaterialCommunityIcons
           name={!isPlaying || didJustFinish ? "play" : "pause"}
           style={{
-            // color: COLORS.black,
             fontSize: 30,
             alignSelf: "center",
-            // backgroundColor: "gray",
             padding: 10,
             borderRadius: 50,
             borderWidth: 1,
@@ -343,54 +297,8 @@ function lessonItem(props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-  },
-  TopContainer: {
-    flex: 5,
-    backgroundColor: "black",
-  },
-  MiddleContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    backgroundColor: "green",
-  },
-  BottomContainer: {
-    // flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    backgroundColor: "green",
-  },
-  ImgWrapper: {
-    height: height * 0.9,
-    marginTop: 8,
-    marginLeft: 5,
-    marginRight: 5,
-  },
-  photo: {
-    width: "95%",
-    height: "85%",
-    margin: 5,
-    borderRadius: 10,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  Controls: {
-    flexDirection: "row",
-    marginTop: 20,
-  },
-});
-
 const mapDispatchToProps = (dispatch) => {
-  return {
-    handleStart: (data) => dispatch(handleStart(data)),
-  };
+  return {};
 };
 
 export default connect(null, mapDispatchToProps)(lessonItem);
